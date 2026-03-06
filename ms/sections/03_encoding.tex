@@ -1,0 +1,136 @@
+\section{Stereographic Encoding}
+\label{sec:encoding}
+
+We now introduce the stereographic encoding, which maps complex numbers to quantum states via the stereographic projection.
+
+\subsection{The Encoding Map}
+
+\begin{definition}[Stereographic Encoding]
+\label{def:stereo-encoding}
+For $z \in \C$, the stereographically encoded quantum state is defined as
+\begin{equation}
+    \label{eq:encoding-state}
+    \ket{z} = \frac{1}{\sqrt{|z|^2 + 1}}(z\ket{0} + \ket{1}).
+\end{equation}
+\end{definition}
+
+In polar form, writing $z = re^{i\theta}$ with $r \geq 0$ and $\theta \in [0, 2\pi)$, we have
+\begin{equation}
+    \label{eq:encoding-polar}
+    \ket{z} = \frac{1}{\sqrt{r^2 + 1}}(re^{i\theta}\ket{0} + \ket{1}).
+\end{equation}
+
+This encoding has several notable features:
+
+\begin{itemize}
+    \item \textbf{Unbounded range}: Unlike amplitude encoding, $r$ can take any non-negative value. As $r \to \infty$, the state approaches $\ket{0}$, corresponding to the north pole of the Bloch sphere.
+    
+    \item \textbf{Normalization}: The state is automatically normalized for all $z \in \C$:
+    \begin{equation}
+        \braket{z}{z} = \frac{1}{r^2+1}(r^2 \cdot 1 + 1 \cdot 1) = 1.
+    \end{equation}
+    
+    \item \textbf{Special values}:
+    \begin{itemize}
+        \item $\ket{0} = \frac{1}{\sqrt{2}}(\ket{0} + \ket{1}) = \ket{+}$
+        \item $\ket{\infty} = \ket{0}$
+        \item For $|z| = 1$, the state lies on the equator of the Bloch sphere.
+    \end{itemize}
+\end{itemize}
+
+\subsection{Density Matrix and Bloch Vector}
+
+The density matrix corresponding to $\ket{z}$ is
+\begin{equation}
+    \label{eq:density-matrix}
+    \rho_z = \ket{z}\bra{z} = \frac{1}{|z|^2 + 1}\begin{pmatrix} 
+        |z|^2 & z^* \\
+        z & 1
+    \end{pmatrix}.
+\end{equation}
+
+\begin{proposition}[Bloch Vector]
+\label{prop:bloch-vector}
+The Bloch vector components of $\ket{z}$ are
+\begin{align}
+    \langle \PauliX \rangle &= \frac{2\re(z)}{|z|^2 + 1}, \label{eq:bloch-x} \\
+    \langle \PauliY \rangle &= \frac{2\im(z)}{|z|^2 + 1}, \label{eq:bloch-y} \\
+    \langle \PauliZ \rangle &= \frac{|z|^2 - 1}{|z|^2 + 1}. \label{eq:bloch-z}
+\end{align}
+\end{proposition}
+
+\begin{proof}
+We compute directly from the density matrix. Writing $z = x + iy$:
+\begin{align}
+    \langle \PauliX \rangle &= \Tr(\rho_z \PauliX) = \frac{1}{|z|^2+1}(z^* + z) = \frac{2x}{x^2+y^2+1}, \\
+    \langle \PauliY \rangle &= \Tr(\rho_z \PauliY) = \frac{1}{|z|^2+1}i(z^* - z) = \frac{2y}{x^2+y^2+1}, \\
+    \langle \PauliZ \rangle &= \Tr(\rho_z \PauliZ) = \frac{1}{|z|^2+1}(|z|^2 - 1) = \frac{x^2+y^2-1}{x^2+y^2+1}.
+\end{align}
+\end{proof}
+
+\begin{remark}
+Comparing Equations~\eqref{eq:bloch-x}--\eqref{eq:bloch-z} with the stereographic projection formulas in Section~\ref{sec:preliminaries}, we see that the Bloch vector $(\langle \PauliX \rangle, \langle \PauliY \rangle, \langle \PauliZ \rangle)$ is precisely the image of $z$ under stereographic projection from $\C$ to $\Sphere$.
+\end{remark}
+
+\subsection{Decoding via Measurement}
+
+A key feature of stereographic encoding is that $z$ can be recovered from the encoded state via Pauli measurements.
+
+\begin{theorem}[Decoding Formula]
+\label{thm:decoding}
+Given access to the Pauli expectation values $\langle \PauliX \rangle$, $\langle \PauliY \rangle$, and $\langle \PauliZ \rangle$ of the state $\ket{z}$, the complex number $z$ can be recovered as
+\begin{equation}
+    \label{eq:decoding}
+    z = \frac{\langle \PauliX \rangle + i\langle \PauliY \rangle}{1 - \langle \PauliZ \rangle}.
+\end{equation}
+\end{theorem}
+
+\begin{proof}
+From Equations~\eqref{eq:bloch-x}--\eqref{eq:bloch-z}, we have
+\begin{align}
+    \langle \PauliX \rangle + i\langle \PauliY \rangle &= \frac{2(x + iy)}{|z|^2 + 1} = \frac{2z}{|z|^2 + 1}, \\
+    1 - \langle \PauliZ \rangle &= 1 - \frac{|z|^2 - 1}{|z|^2 + 1} = \frac{2}{|z|^2 + 1}.
+\end{align}
+Therefore,
+\begin{equation}
+    \frac{\langle \PauliX \rangle + i\langle \PauliY \rangle}{1 - \langle \PauliZ \rangle} = \frac{2z/(|z|^2+1)}{2/(|z|^2+1)} = z.
+\end{equation}
+\end{proof}
+
+\begin{remark}
+The decoding formula~\eqref{eq:decoding} is precisely the inverse stereographic projection. This confirms that stereographic encoding realizes a bijection between $\C$ and points on the Bloch sphere (excluding the north pole).
+\end{remark}
+
+\subsection{Geometric Series Interpretation}
+
+The factor $\frac{1}{1 - \langle \PauliZ \rangle}$ in Equation~\eqref{eq:decoding} can be expanded as a geometric series. Since $\langle \PauliZ \rangle \in [-1, 1]$ for all quantum states, we have
+\begin{equation}
+    \label{eq:geometric-series}
+    \frac{1}{1 - \langle \PauliZ \rangle} = \sum_{n=0}^{\infty} \langle \PauliZ \rangle^n,
+\end{equation}
+which converges for all valid quantum states. This representation will be useful in our analysis of quantum signal processing.
+
+\subsection{Relation to Bloch Sphere Parameterization}
+
+To connect with the standard Bloch sphere parameterization, we relate the parameters $(r, \theta)$ of $z = re^{i\theta}$ to the Bloch angles $(\vartheta, \varphi)$:
+
+\begin{proposition}
+\label{prop:bloch-angles}
+The stereographically encoded state $\ket{z}$ with $z = re^{i\theta}$ corresponds to the Bloch sphere angles
+\begin{align}
+    \vartheta &= 2\arctan\left(\frac{1}{r}\right), \\
+    \varphi &= -\theta.
+\end{align}
+\end{proposition}
+
+\begin{proof}
+Comparing $\ket{z} = \frac{1}{\sqrt{r^2+1}}(re^{i\theta}\ket{0} + \ket{1})$ with the standard form $\cos(\vartheta/2)\ket{0} + e^{i\varphi}\sin(\vartheta/2)\ket{1}$, we identify
+\begin{align}
+    \cos(\vartheta/2) &= \frac{r}{\sqrt{r^2+1}}, \\
+    \sin(\vartheta/2) &= \frac{1}{\sqrt{r^2+1}}, \\
+    e^{i\varphi} &= e^{-i\theta}.
+\end{align}
+From the first two equations, $\tan(\vartheta/2) = 1/r$, giving $\vartheta = 2\arctan(1/r)$. The third equation gives $\varphi = -\theta$.
+\end{proof}
+
+This shows that changes in $r$ correspond to rotations about the $Y$-axis on the Bloch sphere, while changes in $\theta$ correspond to rotations about the $Z$-axis.

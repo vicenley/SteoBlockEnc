@@ -1,0 +1,86 @@
+\documentclass[11pt,a4paper]{article}
+
+% Packages
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{physics} % For bra-ket notation
+\usepackage{mathtools}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{cleveref}
+\usepackage{algorithm}
+\usepackage{algorithmic}
+\usepackage{tikz}
+\usepackage{float}
+
+% Theorem environments
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{example}[theorem]{Example}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+% Custom commands
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\Sphere}{\mathbb{S}^2}
+\newcommand{\SU}{\mathrm{SU}}
+\newcommand{\U}{\mathrm{U}}
+\newcommand{\Tr}{\mathrm{Tr}}
+\newcommand{\re}{\mathrm{Re}}
+\newcommand{\im}{\mathrm{Im}}
+
+% Pauli matrices
+\newcommand{\PauliI}{\sigma_0}
+\newcommand{\PauliX}{\sigma_1}
+\newcommand{\PauliY}{\sigma_2}
+\newcommand{\PauliZ}{\sigma_3}
+
+% Custom operators
+\DeclareMathOperator{\arccot}{arccot}
+
+% Title information
+\title{Stereographic Projection as a Quantum Encoding Strategy \\ 
+       for Quantum Block Encoding and Signal Processing}
+
+\author{Tyler Kharazi \and Vicente Leyton-Ortega}
+
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+We introduce a novel quantum encoding strategy based on stereographic projection that maps complex numbers to quantum states on the Bloch sphere. This encoding, $\ket{z} = \frac{1}{\sqrt{|z|^2+1}}(z\ket{0} + \ket{1})$, provides an unbounded encoding of the complex plane and exhibits a natural connection to quantum signal processing (QSP) through Chebyshev polynomials. We show that single-qubit quantum gates induce Möbius transformations on the encoded complex values, establishing a rich geometric structure. Under this encoding, the QSP protocol generates rational polynomial approximations with explicit zeros and poles. We derive the Hamiltonian dynamics for trajectories in the complex plane and compute the associated Berry phase. Applications to quantum eigenvalue transformation, quantum kernels, and classification are discussed.
+\end{abstract}
+
+\tableofcontents
+
+% Include sections
+\input{sections/01_introduction}
+\input{sections/02_preliminaries}
+\input{sections/03_encoding}
+\input{sections/04_mobius}
+\input{sections/05_qsp}
+\input{sections/06_dynamics}
+\input{sections/07_applications}
+\input{sections/08_discussion}
+
+% Bibliography
+\bibliographystyle{plain}
+\bibliography{references}
+
+% Appendices
+\appendix
+\input{sections/appendix_proofs}
+\input{sections/appendix_formulas}
+
+\end{document}
