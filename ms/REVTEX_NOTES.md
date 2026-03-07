@@ -26,21 +26,40 @@ The manuscript has been converted from standard LaTeX `article` class to **REVTe
 ```
 
 ### Author Information
-**Before:**
+
+**⚠️ CRITICAL: Title must be INSIDE `\begin{document}`!**
+
+**Before (standard LaTeX):**
 ```latex
+\title{My Title}
 \author{Tyler Kharazi \and Vicente Leyton-Ortega}
+\begin{document}
+\maketitle
 ```
 
-**After:**
+**After (REVTeX):**
 ```latex
+\begin{document}
+\title{My Title}
 \author{Tyler Kharazi}
 \affiliation{Institution TBD}
-\email{email@institution.edu}
 
 \author{Vicente Leyton-Ortega}
 \affiliation{Institution TBD}
-\email{vicenley@gmail.com}
+
+\begin{abstract}
+...
+\end{abstract}
+
+\pacs{...}
+\maketitle
 ```
+
+**Key points:**
+- `\title`, `\author`, `\affiliation` go **INSIDE** `\begin{document}`
+- They come **BEFORE** `\begin{abstract}`
+- `\maketitle` comes **AFTER** `\pacs` and abstract
+- Otherwise the title won't appear in the PDF!
 
 ### Abstract and Metadata
 **Before:**
