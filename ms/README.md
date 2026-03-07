@@ -1,8 +1,12 @@
 # Manuscript: Stereographic Encoding
 
+## Format
+
+This manuscript uses **REVTeX 4.2** (Physical Review journals format).
+
 ## Structure
 
-- `main.tex` - Main manuscript file
+- `main.tex` - Main manuscript file (REVTeX format)
 - `sections/` - Individual sections
   - `01_introduction.tex` - Introduction and motivation
   - `02_preliminaries.tex` - Mathematical background
@@ -18,6 +22,7 @@
 
 ## Building
 
+### Standard compilation:
 ```bash
 pdflatex main.tex
 bibtex main
@@ -25,10 +30,24 @@ pdflatex main.tex
 pdflatex main.tex
 ```
 
-Or use latexmk:
+### Using latexmk (recommended):
 ```bash
 latexmk -pdf main.tex
 ```
+
+### Clean build files:
+```bash
+latexmk -C
+```
+
+### REVTeX Requirements
+
+Make sure you have REVTeX 4.2 installed:
+- **Ubuntu/Debian**: `sudo apt-get install texlive-publishers`
+- **MacOS**: Included in MacTeX
+- **Windows**: Included in MiKTeX or TeX Live
+
+Target journal: Physical Review A (quantum computing/quantum information)
 
 ## Equation Verification
 

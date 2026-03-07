@@ -1,29 +1,24 @@
-\documentclass[11pt,a4paper]{article}
+\documentclass[
+    reprint,
+    amsmath,amssymb,
+    aps,
+    pra,  % Physical Review A - suitable for quantum computing
+    showpacs,
+    superscriptaddress,
+    floatfix
+]{revtex4-2}
 
-% Packages
-\usepackage[utf8]{inputenc}
-\usepackage[T1]{fontenc}
-\usepackage{amsmath,amssymb,amsthm}
-\usepackage{physics} % For bra-ket notation
-\usepackage{mathtools}
+% Additional packages
 \usepackage{graphicx}
+\usepackage{dcolumn}
+\usepackage{bm}
 \usepackage{hyperref}
-\usepackage{cleveref}
 \usepackage{algorithm}
 \usepackage{algorithmic}
 \usepackage{tikz}
-\usepackage{float}
 
-% Theorem environments
-\newtheorem{theorem}{Theorem}[section]
-\newtheorem{lemma}[theorem]{Lemma}
-\newtheorem{proposition}[theorem]{Proposition}
-\newtheorem{corollary}[theorem]{Corollary}
-\theoremstyle{definition}
-\newtheorem{definition}[theorem]{Definition}
-\newtheorem{example}[theorem]{Example}
-\theoremstyle{remark}
-\newtheorem{remark}[theorem]{Remark}
+% Note: REVTeX provides its own theorem environments
+% and bra-ket notation support through physics
 
 % Custom commands
 \newcommand{\C}{\mathbb{C}}
@@ -46,23 +41,35 @@
 % Custom operators
 \DeclareMathOperator{\arccot}{arccot}
 
-% Title information
-\title{Stereographic Projection as a Quantum Encoding Strategy \\ 
-       for Quantum Block Encoding and Signal Processing}
+% Title and authors
+\title{Stereographic Projection as a Quantum Encoding Strategy for Quantum Block Encoding and Signal Processing}
 
-\author{Tyler Kharazi \and Vicente Leyton-Ortega}
+\author{Tyler Kharazi}
+\affiliation{Institution TBD}
+\email{email@institution.edu}
+
+\author{Vicente Leyton-Ortega}
+\affiliation{Institution TBD}
+\email{vicenley@gmail.com}
 
 \date{\today}
 
 \begin{document}
 
-\maketitle
-
 \begin{abstract}
 We introduce a novel quantum encoding strategy based on stereographic projection that maps complex numbers to quantum states on the Bloch sphere. This encoding, $\ket{z} = \frac{1}{\sqrt{|z|^2+1}}(z\ket{0} + \ket{1})$, provides an unbounded encoding of the complex plane and exhibits a natural connection to quantum signal processing (QSP) through Chebyshev polynomials. We show that single-qubit quantum gates induce Möbius transformations on the encoded complex values, establishing a rich geometric structure. Under this encoding, the QSP protocol generates rational polynomial approximations with explicit zeros and poles. We derive the Hamiltonian dynamics for trajectories in the complex plane and compute the associated Berry phase. Applications to quantum eigenvalue transformation, quantum kernels, and classification are discussed.
 \end{abstract}
 
-\tableofcontents
+% PACS numbers (Physics and Astronomy Classification Scheme)
+\pacs{03.67.Lx, 03.67.Ac, 02.30.Fn}
+% 03.67.Lx - Quantum computation architectures and implementations
+% 03.67.Ac - Quantum algorithms, protocols, and simulations  
+% 02.30.Fn - Several complex variables and analytic spaces
+
+\maketitle
+
+% Note: REVTeX handles table of contents differently - typically not used in journal articles
+% \tableofcontents
 
 % Include sections
 \input{sections/01_introduction}
@@ -74,13 +81,17 @@ We introduce a novel quantum encoding strategy based on stereographic projection
 \input{sections/07_applications}
 \input{sections/08_discussion}
 
-% Bibliography
-\bibliographystyle{plain}
-\bibliography{references}
+% Acknowledgments (optional)
+\begin{acknowledgments}
+We thank... (to be completed)
+\end{acknowledgments}
 
 % Appendices
 \appendix
 \input{sections/appendix_proofs}
 \input{sections/appendix_formulas}
+
+% Bibliography - REVTeX style
+\bibliography{references}
 
 \end{document}
