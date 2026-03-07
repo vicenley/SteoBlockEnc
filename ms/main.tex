@@ -52,7 +52,9 @@
 % Custom operators
 \DeclareMathOperator{\arccot}{arccot}
 
-% Title and authors (defined before \begin{document} for REVTeX)
+\begin{document}
+
+% Title and authors (defined inside \begin{document} for REVTeX)
 \title{Stereographic Projection as a Quantum Encoding Strategy for Quantum Block Encoding and Signal Processing}
 
 \author{Tyler Kharazi}
@@ -62,8 +64,6 @@
 \affiliation{Institution TBD}
 
 \date{\today}
-
-\begin{document}
 
 \begin{abstract}
 We introduce a novel quantum encoding strategy based on stereographic projection that maps complex numbers to quantum states on the Bloch sphere. This encoding, $\ket{z} = \frac{1}{\sqrt{|z|^2+1}}(z\ket{0} + \ket{1})$, provides an unbounded encoding of the complex plane and exhibits a natural connection to quantum signal processing (QSP) through Chebyshev polynomials. We show that single-qubit quantum gates induce Möbius transformations on the encoded complex values, establishing a rich geometric structure. Under this encoding, the QSP protocol generates rational polynomial approximations with explicit zeros and poles. We derive the Hamiltonian dynamics for trajectories in the complex plane and compute the associated Berry phase. Applications to quantum eigenvalue transformation, quantum kernels, and classification are discussed.
