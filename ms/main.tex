@@ -12,13 +12,24 @@
 \usepackage{graphicx}
 \usepackage{dcolumn}
 \usepackage{bm}
-\usepackage{hyperref}
+\usepackage{braket}  % For bra-ket notation
 \usepackage{algorithm}
 \usepackage{algorithmic}
 \usepackage{tikz}
+\usepackage{hyperref}  % Load last
+% Note: amsmath and amsopn already loaded by REVTeX
 
-% Note: REVTeX provides its own theorem environments
-% and bra-ket notation support through physics
+% Theorem environments for REVTeX
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{example}[theorem]{Example}
+\newtheorem{remark}[theorem]{Remark}
+
+% Proof environment (not provided by REVTeX)
+\newenvironment{proof}[1][Proof]{\noindent\textbf{#1.} }{\qed\par}
 
 % Custom commands
 \newcommand{\C}{\mathbb{C}}
@@ -41,16 +52,14 @@
 % Custom operators
 \DeclareMathOperator{\arccot}{arccot}
 
-% Title and authors
+% Title and authors (defined before \begin{document} for REVTeX)
 \title{Stereographic Projection as a Quantum Encoding Strategy for Quantum Block Encoding and Signal Processing}
 
 \author{Tyler Kharazi}
 \affiliation{Institution TBD}
-\email{email@institution.edu}
 
 \author{Vicente Leyton-Ortega}
 \affiliation{Institution TBD}
-\email{vicenley@gmail.com}
 
 \date{\today}
 
