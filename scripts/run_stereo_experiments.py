@@ -584,7 +584,7 @@ def cmd_plot(args):
     ax_inset.set_ylabel("max error", fontsize=5.5, labelpad=1)
     dmax = max(degrees) if degrees else 18
     ax_inset.set_xlim(1, dmax + 1)
-    ax_inset.set_ylim(1e-9, 5e0)
+    ax_inset.set_ylim(1e-11, 5e0)
     ax_inset.tick_params(labelsize=5, pad=1)
     ax_inset.legend(
         loc="lower left",
