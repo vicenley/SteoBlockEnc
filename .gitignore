@@ -89,3 +89,7 @@ logs/
 # Misc
 .env
 *.log
+.mcp.json
+INSTALL_SAGEMATH_FIXED.md
+USAGE.md
+run_all.sh

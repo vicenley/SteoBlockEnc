@@ -8,7 +8,8 @@ W(a) rotates by θ = arccos(a) in the xz-plane; successive applications walk
 the state along the circle, and the |0⟩-amplitude is cos(kθ) = T_k(a).
 
 Convention:
-  - Vertical axis  = |0⟩ (top)  / |1⟩ (bottom)
+  - Vertical axis  = |0⟩ (top)  / |1⟩ (bottom)  [= cos component]
+  - Horizontal axis = sin component
   - Angle θ from the |0⟩ axis defines the signal a = cos θ
   - Each W(a) application rotates clockwise by θ
 
@@ -22,7 +23,7 @@ import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 from matplotlib import rcParams
-from matplotlib.patches import Arc
+from matplotlib.patches import Arc, FancyArrowPatch
 
 # ── Publication style (matches generate_figures_from_data.py) ────────────────
 rcParams.update(
@@ -61,6 +62,7 @@ C = {
     "cyan": "#56B4E9",
     "black": "#000000",
     "gray": "#999999",
+    "lightgray": "#CCCCCC",
 }
 
 COLWIDTH = 3.4  # REVTeX single-column width in inches
@@ -82,16 +84,16 @@ def draw_grover_bloch(ax):
         R * np.cos(theta_circ),
         R * np.sin(theta_circ),
         color=C["gray"],
-        linewidth=0.6,
+        linewidth=0.8,
         zorder=1,
     )
 
-    # Thin gray cross-hairs
-    ax.plot([0, 0], [-1.12, 1.12], color=C["gray"], lw=0.3, zorder=0)
-    ax.plot([-1.12, 1.12], [0, 0], color=C["gray"], lw=0.3, zorder=0)
+    # Thin gray cross-hairs (axes through origin)
+    ax.plot([0, 0], [-1.15, 1.15], color=C["lightgray"], lw=0.4, zorder=0)
+    ax.plot([-1.15, 1.15], [0, 0], color=C["lightgray"], lw=0.4, zorder=0)
 
     # ── Parameters ───────────────────────────────────────────────────────
-    theta_deg = 22
+    theta_deg = 25  # slightly larger angle for clearer visualization
     theta = np.radians(theta_deg)
 
     # State after k applications: math polar angle = 90° - kθ
@@ -120,21 +122,21 @@ def draw_grover_bloch(ax):
             arrowprops=dict(
                 arrowstyle="-|>",
                 color=colors[k],
-                lw=1.0 if k == 0 else 0.7,
+                lw=1.2 if k == 0 else 0.9,
                 shrinkA=0,
                 shrinkB=1.5,
-                mutation_scale=7,
+                mutation_scale=8,
             ),
             zorder=5,
         )
-        ax.plot(x, y, "o", color=colors[k], markersize=2.5, zorder=6)
+        ax.plot(x, y, "o", color=colors[k], markersize=3.0, zorder=6)
 
     # ── State labels ─────────────────────────────────────────────────────
     label_offsets = [
-        (-4, 7),  # |0⟩: above-left
-        (5, 5),  # W|0⟩
-        (5, 2),  # W²|0⟩
-        (5, -3),  # W³|0⟩
+        (-5, 8),  # |0⟩: above-left
+        (5, 6),  # W|0⟩: above-right
+        (6, 2),  # W²|0⟩: right
+        (6, -2),  # W³|0⟩: right-below
     ]
     label_ha = ["right", "left", "left", "left"]
     for k, (x, y, _) in enumerate(states):
@@ -143,16 +145,15 @@ def draw_grover_bloch(ax):
             (x, y),
             textcoords="offset points",
             xytext=label_offsets[k],
-            fontsize=7,
+            fontsize=8,
             color=colors[k],
             ha=label_ha[k],
             va="center",
             zorder=7,
         )
 
-    # ── Single θ arc (from |0⟩ to W|0⟩ only) ────────────────────────────
-    # A clean arc near the circle, not overlapping the state arrows
-    arc_r = 0.38
+    # ── θ arc (from |0⟩ to W|0⟩) ─────────────────────────────────────────
+    arc_r = 0.48
     arc = Arc(
         (0, 0),
         2 * arc_r,
@@ -161,33 +162,54 @@ def draw_grover_bloch(ax):
         theta1=np.degrees(states[1][2]),  # W|0⟩ angle
         theta2=90,  # |0⟩ angle
         color=C["black"],
-        linewidth=0.6,
+        linewidth=0.7,
         zorder=3,
     )
     ax.add_patch(arc)
 
     # θ label — placed just outside the arc midpoint
     mid_angle = np.pi / 2 - 0.5 * theta
-    lr = arc_r + 0.11
+    lr = arc_r + 0.12
     ax.text(
         lr * np.cos(mid_angle),
         lr * np.sin(mid_angle),
         r"$\theta$",
-        fontsize=7.5,
+        fontsize=8.5,
         ha="center",
         va="center",
         zorder=7,
     )
 
+    # ── Small rotation arrows between successive states ──────────────────
+    # Show θ arcs between states 1→2 and 2→3 to reinforce "rotate by θ"
+    for k_start in [1, 2]:
+        arc_rk = 0.30 + k_start * 0.07
+        a_start = np.degrees(states[k_start + 1][2])
+        a_end = np.degrees(states[k_start][2])
+        small_arc = Arc(
+            (0, 0),
+            2 * arc_rk,
+            2 * arc_rk,
+            angle=0,
+            theta1=a_start,
+            theta2=a_end,
+            color=C["gray"],
+            linewidth=0.4,
+            linestyle=":",
+            zorder=2,
+        )
+        ax.add_patch(small_arc)
+
     # ── Projection: show cos(2θ) = T_2(a) for the k=2 state ─────────────
     k_proj = 2
     x_p, y_p, _ = states[k_proj]
+
     # Dashed horizontal line from state to vertical axis
     ax.plot(
         [0, x_p],
         [y_p, y_p],
-        color=colors[k_proj],
-        linewidth=0.5,
+        color=C["orange"],
+        linewidth=0.6,
         linestyle="--",
         zorder=2,
     )
@@ -195,37 +217,50 @@ def draw_grover_bloch(ax):
     ax.plot(
         [-0.03, 0.03],
         [y_p, y_p],
-        color=colors[k_proj],
-        linewidth=0.7,
+        color=C["orange"],
+        linewidth=0.8,
         zorder=3,
     )
-    # Label
+    # T_2(a) label on vertical axis
     ax.text(
-        -0.07,
+        -0.08,
         y_p,
         r"$T_2(a)$",
-        fontsize=6.5,
+        fontsize=7,
         ha="right",
         va="center",
-        color=colors[k_proj],
+        color=C["orange"],
         zorder=7,
     )
 
-    # ── Pole label: |1⟩ at bottom ────────────────────────────────────────
+    # Dashed vertical line from state down to horizontal axis
+    ax.plot(
+        [x_p, x_p],
+        [0, y_p],
+        color=C["orange"],
+        linewidth=0.4,
+        linestyle=":",
+        zorder=2,
+    )
+
+    # ── Axis labels ──────────────────────────────────────────────────────
+    # Vertical axis: |0⟩ at top, |1⟩ at bottom  (= cos component)
+    # Note: |0⟩ is already labeled as a state; add standalone pole labels
+    # only for |1⟩ at bottom
     ax.text(
-        0,
-        -R - 0.08,
+        0.06,
+        -R - 0.07,
         r"$|1\rangle$",
         fontsize=8,
-        ha="center",
+        ha="left",
         va="top",
         color=C["black"],
         zorder=7,
     )
 
-    # ── Signal annotation ────────────────────────────────────────────────
+    # a = cos θ annotation — placed cleanly to the left of the vertical axis
     ax.text(
-        -0.72,
+        -0.55,
         -1.18,
         r"$a = \cos\theta$",
         fontsize=7.5,
@@ -236,14 +271,16 @@ def draw_grover_bloch(ax):
     )
 
     # ── Clean up ─────────────────────────────────────────────────────────
-    ax.set_xlim(-1.15, 1.50)
-    ax.set_ylim(-1.35, 1.25)
+    ax.set_xlim(-1.20, 1.55)
+    ax.set_ylim(-1.30, 1.30)
     ax.set_aspect("equal")
     ax.axis("off")
 
 
 def main():
-    fig, ax = plt.subplots(1, 1, figsize=(COLWIDTH * 0.55, COLWIDTH * 0.55))
+    # Larger figure: 0.75 × COLWIDTH for better readability in two-column format
+    figsize = COLWIDTH * 0.75
+    fig, ax = plt.subplots(1, 1, figsize=(figsize, figsize))
     draw_grover_bloch(ax)
 
     outpath = os.path.join(FIGDIR, "grover_bloch.pdf")
