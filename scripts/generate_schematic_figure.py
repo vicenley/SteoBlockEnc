@@ -25,6 +25,7 @@ from matplotlib.patches import (
     FancyBboxPatch,
     FancyArrowPatch,
     Ellipse,
+    Rectangle,
 )
 
 # ── Publication style ────────────────────────────────────────────────────────
@@ -86,22 +87,21 @@ INSIGHT_FILL = "#FDEDEC"
 INSIGHT_EDGE = RED
 
 TEXTWIDTH = 7.0  # inches
-FIG_H = 3.0  # inches
+FIG_H = 3.4  # inches — extra vertical space to avoid crowding
 
 
 # ── Helpers ──────────────────────────────────────────────────────────────────
 
 
-def _gate_box(ax, x, y, label, facecolor, w=0.32, h=0.26, fontsize=6.5):
-    """Draw a rounded gate box centred at (x, y)."""
-    rect = FancyBboxPatch(
+def _gate_box(ax, x, y, label, facecolor="white", w=0.32, h=0.26, fontsize=6.5):
+    """Draw a sharp-cornered gate box centred at (x, y), matching quantikz style."""
+    rect = Rectangle(
         (x - w / 2, y - h / 2),
         w,
         h,
-        boxstyle="round,pad=0.03",
-        facecolor=facecolor,
+        facecolor="white",
         edgecolor=BLACK,
-        linewidth=0.5,
+        linewidth=0.4,
         zorder=5,
     )
     ax.add_patch(rect)
@@ -124,7 +124,7 @@ def draw_all(ax):
     dec_L = circ_R + gap
     dec_R = W - 0.05
 
-    panel_top = H - 0.42
+    panel_top = H - 0.50  # leave room for overall flow arrow above
     panel_bot = 0.05
 
     # ── Background panels ─────────────────────────────────────────────────
@@ -143,7 +143,8 @@ def draw_all(ax):
         )
 
     # vertical centre of the connecting-arrow corridor
-    y_connect = 1.65
+    # Sits between the bounded interval (y ≈ 1.84) and the unitarity brace
+    y_connect = 1.75
 
     # ==================================================================
     #  ENCODING (left)
@@ -166,7 +167,7 @@ def draw_all(ax):
     )
 
     # ── unbounded number line ─────────────────────────────────────────
-    y1 = panel_top - 0.48
+    y1 = panel_top - 0.42
     ax.annotate(
         "",
         xy=(line_R, y1),
@@ -185,8 +186,8 @@ def draw_all(ax):
     ax.plot([line_L + 0.78 * span, line_R - 0.02], [y1, y1], color=RED, lw=1.0, ls=":")
 
     # ── stereographic compression arrow ───────────────────────────────
-    y_atop = y1 - 0.13
-    y_abot = y1 - 0.55
+    y_atop = y1 - 0.14
+    y_abot = y1 - 0.52
     ax.annotate(
         "",
         xy=(enc_cx, y_abot),
@@ -208,7 +209,7 @@ def draw_all(ax):
     )
 
     # ── bounded interval [0,1) ────────────────────────────────────────
-    y2 = y_abot - 0.10
+    y2 = y_abot - 0.12
     ax.annotate(
         "",
         xy=(line_R, y2),
@@ -225,7 +226,7 @@ def draw_all(ax):
     ax.text(open_x, y2 - 0.07, r"$1$", fontsize=6, ha="center", va="top", color=BLACK)
     ax.text(
         enc_cx,
-        y2 - 0.13,
+        y2 - 0.14,
         r"$\tilde{r} \in [0,1)$ bounded",
         fontsize=6.5,
         ha="center",
@@ -234,8 +235,8 @@ def draw_all(ax):
     )
 
     # ── Bloch sphere ──────────────────────────────────────────────────
-    yB = 0.60
-    rB = 0.34
+    yB = 0.95  # centred in available space between bounded label and formula
+    rB = 0.30  # slightly smaller to fit in panel
     ax.add_patch(
         Ellipse((enc_cx, yB), 2 * rB, 2 * rB, fill=False, edgecolor=BLACK, lw=0.7, zorder=3)
     )
@@ -271,7 +272,13 @@ def draw_all(ax):
     )
     ax.plot(enc_cx, yB - rB, "o", color=BLACK, ms=2.5, zorder=5)
     ax.text(
-        enc_cx + 0.05, yB - rB - 0.02, r"$|1\rangle$", fontsize=6, ha="left", va="top", color=BLACK
+        enc_cx + 0.08,
+        yB - rB + 0.01,
+        r"$|1\rangle$",
+        fontsize=5.5,
+        ha="left",
+        va="top",
+        color=BLACK,
     )
     # state vector
     ang = np.radians(50)
@@ -285,14 +292,14 @@ def draw_all(ax):
     )
     ax.text(xr + 0.04, yr + 0.02, r"$|r\rangle$", fontsize=6.5, color=BLUE, ha="left", va="bottom")
 
-    # encoding state formula
+    # encoding state formula — well below Bloch sphere
     ax.text(
         enc_cx,
-        0.10,
+        0.15,
         r"$|r\rangle = \frac{r|0\rangle + |1\rangle}{\sqrt{r^2+1}}$",
-        fontsize=7,
+        fontsize=6,
         ha="center",
-        va="bottom",
+        va="top",
         color=BLACK,
     )
 
@@ -334,7 +341,7 @@ def draw_all(ax):
     # helper text — use DARKGRAY, not light gray
     ax.text(
         circ_cx,
-        panel_top - 0.35,
+        panel_top - 0.30,
         r"degree $d$\quad ($d{+}1$ phases, $d$ signal operators)",
         fontsize=5.5,
         ha="center",
@@ -343,7 +350,7 @@ def draw_all(ax):
     )
     ax.text(
         circ_cx,
-        panel_top - 0.50,
+        panel_top - 0.45,
         r"$S_z = V^{-1}\,W(\tilde{r})\,V$,\quad $V = \mathrm{diag}(1,i)$",
         fontsize=5.5,
         ha="center",
@@ -351,14 +358,12 @@ def draw_all(ax):
         color=DARKGRAY,
     )
 
-    # ── circuit wire ──────────────────────────────────────────────────
+    # ── circuit wire + gates ─────────────────────────────────────────
     y_w = y_connect
-    wL = circ_L + 0.18
-    wR = circ_R - 0.18
-    ax.plot([wL, wR], [y_w, y_w], color=BLACK, lw=0.7, zorder=1)
-    ax.text(wL - 0.10, y_w, r"$|0\rangle$", fontsize=6.5, ha="right", va="center", color=BLACK)
+    wL = circ_L + 0.30  # extra left margin for |0⟩ label
+    wR = circ_R - 0.20
+    ax.text(wL - 0.03, y_w, r"$|0\rangle$", fontsize=5.5, ha="right", va="center", color=BLACK)
 
-    # ── gates ─────────────────────────────────────────────────────────
     gates = [
         ("phase", r"$\phi_d$"),
         ("signal", r"$S_z$"),
@@ -370,9 +375,28 @@ def draw_all(ax):
         ("phase", r"$\phi_0$"),
     ]
     n_g = len(gates)
+    gw = 0.32  # gate box width
+    dots_half = 0.12  # half-width of visual space for "..." element
     spacing = (wR - wL - 0.10) / (n_g - 1)
+    gate_xs = [wL + 0.05 + i * spacing for i in range(n_g)]
+
+    # Draw wire segments between gates (wire passes through each gate)
+    wire_lw = 0.7
+    # Segment from wire start to first gate's left edge
+    ax.plot([wL, gate_xs[0] - gw / 2], [y_w, y_w], color=BLACK, lw=wire_lw, zorder=1)
+    for i in range(n_g - 1):
+        # right edge of gate i to left edge of gate i+1
+        gt_i = gates[i][0]
+        gt_next = gates[i + 1][0]
+        x_right = gate_xs[i] + (dots_half if gt_i == "dots" else gw / 2)
+        x_left = gate_xs[i + 1] - (dots_half if gt_next == "dots" else gw / 2)
+        ax.plot([x_right, x_left], [y_w, y_w], color=BLACK, lw=wire_lw, zorder=1)
+    # Segment from last gate's right edge to wire end
+    ax.plot([gate_xs[-1] + gw / 2, wR], [y_w, y_w], color=BLACK, lw=wire_lw, zorder=1)
+
+    # Draw gate boxes (on top of wire segments)
     for i, (gt, lab) in enumerate(gates):
-        gx = wL + 0.05 + i * spacing
+        gx = gate_xs[i]
         if gt == "dots":
             ax.text(
                 gx, y_w, r"$\cdots$", fontsize=9, ha="center", va="center", zorder=5, color=BLACK
@@ -380,12 +404,12 @@ def draw_all(ax):
         else:
             fc = PHASE_FILL if gt == "phase" else SIGNAL_FILL
             fs = 5.5 if len(lab) > 6 else 6
-            _gate_box(ax, gx, y_w, lab, fc, w=0.32, h=0.26, fontsize=fs)
+            _gate_box(ax, gx, y_w, lab, fc, w=gw, h=0.26, fontsize=fs)
 
-    # output state label — centred above the last two gates
+    # output state label — above the wire, centred over the last 3 gates
     ax.text(
-        wR - 0.20,
-        y_w + 0.20,
+        wR - 0.65,
+        y_w + 0.22,
         r"$P|0\rangle{+}Q|1\rangle$",
         fontsize=5.5,
         ha="center",
@@ -394,7 +418,7 @@ def draw_all(ax):
     )
 
     # ── unitarity brace ───────────────────────────────────────────────
-    yB2 = y_w - 0.22
+    yB2 = y_w - 0.24
     bL = wL + 0.03
     bR = wR - 0.03
     bM = (bL + bR) / 2
@@ -408,7 +432,7 @@ def draw_all(ax):
         ax.plot(seg[0], seg[1], color=BLUE, lw=0.5)
     ax.text(
         bM,
-        yB2 - 0.07,
+        yB2 - 0.08,
         r"$|P(\tilde{r})|^2 + |Q(\tilde{r})|^2 = 1$"
         r"$\;\;\Rightarrow\;\;|P|, |Q| \leq 1$ bounded",
         fontsize=5.5,
@@ -418,7 +442,7 @@ def draw_all(ax):
     )
 
     # ── block-encoding inset ──────────────────────────────────────────
-    y_be = 0.75
+    y_be = 0.80
     ax.text(
         circ_cx,
         y_be,
@@ -429,25 +453,48 @@ def draw_all(ax):
         color=DARKGRAY,
     )
 
-    y_a = y_be - 0.20  # ancilla wire
-    y_s = y_a - 0.25  # system wire
+    y_a = y_be - 0.22  # ancilla wire
+    y_s = y_a - 0.27  # system wire
     bL2 = circ_L + 0.55
     bR2 = circ_R - 0.55
-    ax.plot([bL2, bR2], [y_a, y_a], color=BLACK, lw=0.5, zorder=1)
-    ax.plot([bL2, bR2], [y_s, y_s], color=BLACK, lw=0.5, zorder=1)
     ax.text(bL2 - 0.06, y_a, r"$|0\rangle_a$", fontsize=5, ha="right", va="center", color=BLACK)
     ax.text(bL2 - 0.06, y_s, r"$|\psi\rangle_s$", fontsize=5, ha="right", va="center", color=BLACK)
 
-    _gate_box(ax, bL2 + 0.25, y_s, r"$V$", UNITARY_FILL, w=0.25, h=0.22, fontsize=5)
+    # Gate positions and sizes
+    v_cx = bL2 + 0.25
+    v_w = 0.25
+    v_h = 0.22
     qsp_cx = (bL2 + bR2) / 2
     qsp_w = 0.8
+    qsp_h = 0.20
+    vdag_cx = bR2 - 0.25
+    vdag_w = 0.28
+    vdag_h = 0.22
+    m_cx = bR2 - 0.05
+    m_w = 0.18
+    m_h = 0.18
+    be_lw = 0.5
+
+    # -- Ancilla wire segments (y_a): start → QSP left, QSP right → M left, M right → end
+    ax.plot([bL2, qsp_cx - qsp_w / 2], [y_a, y_a], color=BLACK, lw=be_lw, zorder=1)
+    ax.plot([qsp_cx + qsp_w / 2, m_cx - m_w / 2], [y_a, y_a], color=BLACK, lw=be_lw, zorder=1)
+    ax.plot([m_cx + m_w / 2, bR2], [y_a, y_a], color=BLACK, lw=be_lw, zorder=1)
+
+    # -- System wire segments (y_s): start → V left, V right → control dot,
+    #    control dot → V† left, V† right → end
+    ax.plot([bL2, v_cx - v_w / 2], [y_s, y_s], color=BLACK, lw=be_lw, zorder=1)
+    ax.plot([v_cx + v_w / 2, qsp_cx], [y_s, y_s], color=BLACK, lw=be_lw, zorder=1)
+    ax.plot([qsp_cx, vdag_cx - vdag_w / 2], [y_s, y_s], color=BLACK, lw=be_lw, zorder=1)
+    ax.plot([vdag_cx + vdag_w / 2, bR2], [y_s, y_s], color=BLACK, lw=be_lw, zorder=1)
+
+    # -- Gates --
+    _gate_box(ax, v_cx, y_s, r"$V$", UNITARY_FILL, w=v_w, h=v_h, fontsize=5)
     ax.add_patch(
-        FancyBboxPatch(
-            (qsp_cx - qsp_w / 2, y_a - 0.10),
+        Rectangle(
+            (qsp_cx - qsp_w / 2, y_a - qsp_h / 2),
             qsp_w,
-            0.20,
-            boxstyle="round,pad=0.02",
-            facecolor=SIGNAL_FILL,
+            qsp_h,
+            facecolor="white",
             edgecolor=BLACK,
             linewidth=0.4,
             zorder=5,
@@ -463,11 +510,41 @@ def draw_all(ax):
         zorder=6,
         color=BLACK,
     )
-    # control line
-    ax.plot([qsp_cx, qsp_cx], [y_a - 0.10, y_s + 0.11], color=BLACK, lw=0.5, zorder=3)
+    # control line (from bottom of QSP box to top of control dot on system wire)
+    ax.plot([qsp_cx, qsp_cx], [y_a - qsp_h / 2, y_s + 0.02], color=BLACK, lw=be_lw, zorder=3)
     ax.plot(qsp_cx, y_s, "o", color=BLACK, ms=2, zorder=5)
-    _gate_box(ax, bR2 - 0.25, y_s, r"$V^\dagger$", UNITARY_FILL, w=0.28, h=0.22, fontsize=5)
-    _gate_box(ax, bR2 - 0.05, y_a, r"$M$", MEAS_FILL, w=0.18, h=0.18, fontsize=5)
+    _gate_box(ax, vdag_cx, y_s, r"$V^\dagger$", UNITARY_FILL, w=vdag_w, h=vdag_h, fontsize=5)
+    # Measurement gate: quantikz-style meter symbol
+    ax.add_patch(
+        Rectangle(
+            (m_cx - m_w / 2, y_a - m_h / 2),
+            m_w,
+            m_h,
+            facecolor="white",
+            edgecolor=BLACK,
+            linewidth=0.4,
+            zorder=5,
+        )
+    )
+    # Meter arc (bottom-half semicircle)
+    arc_r = m_w * 0.30
+    arc_y = y_a - m_h * 0.10
+    th_arc = np.linspace(0, np.pi, 40)
+    ax.plot(
+        m_cx + arc_r * np.cos(th_arc),
+        arc_y + arc_r * np.sin(th_arc),
+        color=BLACK,
+        lw=0.4,
+        zorder=6,
+    )
+    # Meter needle (diagonal line from arc centre to upper-right)
+    ax.plot(
+        [m_cx, m_cx + arc_r * 0.75 * np.cos(np.pi / 4)],
+        [arc_y, arc_y + arc_r * 0.85 * np.sin(np.pi / 4) + arc_r * 0.2],
+        color=BLACK,
+        lw=0.4,
+        zorder=6,
+    )
 
     # ==================================================================
     #  CONNECTING ARROW  QSP → Decoding
@@ -481,18 +558,18 @@ def draw_all(ax):
     mid_x = (circ_R + dec_L) / 2
     ax.text(
         mid_x,
-        y_connect + 0.09,
+        y_connect + 0.10,
         r"$\langle\sigma_Z\rangle$",
-        fontsize=6,
+        fontsize=5.5,
         ha="center",
         va="bottom",
         color=RED,
     )
     ax.text(
         mid_x,
-        y_connect - 0.09,
+        y_connect - 0.10,
         r"$\langle\sigma_X\rangle$",
-        fontsize=6,
+        fontsize=5.5,
         ha="center",
         va="top",
         color=RED,
@@ -515,7 +592,7 @@ def draw_all(ax):
     )
     ax.text(
         dec_cx,
-        panel_top - 0.38,
+        panel_top - 0.32,
         r"Pauli measurement",
         fontsize=7,
         ha="center",
@@ -524,7 +601,7 @@ def draw_all(ax):
     )
     ax.text(
         dec_cx,
-        panel_top - 0.62,
+        panel_top - 0.58,
         r"$f(r) = \frac{P(\tilde{r})}{Q(\tilde{r})}$",
         fontsize=9,
         ha="center",
@@ -533,10 +610,10 @@ def draw_all(ax):
     )
 
     # ── key-insight box ───────────────────────────────────────────────
-    bw = dec_R - dec_L - 0.22
-    bh = 0.50
+    bw = dec_R - dec_L - 0.20
+    bh = 0.48
     bx = dec_cx - bw / 2
-    by = panel_top - 1.30
+    by = panel_top - 1.22
     ax.add_patch(
         FancyBboxPatch(
             (bx, by),
@@ -581,10 +658,10 @@ def draw_all(ax):
     )
 
     # ── inset plot ────────────────────────────────────────────────────
-    inset_L = (dec_L + 0.12) / W  # figure-fraction coords
-    inset_B = 0.07
-    inset_W = (dec_R - dec_L - 0.24) / W
-    inset_H = 0.32
+    inset_L = (dec_L + 0.10) / W  # figure-fraction coords
+    inset_B = 0.06
+    inset_W = (dec_R - dec_L - 0.20) / W
+    inset_H = 0.34
     inset = ax.get_figure().add_axes([inset_L, inset_B, inset_W, inset_H])
 
     rv = np.linspace(0.1, 8.0, 300)
@@ -608,11 +685,11 @@ def draw_all(ax):
 
     # pole
     inset.axvline(r_pole, color="#990000", lw=0.5, ls=":", zorder=2)
-    inset.text(r_pole + 0.15, 5.2, r"pole", fontsize=5, color="#990000", va="top")
-    # curve labels
-    inset.text(5.5, 1.6, r"$|P(\tilde{r})|$", fontsize=5.5, color=BLUE)
-    inset.text(3.0, -4.5, r"$P/Q$ \textbf{unbounded}", fontsize=5, color=RED)
-    inset.set_ylim(-6.5, 6.5)
+    inset.text(r_pole + 0.15, 4.8, r"pole", fontsize=4.5, color="#990000", va="top")
+    # curve labels — inside the plotting area, well clear of edges
+    inset.text(5.5, 2.0, r"$|P(\tilde{r})|$", fontsize=5, color=BLUE, ha="right")
+    inset.text(5.5, -4.2, r"$P/Q$ \textbf{unbounded}", fontsize=4.5, color=RED, ha="right")
+    inset.set_ylim(-6, 6)
     inset.set_xlim(0, 8.5)
     inset.set_xlabel(r"$r$", fontsize=6, labelpad=1, color=BLACK)
     inset.set_yticks([-1, 0, 1])
@@ -626,7 +703,7 @@ def draw_all(ax):
     # ==================================================================
     #  OVERALL FLOW ARROW
     # ==================================================================
-    y_fl = H - 0.10
+    y_fl = H - 0.12
     ax.add_patch(
         FancyArrowPatch(
             (enc_L + 0.15, y_fl),

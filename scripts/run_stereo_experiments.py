@@ -402,30 +402,41 @@ def cmd_plot(args):
     r_plot = data["r_plot"]
     degrees = list(data["degrees"])
 
-    # Publication style
+    # Publication style — harmonised with generate_schematic_figure.py
     plt.rcParams.update(
         {
             "font.family": "serif",
             "font.size": 9,
             "axes.labelsize": 9,
+            "axes.linewidth": 0.6,
             "legend.fontsize": 7.5,
             "xtick.labelsize": 8,
             "ytick.labelsize": 8,
+            "xtick.major.width": 0.5,
+            "ytick.major.width": 0.5,
+            "xtick.direction": "in",
+            "ytick.direction": "in",
+            "xtick.top": True,
+            "ytick.right": True,
             "figure.dpi": 300,
             "savefig.dpi": 300,
             "savefig.bbox": "tight",
             "savefig.pad_inches": 0.03,
+            "text.usetex": True,
+            "text.latex.preamble": r"\usepackage{amsmath}\usepackage{amssymb}",
+            "mathtext.fontset": "cm",
+            "lines.linewidth": 1.0,
         }
     )
 
-    # Okabe-Ito palette
+    # Okabe-Ito palette — darker substitutes for light cyan
     C = {
         "blue": "#0072B2",
         "orange": "#E69F00",
         "green": "#009E73",
         "red": "#D55E00",
         "purple": "#CC79A7",
-        "cyan": "#56B4E9",
+        "slate": "#4477AA",  # replaces cyan for better print contrast
     }
     TEXTWIDTH = 7.0
 
@@ -465,24 +476,24 @@ def cmd_plot(args):
         C["green"],
         C["red"],
         C["purple"],
-        C["cyan"],
-        "#999999",
+        C["slate"],
+        "#666666",
     ]
     all_degrees_sorted = sorted(set(degrees))
     degree_color_map = {
         d: _deg_palette[i % len(_deg_palette)] for i, d in enumerate(all_degrees_sorted)
     }
 
-    fig, axes = plt.subplots(2, 4, figsize=(TEXTWIDTH, 3.6))
-    col_labels = ["(a)", "(b)", "(c)", "(d)"]
-    row2_labels = ["(e)", "(f)", "(g)", "(h)"]
+    fig, axes = plt.subplots(2, 4, figsize=(TEXTWIDTH, 3.8))
+    col_labels = [r"\textbf{(a)}", r"\textbf{(b)}", r"\textbf{(c)}", r"\textbf{(d)}"]
+    row2_labels = [r"\textbf{(e)}", r"\textbf{(f)}", r"\textbf{(g)}", r"\textbf{(h)}"]
 
     for col, (tname, tlabel, tfunc) in enumerate(targets_gallery):
         f_exact = tfunc(r_plot)
 
         # --- Top row: decoded functions ---
         ax = axes[0, col]
-        ax.plot(r_plot, f_exact, "k--", lw=1.2, zorder=10)
+        ax.plot(r_plot, f_exact, "k--", lw=1.2, zorder=10, label="exact" if col == 0 else None)
         for d in all_degrees_sorted:
             f_dec = _get(tname, d, "f_dec")
             if f_dec is not None:
@@ -508,13 +519,12 @@ def cmd_plot(args):
         if col == 0:
             ax.legend(loc="upper right", frameon=False, fontsize=6, handlelength=1.2)
         ax.text(
-            0.03,
-            0.95,
+            0.04,
+            0.93,
             col_labels[col],
             transform=ax.transAxes,
-            fontweight="bold",
             va="top",
-            fontsize=9,
+            fontsize=8,
         )
 
         # --- Bottom row: pointwise error ---
@@ -537,26 +547,26 @@ def cmd_plot(args):
         if col == 0:
             ax.set_ylabel("Pointwise error")
         ax.text(
-            0.03,
-            0.95,
+            0.04,
+            0.93,
             row2_labels[col],
             transform=ax.transAxes,
-            fontweight="bold",
             va="top",
-            fontsize=9,
+            fontsize=8,
         )
 
     # ==================================================================
     # Inset: Convergence — max error vs degree (in panel (e))
+    # Smaller than before to avoid obscuring the pointwise error data
     # ==================================================================
     ax_host = axes[1, 0]  # bottom-left panel (e)
-    ax_inset = ax_host.inset_axes([0.32, 0.38, 0.65, 0.58])
+    ax_inset = ax_host.inset_axes([0.38, 0.42, 0.58, 0.54])
 
     target_info = [
         ("1/r", "$1/r$", C["blue"], "o"),
-        ("1/(1+r^2)", "$1/(1{+}r^2)$", C["orange"], "s"),
-        ("1/sqrt(1+r^2)", "$1/\\sqrt{1{+}r^2}$", C["green"], "^"),
-        ("exp(-r^2)", "$e^{-r^2}$", C["red"], "D"),
+        ("1/(1+r^2)", r"$1/(1{+}r^2)$", C["orange"], "s"),
+        ("1/sqrt(1+r^2)", r"$1/\sqrt{1{+}r^2}$", C["green"], "^"),
+        ("exp(-r^2)", r"$e^{-r^2}$", C["red"], "D"),
     ]
     for tname, label, color, marker in target_info:
         ds, errs = [], []
@@ -574,18 +584,21 @@ def cmd_plot(args):
     ax_inset.set_ylabel("max error", fontsize=5.5, labelpad=1)
     dmax = max(degrees) if degrees else 18
     ax_inset.set_xlim(1, dmax + 1)
-    ax_inset.set_ylim(1e-8, 1e1)
+    ax_inset.set_ylim(1e-9, 5e0)
     ax_inset.tick_params(labelsize=5, pad=1)
     ax_inset.legend(
         loc="lower left",
-        frameon=False,
-        fontsize=4.5,
-        handlelength=1.0,
-        handletextpad=0.4,
-        labelspacing=0.3,
+        frameon=True,
+        fancybox=False,
+        edgecolor="#CCCCCC",
+        fontsize=4,
+        handlelength=0.8,
+        handletextpad=0.3,
+        labelspacing=0.2,
+        borderpad=0.3,
     )
     ax_inset.patch.set_facecolor("white")
-    ax_inset.patch.set_alpha(0.92)
+    ax_inset.patch.set_alpha(0.95)
     for spine in ax_inset.spines.values():
         spine.set_linewidth(0.5)
 
