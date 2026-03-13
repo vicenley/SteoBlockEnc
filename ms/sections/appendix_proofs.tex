@@ -3,90 +3,406 @@
 \section{Deferred Proofs}
 \label{app:proofs}
 
-This appendix collects proofs of results stated in the main
-text whose arguments are routine calculations.
+This appendix collects detailed proofs of results stated in
+the main text.  Each proof is presented with intermediate steps
+to make the arguments self-contained.
 
 \subsection*{Proof of Theorem~\ref{thm:chebyshev} (Chebyshev States)}
 
 \begin{proof}
-	Since $S_z|_{\theta=0} = R(\phi)$ by~\eqref{eq:rotation-form}, $S_z^k = R(k\phi)$ with $\phi = \arccos\rtilde$. Using the Chebyshev identities $\cos(k\arccos x) = T_k(x)$ and $\sin(k\arccos x) = U_{k-1}(x)\sqrt{1-x^2}$, together with $\sqrt{1-\rtilde^2} = 1/\sqrt{1+r^2}$:
+	For real signals ($\theta = 0$), the stereographic signal
+	operator reduces to the rotation~\eqref{eq:rotation-form}:
 	\begin{equation}
-		R(k\phi)\ket{0} = \begin{pmatrix} \cos(k\phi) \\ \sin(k\phi) \end{pmatrix} = \begin{pmatrix} T_k(\rtilde) \\ U_{k-1}(\rtilde)/\sqrt{1+r^2} \end{pmatrix}. \tag{A1}
+		S_z\big|_{\theta=0} = R(\phi) = \begin{pmatrix} \cos\phi & -\sin\phi \\ \sin\phi & \cos\phi \end{pmatrix},
+		\tag{A1}
 	\end{equation}
+	with $\phi = \arccos(\rtilde)$ and
+	$\rtilde = r/\sqrt{1+r^2}$.  Since $R(\phi)$ is a
+	rotation matrix in $\mathrm{SO}(2)$, its $k$-th power is simply
+	$R(k\phi)$:
+	\begin{equation}
+		S_z^k\ket{0} = R(k\phi)\begin{pmatrix}1\\0\end{pmatrix} = \begin{pmatrix} \cos(k\phi) \\ \sin(k\phi) \end{pmatrix}.
+		\tag{A2}
+	\end{equation}
+	It remains to express $\cos(k\phi)$ and $\sin(k\phi)$
+	in terms of $\rtilde$.  By definition of the Chebyshev
+	polynomials,
+	\begin{align}
+		T_k(\cos\phi)             & = \cos(k\phi), \tag{A3a} \\
+		U_{k-1}(\cos\phi)\sin\phi & = \sin(k\phi), \tag{A3b}
+	\end{align}
+	where $T_k$ is the Chebyshev polynomial of the first kind
+	and $U_{k-1}$ is the Chebyshev polynomial of the second kind.
+	The identity~(A3b) follows from writing
+	$\sin(k\phi) = U_{k-1}(\cos\phi)\sin\phi$, which is the
+	standard relation between Chebyshev polynomials and
+	trigonometric functions (see, e.g.,
+	Ref.~\cite{BenentiCasatiStrini2004}).
+
+	Substituting $\cos\phi = \rtilde$ into~(A3a) gives the
+	$\ket{0}$-component directly:
+	$\cos(k\phi) = T_k(\rtilde)$.  For the
+	$\ket{1}$-component, we use~(A3b) with
+	$\sin\phi = \sqrt{1 - \rtilde^2} = \sqrt{1 - r^2/(1+r^2)} =
+		1/\sqrt{1+r^2}$, so that
+	\begin{equation}
+		\sin(k\phi) = U_{k-1}(\rtilde)\sin\phi = \frac{U_{k-1}(\rtilde)}{\sqrt{1+r^2}}.
+		\tag{A4}
+	\end{equation}
+	Combining (A2), (A3a), and (A4):
+	\begin{equation}
+		S_z^k\ket{0} = \begin{pmatrix} T_k(\rtilde) \\ U_{k-1}(\rtilde)/\sqrt{1+r^2} \end{pmatrix}
+		= T_k(\rtilde)\,\ket{0} + \frac{U_{k-1}(\rtilde)}{\sqrt{1+r^2}}\,\ket{1},
+		\tag{A5}
+	\end{equation}
+	which is the claimed result.  One can verify the
+	normalization: $|T_k(\rtilde)|^2 +
+		|U_{k-1}(\rtilde)|^2/(1+r^2) = \cos^2(k\phi) +
+		\sin^2(k\phi) = 1$, confirming unitarity.
 \end{proof}
 
 \subsection*{Proof of Corollary~\ref{cor:existence} (Existence of Phases)}
 
 \begin{proof}
-	By Theorem~\ref{thm:standard-qsp}, there exist phases
-	$\bm{\phi}$ such that the standard QSP product
-	$U_{\bm{\phi}}^{(\mathrm{std})}(\rtilde)$ has
-	$\bra{0}U_{\bm{\phi}}^{(\mathrm{std})}\ket{0} = P(\rtilde)$.
-	Since~\eqref{eq:basis-change} preserves the $(0,0)$ matrix
-	element and the phase operators are the same, these
-	\emph{same phases} achieve the target in the stereographic
-	protocol.
+	We must show that for any polynomial pair $(P, Q)$ of
+	degree $\leq d$ satisfying $|P(\rtilde)|^2 + |Q(\rtilde)|^2 = 1$
+	and definite parity, there exist phases $\bm{\phi}$ such
+	that $W_{\bm{\phi}}^{(\mathrm{stereo})}(r)\ket{0} =
+		P(\rtilde)\ket{0} + Q(\rtilde)\ket{1}$.  The argument
+	has two steps.
+
+	\textit{Step 1: Invoke standard QSP.}
+	The polynomial $P$ satisfies $|P(a)| \leq 1$ for all
+	$a \in [-1,1]$ (since $|P|^2 \leq |P|^2 + |Q|^2 = 1$)
+	and has definite parity by hypothesis.  By
+	Theorem~\ref{thm:standard-qsp}, there exist phases
+	$\bm{\phi} = (\phi_0, \ldots, \phi_d)$ such that the
+	standard QSP product satisfies
+	$\bra{0}U_{\bm{\phi}}^{(\mathrm{std})}(a)\ket{0} = P(a)$
+	for all $a \in [-1,1]$.  In particular, this holds at
+	$a = \rtilde$:
+	\begin{equation}
+		\bra{0}U_{\bm{\phi}}^{(\mathrm{std})}(\rtilde)\ket{0} = P(\rtilde).
+		\tag{A6}
+	\end{equation}
+
+	\textit{Step 2: Transfer via the basis change.}
+	By Proposition~\ref{prop:basis-change}, the stereographic
+	and standard QSP products are related by the conjugation
+	$W_{\bm{\phi}}^{(\mathrm{stereo})}(r)
+		= V^{-1}\,U_{\bm{\phi}}^{(\mathrm{std})}(\rtilde)\,V$,
+	where $V = \mathrm{diag}(1, i)$ is a fixed unitary.
+	Since $V\ket{0} = \ket{0}$ and
+	$\bra{0}V^{-1} = \bra{0}$ (the matrix $V$ acts trivially
+	on the first basis vector), the $(0,0)$ matrix element is
+	preserved:
+	\begin{equation}
+		\bra{0}W_{\bm{\phi}}^{(\mathrm{stereo})}(r)\ket{0}
+		= \bra{0}V^{-1}\,U_{\bm{\phi}}^{(\mathrm{std})}(\rtilde)\,V\ket{0}
+		= \bra{0}U_{\bm{\phi}}^{(\mathrm{std})}(\rtilde)\ket{0}
+		= P(\rtilde).
+		\tag{A7}
+	\end{equation}
+	Therefore the \emph{same phases} $\bm{\phi}$ that
+	realize $P$ in the standard protocol also realize $P$
+	in the stereographic protocol.  The complementary
+	polynomial $Q$ is then determined by unitarity:
+	$|P(\rtilde)|^2 + |Q(\rtilde)|^2 = 1$ fixes $|Q|$, and
+	the phase of $Q$ is inherited from the full unitary
+	matrix.
 \end{proof}
+
 
 \subsection*{Proof of Proposition~\ref{prop:zeros-poles} (Zeros and Poles)}
 
 \begin{proof}
-	The zeros of $\cot(k\arctan(1/r))$ occur at
-	$k\arctan(1/r) = (2m-1)\pi/2$, giving
-	$r = \cot((2m-1)\pi/(2k))$.  The poles occur at
-	$k\arctan(1/r) = m\pi$, giving $r = \cot(m\pi/k)$.
-	As $r \to 0^+$, $\arctan(1/r) \to \pi/2$, so
-	$\cot(k\pi/2) = 0$ if $k$ is odd and $\cot(k\pi/2)$
-	diverges if $k$ is even.
+	The function $z_k(r) = \cot(k\arctan(1/r))$ has zeros
+	where $\cot(\cdot) = 0$ and poles where $\cot(\cdot)$
+	diverges.  The cotangent function $\cot(\alpha)$ vanishes
+	when $\alpha = (2m-1)\pi/2$ (odd multiples of $\pi/2$)
+	and diverges when $\alpha = m\pi$ (multiples of~$\pi$),
+	for integer~$m$.  Applying this to
+	$\alpha = k\arctan(1/r)$:
+
+	\textit{Zeros.}  Setting $k\arctan(1/r) = (2m-1)\pi/2$
+	gives $\arctan(1/r) = (2m-1)\pi/(2k)$, so
+	$1/r = \tan\!\big((2m-1)\pi/(2k)\big)$ and
+	\begin{equation}
+		r_m^{(0)} = \cot\!\bigl((2m-1)\pi/(2k)\bigr),
+		\quad m = 1, 2, \ldots
+		\tag{A8}
+	\end{equation}
+	The zero $r_m^{(0)}$ lies on $r > 0$ when the argument
+	$(2m-1)\pi/(2k) \in (0, \pi/2)$, i.e., when
+	$m = 1, \ldots, \lfloor k/2 \rfloor$.  Larger values
+	of~$m$ either give $r \leq 0$ or repeat existing zeros
+	(by periodicity of cotangent).
+
+	\textit{Poles.}  Setting $k\arctan(1/r) = m\pi$ gives
+	$\arctan(1/r) = m\pi/k$, so
+	\begin{equation}
+		r_m^{(\infty)} = \cot\!\bigl(m\pi/k\bigr),
+		\quad m = 1, 2, \ldots
+		\tag{A9}
+	\end{equation}
+	The pole lies on $r > 0$ when $m\pi/k \in (0, \pi/2)$,
+	i.e., when $m = 1, \ldots, \lfloor (k-1)/2 \rfloor$.
+
+	\textit{Behavior at $r = 0$.}  As $r \to 0^+$,
+	$\arctan(1/r) \to \pi/2$, so the argument of the
+	cotangent approaches $k\pi/2$.  There are two cases:
+	\begin{itemize}
+		\item If $k$ is odd, $k\pi/2$ is an odd multiple
+		      of $\pi/2$, so $\cot(k\pi/2) = 0$ and
+		      $z_k(0^+) = 0$---a zero.
+		\item If $k$ is even, $k\pi/2$ is a multiple
+		      of~$\pi$, so $\cot(k\pi/2)$ diverges and
+		      $z_k$ has a pole at $r = 0$.
+	\end{itemize}
+	This parity-dependent behavior reflects the fact
+	that $T_k(0) = 0$ for odd~$k$ (numerator vanishes)
+	and $U_{k-1}(0) = 0$ for even~$k$ (denominator
+	vanishes), when expressed in the Chebyshev
+	representation $z_k = T_k(\rtilde)\sqrt{1+r^2}/U_{k-1}(\rtilde)$.
+
+	\textit{Total count.}  On $r > 0$, the total number of
+	zeros and poles is $\lfloor k/2 \rfloor + \lfloor (k-1)/2 \rfloor$,
+	which equals $k - 1$ for both odd and even~$k$.  Including
+	the zero or pole at $r = 0$ brings the total to exactly~$k$
+	points (counting multiplicities), consistent with the degree
+	of the rational function.
 \end{proof}
+
 
 \subsection*{Proof of Theorem~\ref{thm:unnormalized} (Unnormalized Formulation)}
 
 \begin{proof}
-	We proceed by induction on $d$.
+	We prove by induction on~$d$ that the product
+	$\widetilde{W}_{\bm{\phi}}(r) =
+		\exp[i\phi_0\PauliZ]\prod_{j=1}^{d}O_r\exp[i\phi_j\PauliZ]$
+	has the form
+	$\bigl(\begin{smallmatrix} \tilde{P} & -\tilde{Q}^* \\
+				\tilde{Q} & \tilde{P}^* \end{smallmatrix}\bigr)$ with
+	$|\tilde{P}|^2 + |\tilde{Q}|^2 = (1+r^2)^d$,
+	$\deg(\tilde{P}) \leq d$, $\deg(\tilde{Q}) \leq d-1$,
+	and the stated parity conditions.
 
-	\textit{Base case} ($d = 0$):
-	$\widetilde{W}_{\bm{\phi}} = \exp[i\phi_0\PauliZ] =
-		\begin{psmallmatrix} e^{i\phi_0} & 0 \\
-			0 & e^{-i\phi_0} \end{psmallmatrix}$, so
-	$\tilde{P} = e^{i\phi_0}$ and $\tilde{Q} = 0$.  Then
-	$|\tilde{P}|^2 + |\tilde{Q}|^2 = 1 = (1+r^2)^0$.
-
-	\textit{Inductive step}: Suppose that after $d-1$ signal
-	applications we have polynomials $P, Q$ satisfying
-	$|P|^2 + |Q|^2 = (1+r^2)^{d-1}$ with the stated parity and
-	degree conditions.  Appending one more factor of
-	$\exp[i\phi\PauliZ]\,O_r$ gives
+	\textit{Base case ($d = 0$).}
+	When $d = 0$ there are no signal operators, and the
+	product is simply a phase gate:
 	\begin{equation}
-		\exp[i\phi\PauliZ] O_r \begin{pmatrix} P & -Q^* \\ Q & P^* \end{pmatrix} = \begin{pmatrix} \widetilde{P} & -\widetilde{Q}^* \\ \widetilde{Q} & \widetilde{P}^* \end{pmatrix},
-		\tag{A3}
+		\widetilde{W}_{\bm{\phi}} = \exp[i\phi_0\PauliZ] =
+		\begin{pmatrix} e^{i\phi_0} & 0            \\
+                0           & e^{-i\phi_0}\end{pmatrix}.
+		\tag{A10}
 	\end{equation}
-	where $\widetilde{P} = e^{i\phi}(rP - Q)$ and
-	$\widetilde{Q} = e^{-i\phi}(P + rQ)$.  Computing the
-	sum of squared moduli:
+	Reading off $\tilde{P} = e^{i\phi_0}$ and
+	$\tilde{Q} = 0$, we verify:
+	$|\tilde{P}|^2 + |\tilde{Q}|^2 = 1 = (1+r^2)^0$;
+	$\deg(\tilde{P}) = 0 \leq 0$;
+	$\deg(\tilde{Q}) = -\infty \leq -1$;
+	and both satisfy trivial parity conditions (constants
+	have even parity, consistent with $d = 0$ being even).
+
+	\textit{Inductive step.}
+	Suppose after $d-1$ signal applications we have
+	polynomials $P, Q \in \mathbb{C}[r]$ satisfying the
+	inductive hypotheses:
+	\begin{enumerate}
+		\item $|P|^2 + |Q|^2 = (1+r^2)^{d-1}$,
+		\item $\deg(P) \leq d-1$ and $\deg(Q) \leq d-2$,
+		\item $P$ has parity $(d-1)\bmod 2$ and $Q$ has
+		      parity $(d-2)\bmod 2$.
+	\end{enumerate}
+	The product up to step $d-1$ is
+	$M_{d-1} = \bigl(\begin{smallmatrix} P & -Q^* \\
+				Q & P^* \end{smallmatrix}\bigr)$.
+	Appending one more factor of $\exp[i\phi_d\PauliZ]\,O_r$
+	from the left (recall that in the QSP product, the
+	phase--signal pairs are applied in sequence) gives the
+	new product matrix
+	\begin{equation}
+		M_d = \exp[i\phi\PauliZ]\,O_r\,M_{d-1},
+		\tag{A11}
+	\end{equation}
+	where we write $\phi = \phi_d$ for brevity.  We compute
+	this in two stages.
+
+	\textit{Stage 1: Multiply by $O_r$.}
+	The unnormalized signal operator is
+	$O_r = \bigl(\begin{smallmatrix} r & -1 \\ 1 & r
+			\end{smallmatrix}\bigr)$, so
+	\begin{equation}
+		O_r\,M_{d-1} =
+		\begin{pmatrix} r & -1 \\ 1 & r \end{pmatrix}
+		\begin{pmatrix} P & -Q^* \\ Q & P^* \end{pmatrix}
+		= \begin{pmatrix} rP - Q & -(rQ^* + P^*) \\
+                P + rQ & rP^* - Q^*\end{pmatrix}.
+		\tag{A12}
+	\end{equation}
+	Identifying the new polynomials as
+	$\hat{P} = rP - Q$ and $\hat{Q} = P + rQ$, we verify
+	the $\SU$-like structure:
+	$(O_r M_{d-1})_{12} = -(rQ^* + P^*) = -\hat{Q}^*$ and
+	$(O_r M_{d-1})_{22} = rP^* - Q^* = \hat{P}^*$,
+	confirming the matrix has the form
+	$\bigl(\begin{smallmatrix} \hat{P} & -\hat{Q}^* \\
+				\hat{Q} & \hat{P}^* \end{smallmatrix}\bigr)$.
+
+	\textit{Stage 2: Multiply by the phase gate.}
+	\begin{equation}
+		\exp[i\phi\PauliZ]\begin{pmatrix} \hat{P} & -\hat{Q}^* \\ \hat{Q} & \hat{P}^* \end{pmatrix}
+		= \begin{pmatrix} e^{i\phi}\hat{P} & -e^{i\phi}\hat{Q}^* \\ e^{-i\phi}\hat{Q} & e^{-i\phi}\hat{P}^* \end{pmatrix}.
+		\tag{A13}
+	\end{equation}
+	Setting $\widetilde{P} = e^{i\phi}\hat{P}
+		= e^{i\phi}(rP - Q)$ and
+	$\widetilde{Q} = e^{-i\phi}\hat{Q}
+		= e^{-i\phi}(P + rQ)$, the new matrix retains the
+	required form with $|\widetilde{P}| = |\hat{P}|$ and
+	$|\widetilde{Q}| = |\hat{Q}|$ (the phase factors do not
+	affect moduli).
+
+	\textit{Verifying the norm condition.}
+	We must show
+	$|\widetilde{P}|^2 + |\widetilde{Q}|^2 = (1+r^2)^d$.
+	Expanding:
 	\begin{align}
-		|\widetilde{P}|^2 + |\widetilde{Q}|^2 & = |rP - Q|^2 + |P + rQ|^2 \nonumber             \\
-		                                      & = r^2|P|^2 + |Q|^2 + |P|^2 + r^2|Q|^2 \nonumber \\
-		                                      & = (1+r^2)(|P|^2 + |Q|^2) \nonumber              \\
-		                                      & = (1+r^2)^d.
-		\tag{A4}
+		|\widetilde{P}|^2 + |\widetilde{Q}|^2
+		 & = |rP - Q|^2 + |P + rQ|^2 \nonumber                            \\
+		 & = \bigl(r^2|P|^2 - rPQ^* - rP^*Q + |Q|^2\bigr) \nonumber       \\
+		 & \quad + \bigl(|P|^2 + rPQ^* + rP^*Q + r^2|Q|^2\bigr) \nonumber \\
+		 & = (r^2+1)|P|^2 + (1+r^2)|Q|^2 \nonumber                        \\
+		 & = (1+r^2)\bigl(|P|^2+|Q|^2\bigr) \nonumber                     \\
+		 & = (1+r^2)\cdot(1+r^2)^{d-1} = (1+r^2)^d.
+		\tag{A14}
 	\end{align}
-	The cross terms $-rPQ^* - rP^*Q$ from $|rP-Q|^2$ and
-	$+rPQ^* + rP^*Q$ from $|P+rQ|^2$ cancel exactly, reflecting
-	the orthogonality of the columns of~$O_r$.  The degree of
-	$\widetilde{P}$ is $\deg(P)+1 \leq d$ (from the $rP$ term),
-	and the parity alternates because multiplication by~$r$ flips
-	parity.
+	The key cancellation occurs in the cross terms: the
+	term $-rPQ^* - rP^*Q = -2r\,\mathrm{Re}(PQ^*)$
+	from $|rP - Q|^2$ is exactly cancelled by the
+	term $+rPQ^* + rP^*Q = +2r\,\mathrm{Re}(PQ^*)$
+	from $|P + rQ|^2$.  This is not a coincidence---it
+	reflects the orthogonality of the two columns of $O_r$:
+	\begin{equation}
+		\begin{pmatrix}r \\ 1\end{pmatrix}^{\!\top}
+		\begin{pmatrix}-1 \\ r\end{pmatrix} = -r + r = 0.
+		\tag{A15}
+	\end{equation}
+
+	\textit{Verifying the degree.}
+	From $\widetilde{P} = e^{i\phi}(rP - Q)$ with
+	$\deg(P) \leq d-1$ and $\deg(Q) \leq d-2$: the term
+	$rP$ has degree $\leq d$ and the term $Q$ has degree
+	$\leq d-2$, so $\deg(\widetilde{P}) \leq d$.
+	From $\widetilde{Q} = e^{-i\phi}(P + rQ)$ with
+	$\deg(P) \leq d-1$ and $\deg(rQ) \leq d-1$: both
+	terms have degree $\leq d-1$, so
+	$\deg(\widetilde{Q}) \leq d-1$.
+
+	\textit{Verifying the parity.}
+	Recall that a polynomial $f(r)$ has parity $p$ if
+	$f(-r) = (-1)^p f(r)$.  By the inductive hypothesis,
+	$P$ has parity $(d-1)\bmod 2$ and $Q$ has parity
+	$(d-2)\bmod 2$.  Multiplication by $r$ flips parity
+	(since $r$ is odd), so $rP$ has parity $d\bmod 2$ and
+	$rQ$ has parity $(d-1)\bmod 2$.  Then:
+	\begin{itemize}
+		\item $\widetilde{P} = rP - Q$: the terms $rP$
+		      (parity $d\bmod 2$) and $Q$ (parity
+		      $(d-2)\bmod 2 = d\bmod 2$) have the
+		      \emph{same} parity, so
+		      $\widetilde{P}$ has parity $d\bmod 2$.
+		\item $\widetilde{Q} = P + rQ$: the terms $P$
+		      (parity $(d-1)\bmod 2$) and $rQ$ (parity
+		      $(d-1)\bmod 2$) also share the same parity,
+		      so $\widetilde{Q}$ has parity
+		      $(d-1)\bmod 2$.
+	\end{itemize}
+	This completes the induction.
 \end{proof}
 
 \subsection*{Proof of Eq.~\eqref{eq:error-bound} (Error Amplification)}
 
 \begin{proof}
-	For a real signal, $z = \langle\PauliX\rangle/(1 - \langle\PauliZ\rangle)$. The partial derivatives are
+	The stereographic decoding formula recovers the encoded
+	value from Pauli expectation values of the output qubit
+	state.  For a real signal, the encoded value is
+	\begin{equation}
+		z = \frac{\langle\PauliX\rangle}{1 - \langle\PauliZ\rangle},
+		\tag{A16}
+	\end{equation}
+	where $\langle\PauliX\rangle$ and
+	$\langle\PauliZ\rangle$ are the Bloch sphere
+	coordinates of the state.  For a state encoding the
+	real number $r$, the Bloch sphere coordinates are
+	\begin{equation}
+		\langle\PauliX\rangle = \frac{2r}{1+r^2},
+		\qquad
+		\langle\PauliZ\rangle = \frac{r^2 - 1}{1+r^2},
+		\tag{A17}
+	\end{equation}
+	which gives
+	$1 - \langle\PauliZ\rangle = 1 - (r^2-1)/(1+r^2)
+		= 2/(1+r^2)$, confirming that~(A16) returns
+	$z = [2r/(1+r^2)]/[2/(1+r^2)] = r$.
+
+	In practice, the expectation values are estimated from
+	finite measurements.  Let $\hat{x}$ and $\hat{w}$
+	denote the measured estimates of
+	$\langle\PauliX\rangle$ and $\langle\PauliZ\rangle$,
+	with errors $\delta_x = \hat{x} - \langle\PauliX\rangle$
+	and $\delta_w = \hat{w} - \langle\PauliZ\rangle$ each
+	bounded by $|\delta_x|, |\delta_w| \leq \delta$.
+
+	The estimated decoded value is
+	$\hat{r} = \hat{x}/(1 - \hat{w})$.  To first order in
+	$\delta_x, \delta_w$, the error in $\hat{r}$ is
+	\begin{equation}
+		\hat{r} - r \approx
+		\frac{\partial z}{\partial\langle\PauliX\rangle}\,\delta_x
+		+ \frac{\partial z}{\partial\langle\PauliZ\rangle}\,\delta_w.
+		\tag{A18}
+	\end{equation}
+	Computing the partial derivatives from~(A16):
 	\begin{align}
-		\frac{\partial z}{\partial\langle\PauliX\rangle} & = \frac{1}{1-\langle\PauliZ\rangle} = \frac{1+r^2}{2}, \nonumber                  \\
-		\frac{\partial z}{\partial\langle\PauliZ\rangle} & = \frac{\langle\PauliX\rangle}{(1-\langle\PauliZ\rangle)^2} = \frac{r(1+r^2)}{2},
-		\tag{A2}
+		\frac{\partial z}{\partial\langle\PauliX\rangle}
+		 & = \frac{1}{1-\langle\PauliZ\rangle}
+		= \frac{1}{2/(1+r^2)}
+		= \frac{1+r^2}{2},
+		\tag{A19a}                                                     \\[6pt]
+		\frac{\partial z}{\partial\langle\PauliZ\rangle}
+		 & = \frac{\langle\PauliX\rangle}{(1-\langle\PauliZ\rangle)^2}
+		= \frac{2r/(1+r^2)}{[2/(1+r^2)]^2}
+		= \frac{r(1+r^2)}{2}.
+		\tag{A19b}
 	\end{align}
-	using $\langle\PauliX\rangle = 2r/(1+r^2)$ and $1 - \langle\PauliZ\rangle = 2/(1+r^2)$. The triangle inequality gives~\eqref{eq:error-bound}.
+	The first derivative~(A19a) is computed by
+	differentiating $z = x/(1-z_0)$ with respect to~$x$
+	at fixed $z_0$; the second~(A19b) uses the quotient
+	rule:
+	$\partial_{z_0}[x/(1-z_0)] = x/(1-z_0)^2$.
+
+	Applying the triangle inequality to~(A18):
+	\begin{align}
+		|\hat{r} - r|
+		 & \leq \left|\frac{\partial z}{\partial\langle\PauliX\rangle}\right||\delta_x|
+		+ \left|\frac{\partial z}{\partial\langle\PauliZ\rangle}\right||\delta_w|
+		\nonumber                                                                       \\
+		 & \leq \frac{1+r^2}{2}\,\delta + \frac{r(1+r^2)}{2}\,\delta
+		\nonumber                                                                       \\
+		 & = \frac{(1+r^2)(1+r)}{2}\,\delta.
+		\tag{A20}
+	\end{align}
+	This is~\eqref{eq:error-bound}.  The two contributions
+	have distinct physical origins: the first term,
+	$(1+r^2)/2$, comes from the sensitivity of the
+	numerator measurement and grows as $r^2$ for large~$r$;
+	the second term, $r(1+r^2)/2$, comes from the
+	denominator $1 - \langle\PauliZ\rangle$ approaching
+	zero as $r \to \infty$ (the state approaches the north
+	pole of the Bloch sphere) and grows as $r^3$.  The
+	denominator contribution dominates for large~$r$,
+	reflecting the fundamental geometric fact that the
+	stereographic projection compresses the real line near
+	infinity into a vanishing arc of the Bloch sphere.
 \end{proof}

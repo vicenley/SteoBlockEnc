@@ -141,8 +141,9 @@ the denominator vanishes.
 
 Theorem~\ref{thm:unbounded} is the central result of this
 paper.  The decoded function $\cot(k\arctan(1/r))$ is
-unbounded---it diverges at each of its $k-1$ poles on
-$(0,\infty)$---yet it is produced by a unitary circuit whose
+unbounded---it has $\lfloor k/2 \rfloor$ zeros and
+$\lfloor(k{-}1)/2\rfloor$ poles on $(0,\infty)$, diverging at
+each pole---yet it is produced by a unitary circuit whose
 internal amplitudes never exceed~$1$.  The boundedness
 constraint is not violated; it is \emph{circumvented} by the
 decoding step, which extracts a ratio rather than an amplitude.
@@ -160,7 +161,6 @@ line.  The components of $S_z^k\ket{0}$, when viewed as
 functions of~$r$ rather than~$\rtilde$, are precisely the
 \emph{rational Chebyshev functions} introduced by
 Boyd~\cite{Boyd1990,Boyd1987}:
-\label{subsec:rational-chebyshev}
 \begin{align}
 	\TB_k(r) & \equiv T_k\!\!\left(\frac{r}{\sqrt{1+r^2}}\right), \nonumber                \\
 	\SB_k(r) & \equiv \frac{U_{k-1}\!\!\left(\frac{r}{\sqrt{1+r^2}}\right)}{\sqrt{1+r^2}}.
@@ -260,7 +260,12 @@ confirms it.
 
 \begin{proposition}[Basis Change]
 	\label{prop:basis-change}
-	Let $V$ be the diagonal unitary with entries $(1,0;\,0,i)$.  The stereographic signal operator~\eqref{eq:signal-operator} and the standard signal unitary~\eqref{eq:standard-signal} are related by $S_z = V^{-1}\,W(\rtilde)\,V$ with $\rtilde = r/\sqrt{1+r^2}$, and the phase operator is invariant under conjugation: $V^{-1}\exp[i\phi\PauliZ]\,V = \exp[i\phi\PauliZ]$.  Consequently, writing $W_{\bm{\phi}}^{\mathrm{(stereo)}}(r)$ for the stereographic QSP product~\eqref{eq:stereo-qsp} and $U_{\bm{\phi}}^{\mathrm{(std)}}(\rtilde)$ for the standard QSP product~\eqref{eq:standard-qsp} evaluated at $a = \rtilde$,
+	Let $V = \mathrm{diag}(1,i)$.
+	\begin{enumerate}
+		\item The stereographic signal operator~\eqref{eq:signal-operator} and the standard signal unitary~\eqref{eq:standard-signal} are related by $S_z = V^{-1}\,W(\rtilde)\,V$ with $\rtilde = r/\sqrt{1+r^2}$.
+		\item The phase operator is invariant: $V^{-1}\exp[i\phi\PauliZ]\,V = \exp[i\phi\PauliZ]$.
+	\end{enumerate}
+	Consequently, writing $W_{\bm{\phi}}^{\mathrm{(stereo)}}(r)$ for the stereographic QSP product~\eqref{eq:stereo-qsp} and $U_{\bm{\phi}}^{\mathrm{(std)}}(\rtilde)$ for the standard QSP product~\eqref{eq:standard-qsp} evaluated at $a = \rtilde$,
 	\begin{equation}
 		W_{\bm{\phi}}^{\mathrm{(stereo)}}(r) = V^{-1}\,U_{\bm{\phi}}^{\mathrm{(std)}}(\rtilde)\,V.
 		\label{eq:basis-change}
@@ -269,9 +274,9 @@ confirms it.
 
 \begin{proof}
 	For part (1), direct computation gives
-	\begin{equation}
-		V^{-1}W(\rtilde)V = \begin{pmatrix} \rtilde & -\sqrt{1-\rtilde^2} \\ \sqrt{1-\rtilde^2} & \rtilde\end{pmatrix} = S_z\big|_{\theta=0}, \nonumber
-	\end{equation}
+	\begin{equation*}
+		V^{-1}W(\rtilde)V = \begin{pmatrix} \rtilde & -\sqrt{1-\rtilde^2} \\ \sqrt{1-\rtilde^2} & \rtilde\end{pmatrix} = S_z\big|_{\theta=0},
+	\end{equation*}
 	since $\sqrt{1-\rtilde^2} = 1/\sqrt{1+r^2}$. Part~(2) is
 	immediate: $\exp[i\phi\PauliZ] = \mathrm{diag}(e^{i\phi},
 		e^{-i\phi})$ commutes with $V = \mathrm{diag}(1, i)$, since
@@ -407,8 +412,9 @@ monotone between consecutive singularities.  Understanding this
 structure also motivates a reformulation---working with
 unnormalized polynomials in~$r$ rather than bounded polynomials
 in~$\rtilde$---that makes the polynomial arithmetic transparent
-and will be essential for the block-encoding constructions
-of Section~\ref{sec:block-encoding}.
+and provides the natural language for extending stereographic
+QSP to multi-qubit systems
+(Section~\ref{sec:block-encoding}).
 
 Consider the base-case functions
 $z_k(r) = \cot(k\arctan(1/r))$.  The cotangent vanishes when
@@ -468,8 +474,9 @@ exchanging zeros and poles; for even~$k$ the cotangent function
 itself is symmetric under $r \mapsto 1/r$, so the zero and
 pole sets are individually closed under inversion.  Table~\ref{tab:rational}
 illustrates this: for $k=4$, the zeros $\sqrt{2}-1$ and
-$\sqrt{2}+1$ are reciprocals of each other, and so are the
-poles $0$ and~$\infty$ (implicitly) and $1$ and~$1$.
+$\sqrt{2}+1$ are reciprocals of each other, the pole at
+$r=0$ maps to the pole at $r \to \infty$ under inversion,
+and the pole at $r=1$ is a fixed point of $r \mapsto 1/r$.
 
 The interlacing property (part~3) is perhaps the most
 important: between any two consecutive poles, the function
@@ -495,7 +502,7 @@ Table~\ref{tab:rational}.
 			3   & $0,\; \sqrt{3}$                                 & $1/\sqrt{3}$                                       \\
 			4   & $\sqrt{2}-1,\; \sqrt{2}+1$                      & $0,\; 1$                                           \\
 			5   & $0,\; \sqrt{5-2\sqrt{5}},\; \sqrt{5+2\sqrt{5}}$ & $\sqrt{(5-2\sqrt{5})/5},\; \sqrt{(5+2\sqrt{5})/5}$ \\
-			6   & $\sqrt{3}-2,\; 1,\; \sqrt{3}+2$                 & $0,\; 1/\sqrt{3},\; \sqrt{3}$
+			6   & $2-\sqrt{3},\; 1,\; 2+\sqrt{3}$                 & $0,\; 1/\sqrt{3},\; \sqrt{3}$
 		\end{tabular}
 	\end{ruledtabular}
 \end{table}
@@ -553,8 +560,8 @@ the normalization multiplies by $(1+r^2)$ at each step.
 
 The normalization~\eqref{eq:unnormalized-norm} has a
 transparent origin: each of the $d$ signal operators $O_r$
-contributes one factor of $\sqrt{r^2+1}$ to the operator norm
-(since $\det(O_r) = r^2+1$), and squaring gives $(1+r^2)^d$.
+contributes one factor of $\sqrt{1+r^2}$ to the operator norm
+(since $\det(O_r) = 1+r^2$), and squaring gives $(1+r^2)^d$.
 The decoded function $f(r) = \tilde{P}/\tilde{Q}$ coincides
 with $P/Q$ from the normalized formulation, since the common
 factor $(1+r^2)^{d/2}$ cancels in the ratio.  The advantage
@@ -611,8 +618,8 @@ The basis change identity also illuminates the structure of
 lens.  Consider the standard QSP protocol operating on a
 signal value $a = a_u \equiv u/\sqrt{1+u^2}$, where
 $u \in \R$ is an unbounded parameter related to $a$ by the
-stereographic map.  In the real Hilbert space, the QSP output
-state is
+stereographic map.  For real-valued polynomials $P$ and $Q$,
+the QSP output state is
 $P(a_u)\ket{0} + Q(a_u)\sqrt{1-a_u^2}\,\ket{1}$, and
 stereographic decoding yields
 \begin{equation}
@@ -639,11 +646,11 @@ projection achieves a similar effect.
 The rational Chebyshev functions are not merely a convenient
 notation---they appear naturally in the combinatorial expansion
 of the QSP product.  The key identity is $WZW = Z$, where
-$W(a) = a\,\mathbb{1} + i\sqrt{1-a^2}\,\PauliX$ is the
+$W(a) = a\,\mathbb{I} + i\sqrt{1-a^2}\,\PauliX$ is the
 standard signal unitary.  Each phase factor
-$\exp[i\phi_k\PauliZ] = \cos(2\phi_k)\,\mathbb{1} +
-	i\sin(2\phi_k)\,\PauliZ$ introduces a choice between
-$\mathbb{1}$ and $Z$, and the $WZW = Z$ rule collapses
+$\exp[i\phi_k\PauliZ] = \cos\phi_k\,\mathbb{I} +
+	i\sin\phi_k\,\PauliZ$ introduces a choice between
+$\mathbb{I}$ and $Z$, and the $WZW = Z$ rule collapses
 adjacent patterns.  After all reductions, the surviving strings
 of $W$ operators have length $d - 2k$ for
 $k = 0, 1, \ldots, \lfloor d/2 \rfloor$, each contributing a

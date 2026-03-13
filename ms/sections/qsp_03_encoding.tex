@@ -30,10 +30,11 @@ subsequent computation---precisely the mechanism behind the
 boundedness constraint of QSP discussed in
 Section~\ref{sec:preliminaries}.
 
-Stereographic projection provides a fundamentally different
-encoding that avoids this restriction.  Projecting from the
-north pole of the unit sphere $\Sphere \subset \R^3$ onto the
-equatorial plane defines a conformal bijection
+Stereographic projection~\cite{DubrovinFomenkoNovikov1992}
+provides a fundamentally different encoding that avoids this
+restriction.  Projecting from the north pole of the unit sphere
+$\Sphere \subset \R^3$ onto the equatorial plane defines a
+conformal bijection
 \begin{equation}
 	(u, v, w) \;\longmapsto\; z = \frac{u + iv}{1 - w},
 	\label{eq:stereo-forward}
@@ -110,7 +111,7 @@ observation is central to our main result: QSP produces a state
 $P(\rtilde)\ket{0} + Q(\rtilde)\ket{1}$, and decoding returns
 the potentially unbounded ratio~$P/Q$.
 
-The encoding state~\eqref{eq:encoding} is prepared from
+The encoded state~\eqref{eq:encoding} is prepared from
 $\ket{0}$ by the unitary
 \begin{equation}
 	U_z = \frac{1}{\sqrt{1+r^2}}\!\begin{pmatrix}
@@ -155,7 +156,7 @@ examples:
 These act as inversions, negations, and reflections of the
 encoded value---familiar M\"obius transformations of the Riemann
 sphere.  More generally, the gate
-$U_3(\vartheta,\varphi,\lambda) \in \SU(2)$ induces the M\"obius
+$U_3(\vartheta,\varphi,\lambda) \in \U(2)$ induces the M\"obius
 map $z \mapsto (az+b)/(cz+d)$ with
 \begin{equation}
 	\begin{pmatrix} a & b \\ c & d \end{pmatrix} =
@@ -168,11 +169,11 @@ map $z \mapsto (az+b)/(cz+d)$ with
 	\label{eq:U3-mobius}
 \end{equation}
 The gate--M\"obius correspondence is a group homomorphism
-$\SU(2) \to \mathrm{PSL}(2,\C)$, the projective special linear
-group of $2\times 2$ matrices over $\C$ modulo scalar
-multiples---the natural symmetry group of M\"obius
-transformations.  In particular, $Z$-rotations act as phase
-rotations $R_z(\alpha): z \mapsto e^{i\alpha}z$.
+$\U(2) \to \mathrm{PGL}(2,\C)$, the projective linear
+group of M\"obius transformations.
+In particular, the phase gate
+$\exp[i\phi\PauliZ] = \mathrm{diag}(e^{i\phi},e^{-i\phi})$
+acts as $z \mapsto e^{2i\phi}z$.
 
 This correspondence transforms the problem of analyzing quantum
 circuits on encoded states into the algebraic study of composed

@@ -1,18 +1,26 @@
 \section{Cost Analysis and Comparison}
 \label{sec:cost-analysis}
 
-Stereographic encoding removes the normalization factor
-$\alpha \geq \|H\|$ from the QSP circuit: the signal enters
-as $r \in [0,\infty)$ rather than $a = r/\alpha \in [-1,1]$,
-so the circuit depth depends only on the polynomial degree~$d$,
-not on~$\|H\|$.  In the standard approach, by contrast, the
-depth scales as $\mathcal{O}(d \cdot \alpha)$ after accounting
-for the subnormalization factor, and removing a factor
-of~$\alpha$ from the circuit depth can be substantial for
-operators with large norm.
+The stereographic block encoding of
+Section~\ref{sec:block-encoding} removes the normalization
+factor $\alpha \geq \|H\|$ from the quantum circuit.  But
+removing a cost from one column of the ledger does not make it
+disappear---it reappears elsewhere, shifting from coherent
+circuit depth into classical sampling overhead.
 
-This saving is not free---it reappears as classical sampling
-overhead.  The stereographic decoding
+The depth advantage is immediate from the construction:
+the stereographic block encoding~\eqref{eq:stereo-block} uses
+a single ancilla qubit and does not require knowledge of
+$\|H\|$, so the circuit depth depends only on the degree $d$
+of the rational approximation.  In the standard approach, by
+contrast, the depth scales as $\mathcal{O}(d \cdot \|H\|)$
+after accounting for the subnormalization factor, so the depth
+saving from stereographic encoding is a multiplicative factor
+of $\|H\|$.  For operators with large norm---unbounded spectra,
+poorly conditioned systems, or Hamiltonians whose norm grows
+with system size---this saving can be substantial.
+
+The saving is not free.  The stereographic decoding
 formula~\eqref{eq:decoding} recovers the encoded value $z$ from
 the ratio $\langle\PauliX\rangle/(1 - \langle\PauliZ\rangle)$,
 and as $r \to \infty$ the denominator
@@ -51,6 +59,7 @@ is \emph{polynomial} in $r$, not exponential: large eigenvalues
 are expensive to decode, but not catastrophically so.
 
 \textit{Eigenvalue inversion as a case study.}
+\label{subsec:inversion-example}
 The depth-versus-sampling tradeoff is best appreciated through
 a concrete example.  Eigenvalue inversion,
 $f(\lambda) = 1/\lambda$, is central to quantum linear systems

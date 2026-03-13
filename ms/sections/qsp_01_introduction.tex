@@ -115,17 +115,17 @@ $z_k(r) = \cot(k\arctan(1/r))$, with $k$ interlacing zeros and poles
 on $[0,\infty)$.  The stereographic and standard QSP signal operators
 are unitarily equivalent via $V = \mathrm{diag}(1,i)$, immediately
 establishing the full function class and the existence of phase
-factors from the standard QSP theorem
-(Section~\ref{sec:main}).  Finally, we formulate stereographic block
-encoding for operators with unbounded spectra, provide explicit
-circuit constructions for three Hamiltonian classes---diagonal,
-Pauli-$Z$ sum, and Heisenberg---and quantify the measurement
-overhead, showing that absolute precision $\epsilon$ requires
-$\mathcal{O}(r^6/\epsilon^2)$ shots.  This polynomial sampling cost
-replaces the coherent normalization overhead of standard QSP, and we
-identify the regime---depth-limited devices, moderate eigenvalues,
-known eigenbasis---where stereographic encoding offers a practical
-advantage (Section~\ref{sec:block-encoding}).
+factors from the standard QSP theorem (Section~\ref{sec:main}).
+We quantify the cost tradeoff: the coherent normalization overhead of
+standard QSP is replaced by a polynomial sampling cost, with
+absolute precision $\epsilon$ requiring
+$\mathcal{O}(r^6/\epsilon^2)$ shots
+(Section~\ref{sec:cost-analysis}).  Finally, we sketch how the
+construction extends to multi-qubit eigenvalue transformations via
+stereographic block encoding, illustrating the approach on the
+Heisenberg model and identifying the regime---depth-limited devices,
+moderate eigenvalues, known eigenbasis---where stereographic encoding
+offers a practical advantage (Section~\ref{sec:block-encoding}).
 
 % ---------------------------------------------------------------
 %  PARAGRAPH 6: PAPER ORGANIZATION
@@ -137,13 +137,15 @@ the role of Chebyshev polynomials, and the boundedness constraint.
 Section~\ref{sec:encoding} introduces stereographic encoding as a
 geometric alternative to amplitude encoding, deriving its decoding
 formula and gate--M\"obius correspondence.
-Sections~\ref{sec:main} and \ref{sec:block-encoding} contain the
-main results: the stereographic signal operator, Chebyshev state
-generation, the basis-change reduction to standard QSP, and the
-application to block encoding with unbounded spectra.
+Section~\ref{sec:main} contains the main results: the stereographic
+signal operator, Chebyshev state generation, the unbounded rational
+function class, and the basis-change reduction to standard QSP.
 Section~\ref{sec:cost-analysis} quantifies the depth-versus-sampling
 tradeoff, compares with standard and generalized QSP, and presents
 numerical results for four target functions.
+Section~\ref{sec:block-encoding} sketches the extension to
+multi-qubit eigenvalue transformations via stereographic block
+encoding, illustrated on the Heisenberg model.
 Section~\ref{sec:discussion} discusses connections to prior work
 and open problems.  The overall framework is illustrated
 schematically in Fig.~\ref{fig:schematic}.

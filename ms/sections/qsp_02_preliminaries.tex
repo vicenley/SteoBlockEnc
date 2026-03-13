@@ -17,7 +17,8 @@ Grover iteration rotates the state by a fixed angle
 $2\theta$, where
 $\sin\theta = \langle\psi_*|\psi_0\rangle$ is the
 overlap with the target
-(Fig.~\ref{fig:grover-qsp}).  The initial state
+(Fig.~\ref{fig:grover-qsp};
+see also Ref.~\cite{BenentiCasatiStrini2004}, Fig.~3.24).  The initial state
 already makes an angle $\theta$ with the
 non-target axis, so after $k$ iterations the amplitude
 on the target is $\sin\!\big((2k{+}1)\theta\big)$---a
@@ -57,7 +58,7 @@ $a = \cos\theta$.
 		complement $\ket{\psi_*^{\perp}}$.  The initial
 		superposition $\ket{\psi_0} = \ket{S}$ lies at angle
 		$\theta$ from $\ket{\psi_*^{\perp}}$, where
-		$\sin\theta = \braket{\psi_*}{\psi_0}$.  The oracle
+		$\sin\theta = \langle \psi_* | \psi_0 \rangle$.  The oracle
 		reflects about $\ket{\psi_*^{\perp}}$ (dashed), and
 		the combined Grover operator $G$ rotates by $2\theta$
 		toward the target; after $k$ iterations the target-state
@@ -67,7 +68,7 @@ $a = \cos\theta$.
 		after one iteration.
 		\textbf{(b)}~The QSP circuit generalizes this structure:
 		signal rotations $W(a)$ alternate with tunable phase gates
-		$\exp[i\phi_j Z]$.  In Grover's algorithm all phases are
+		$\exp[i\phi_j \PauliZ]$.  In Grover's algorithm all phases are
 		equal; in QSP they are free parameters that produce
 		arbitrary bounded polynomials of~$a$.}
 	\label{fig:grover-qsp}
@@ -149,7 +150,7 @@ must produce a normalized two-component state:
 	\label{eq:qsp-output-state}
 \end{equation}
 where $Q(a)$ is a complementary polynomial of degree
-at most~$d$ and opposite parity, constrained by
+at most~$d-1$ and opposite parity, constrained by
 $|P(a)|^2 + (1-a^2)|Q(a)|^2 = 1$.  Both components
 are therefore bounded by~$1$ in absolute value.
 
@@ -158,7 +159,7 @@ appear in Grover's algorithm.  Writing
 $a = \cos\theta$, the signal unitary becomes a rotation
 by~$\theta$, and its $k$-fold application gives
 $W^k\ket{0} = \cos(k\theta)\ket{0} +
-	\sin(k\theta)\ket{1}$.  The Chebyshev polynomials of
+	i\sin(k\theta)\ket{1}$.  The Chebyshev polynomials of
 the first and second kind,
 \begin{align}
 	T_k(\cos\theta)     & = \cos(k\theta),

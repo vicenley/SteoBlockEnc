@@ -1,299 +1,130 @@
-\section{Block Encoding with Unbounded Spectra}
+\section{Outlook: Extension to Multi-Qubit Systems}
 \label{sec:block-encoding}
 
-The single-qubit theory of Section~\ref{sec:main} transforms a
-scalar signal $r$ into an unbounded rational function.  To
-apply this machinery to a multi-qubit Hamiltonian
-$H = \sum_j \lambda_j\ket{j}\bra{j}$, one needs a way to
-feed each eigenvalue $\lambda_j$ into the QSP circuit
-simultaneously---the quantum-computing analogue of ``applying a
-function to a matrix.''  In the standard QSVT
-framework~\cite{GSLW2019}, this is accomplished by block
-encoding, which embeds $H/\alpha$ (with $\alpha \geq \|H\|$)
-into a larger unitary.  The normalization factor~$\alpha$
-is the price of boundedness: it inflates the circuit depth and
-forces the target polynomial to approximate $f(\alpha\,\cdot\,)$
-on $[-1,1]$.
+The single-qubit theory of Sections~\ref{sec:encoding}
+and~\ref{sec:main} transforms a scalar signal $r$ into an
+unbounded rational function via stereographic encoding, QSP,
+and Pauli-measurement decoding.  A natural question is whether
+this machinery extends to multi-qubit Hamiltonians, where the
+goal is to apply a function to each eigenvalue simultaneously.
 
-Stereographic encoding offers an alternative that avoids this
-normalization entirely, at the cost of requiring knowledge of
-the eigenbasis---a strong assumption that restricts the approach
-to structured Hamiltonians.  This section defines the
-stereographic block encoding, shows how the full QSP protocol
-lifts to a multi-qubit eigenvalue transformation, and
-demonstrates the construction through explicit circuits of
-increasing complexity.
-
-\subsection{Standard and Stereographic Block Encoding}
-\label{subsec:block-encoding-defs}
-
-To fix notation and set up the comparison, we begin with the
-standard framework.
-
-\begin{definition}[Standard Block Encoding]
-	An $(\alpha, m, \epsilon)$-block encoding of a Hermitian operator $H$ acting on $n$ qubits is a unitary $U$ acting on $n + m$ qubits such that
-	\begin{equation}
-		\|H - \alpha(\bra{0}^{\otimes m} \otimes I)\, U\, (\ket{0}^{\otimes m} \otimes I)\| \leq \epsilon,
-	\end{equation}
-	where $\alpha \geq \|H\|$.
-\end{definition}
-
-To apply QSVT and compute $f(H)$, one constructs a degree-$d$
-polynomial $P$ satisfying $|P(\lambda/\alpha)| \leq 1$ for all
-eigenvalues $\lambda$, then finds QSP phases for $P$.  This
-approach incurs two costs: the subnormalization factor
-$\alpha \geq \|H\|$ increases circuit depth by a factor
-of~$\alpha$, and the polynomial $P$ must approximate
-$f(\alpha\,\cdot\,)$ on $[-1,1]$, which may require high degree
-if $f$ has sharp features or singularities.
-
-The stereographic alternative removes both costs by encoding
-each eigenvalue directly, without normalization.
+In the standard QSVT framework~\cite{GSLW2019}, a Hamiltonian
+$H$ with $\|H\| = \alpha$ is embedded into a larger unitary via
+an $(\alpha, m, \epsilon)$-block encoding, which stores
+$H/\alpha$ in the top-left block.  The normalization factor
+$\alpha \geq \|H\|$ inflates the circuit depth and forces the
+QSP polynomial to approximate $f(\alpha\,\cdot\,)$ on $[-1,1]$.
+The stereographic alternative removes this normalization by
+encoding each eigenvalue directly onto the Bloch sphere of a
+single ancilla qubit.
 
 \begin{definition}[Stereographic Block Encoding]
 	\label{def:stereo-block}
-	Let $H$ be a Hermitian operator with spectral decomposition $H = \sum_j \lambda_j \ket{j}\bra{j}$, where $\lambda_j \geq 0$ (a positivity assumption that can be relaxed by a shift). A stereographic block encoding of $H$ is a unitary $U$ acting on $n + 1$ qubits such that
+	Let $H$ be a Hermitian operator with spectral decomposition
+	$H = \sum_j \lambda_j \ket{j}\bra{j}$, where
+	$\lambda_j \geq 0$.  A stereographic block encoding of~$H$
+	is a unitary $U$ acting on $n + 1$ qubits such that
 	\begin{equation}
 		U = \sum_j U_{\lambda_j} \otimes \ket{j}\bra{j},
 		\label{eq:stereo-block}
 	\end{equation}
-	where $U_{\lambda_j}$ is the single-qubit encoding unitary~\eqref{eq:encoding-unitary} with $r = \lambda_j$ and $\theta = 0$.
+	where $U_{\lambda_j}$ is the single-qubit encoding
+	unitary~\eqref{eq:encoding-unitary} with $r = \lambda_j$
+	and $\theta = 0$.
 \end{definition}
 
-Explicitly, in the eigenspace of eigenvalue $\lambda_j$:
+In each eigenspace $\ket{j}$, the ancilla is rotated to the
+encoding state
+$\ket{\lambda_j} = (\lambda_j\ket{0} +
+	\ket{1})/\sqrt{1+\lambda_j^2}$
+via $R_y(2\gamma_j)$ with $\gamma_j = \arctan(1/\lambda_j)$.
+The encoding is exact, uses a single ancilla qubit, and imposes
+no constraint on $\|H\|$.  Once in place, the QSP protocol from
+Section~\ref{subsec:qsp-phases} applies independently in each
+eigenspace: a degree-$d$ sequence with phases $\bm{\phi}$
+produces
+$P(\tilde{\lambda}_j)\ket{0} +
+	Q(\tilde{\lambda}_j)\ket{1}$
+on the ancilla, and Pauli-measurement decoding yields the
+rational eigenvalue transformation
 \begin{equation}
-	U_{\lambda_j} = \frac{1}{\sqrt{1+\lambda_j^2}}\begin{pmatrix} \lambda_j & 1 \\ 1 & -\lambda_j \end{pmatrix},
-\end{equation}
-which maps $\ket{0}\ket{j} \mapsto \ket{\lambda_j}\ket{j}$ using
-a single ancilla qubit.  Each eigenvalue, no matter how large,
-is encoded into a point on the Bloch sphere via stereographic
-projection---the same compression
-$\lambda_j \mapsto \tilde{\lambda}_j =
-	\lambda_j/\sqrt{1+\lambda_j^2} \in [0,1)$ that drives the
-single-qubit theory.
-
-\begin{remark}[Caveats and scope]
-	\label{rem:caveats}
-	Constructing~\eqref{eq:stereo-block} requires the ability to apply $U_{\lambda_j}$ conditioned on the eigenspace $\ket{j}$ of $H$---in other words, it assumes access to the eigenbasis. This is a strong assumption that is \emph{not} met for generic Hamiltonians. We do not claim that stereographic block encoding is universally applicable; rather, it applies naturally to structured operators whose eigenbasis is known or efficiently computable.
-\end{remark}
-
-\subsection{The Stereographic QSVT Protocol}
-\label{subsec:stereo-qsvt}
-
-With the block encoding in place, the QSP protocol from
-Section~\ref{subsec:qsp-phases} lifts to a multi-qubit
-eigenvalue transformation.  For a Hamiltonian with known
-diagonalization $H = V^\dagger D V$, the protocol interleaves
-the signal operator with phase rotations within the eigenbasis:
-\begin{equation}
-	\begin{quantikz}[column sep=0.2cm, row sep=0.4cm]
-		\lstick{\footnotesize$\ket{0}_a$} & \gate{\phi_d} & \gate{W_j} & \ \cdots\ \qw & \gate{W_j} & \gate{\phi_0} & \meter{} \\
-		\lstick{\footnotesize$\ket{\psi}_s$} & \gate[2]{V} & \ctrl{-1}\vqw{1} & \ \cdots\ \qw & \ctrl{-1}\vqw{1} & \gate[2]{V^\dagger} & \qw \\
-		& & \ctrl{-1} & \ \cdots\ \qw & \ctrl{-1} & & \qw
-	\end{quantikz}
-	\label{eq:full-protocol-circuit}
-\end{equation}
-Each $\phi_k$ box denotes $R_z(\phi_k) = \exp[i\phi_k\PauliZ]$,
-and $W_j \equiv W(\tilde{\lambda}_j)$ is the stereographic
-signal unitary on the ancilla conditioned on eigenstate
-$\ket{j}$.  Because the signal operator acts independently in
-each eigenspace, a degree-$d$ QSP sequence with phases
-$\bm{\phi}$ produces
-\begin{equation}
-	W_{\bm{\phi}}(\lambda_j)\ket{0}\ket{j} = \left(P(\tilde{\lambda}_j)\ket{0} + Q(\tilde{\lambda}_j)\ket{1}\right)\ket{j},
-\end{equation}
-where $\tilde{\lambda}_j = \lambda_j/\sqrt{1+\lambda_j^2}$.
-Decoding the ancilla via Pauli measurements yields the rational
-eigenvalue transformation
-\begin{equation}
-	f(\lambda_j) = \frac{P(\tilde{\lambda}_j)}{Q(\tilde{\lambda}_j)}.
+	f(\lambda_j) = \frac{P(\tilde{\lambda}_j)}{Q(\tilde{\lambda}_j)},
 	\label{eq:eigenvalue-transform}
 \end{equation}
-The result is defined for all $\lambda_j \geq 0$ (including
-$\lambda_j \gg 1$), can diverge wherever
-$Q(\tilde{\lambda}_j) = 0$, and is a rational function of
-$\lambda_j$ of total degree $\leq d$.  In contrast to standard
-QSVT, no normalization factor~$\alpha$ enters the circuit: the
-QSP degree~$d$ controls the approximation quality, and the
-circuit depth scales as $\mathcal{O}(d)$ regardless of $\|H\|$.
+with circuit depth $\mathcal{O}(d)$ independent of $\|H\|$.
+The positivity assumption $\lambda_j \geq 0$ can be relaxed by
+a spectral shift $H \to H + |\lambda_{\min}|I$.
 
-Even without applying phase factors, the block encoding itself
-already extracts useful spectral information.
+Constructing~\eqref{eq:stereo-block}, however, requires the
+ability to apply $U_{\lambda_j}$ conditioned on the eigenspace
+$\ket{j}$---it requires access to the eigenbasis.  This is a
+strong assumption that standard block encoding does not make: in
+the QSVT framework, $H/\alpha$ is embedded into a unitary
+without knowledge of the eigenstates, and the QSP polynomial
+acts simultaneously in all eigenspaces precisely because the
+block encoding does not distinguish them.  The eigenbasis
+requirement restricts stereographic block encoding to
+\emph{structured Hamiltonians} whose eigenbasis is known or
+efficiently computable---diagonal operators, integrable models,
+or operators whose spectral decomposition is available as a
+quantum circuit.  For generic Hamiltonians, the eigenbasis is
+the object one wishes to compute, and the construction becomes
+circular.  This limitation is not inherent to stereographic
+encoding itself---the single-qubit theory holds for any scalar
+signal---but rather to the specific block encoding strategy
+of~\eqref{eq:stereo-block}.  Whether alternative strategies can
+relax this requirement is an open question that we defer to a
+companion paper.
 
-\begin{proposition}[Extraction of Eigenvalues]
-	\label{prop:extraction}
-	Measuring the ancilla qubit in the Pauli basis after applying the stereographic block encoding $U$ to $\ket{0}_a\ket{j}$ yields the Bloch vector components
-	\begin{equation}
-		\langle\PauliZ\rangle = \frac{\lambda_j^2 - 1}{\lambda_j^2 + 1},
-	\end{equation}
-	from which the eigenvalue is recovered as $\lambda_j = \sqrt{(1+\langle\PauliZ\rangle)/(1-\langle\PauliZ\rangle)}$, without requiring knowledge of $\|H\|$.
-\end{proposition}
-
-This is the multi-qubit analogue of the stereographic decoding
-formula~\eqref{eq:decoding}: the Bloch sphere coordinates of the
-ancilla encode each eigenvalue independently, and no global
-normalization constant is needed to extract them.
-
-\subsection{Circuit Constructions}
-\label{subsec:concrete-block}
-
-The abstract definition~\eqref{eq:stereo-block} becomes concrete
-once one specifies how to implement the eigenspace-conditioned
-unitaries $U_{\lambda_j}$.  We present three examples of
-increasing complexity: a diagonal Hamiltonian (where the
-eigenbasis is the computational basis), a Pauli-$Z$ sum (where
-algebraic structure reduces the gate count), and the two-qubit
-Heisenberg model (where a non-trivial change of basis is
-required).
-
-\subsubsection{Diagonal Hamiltonians}
-\label{subsubsec:diagonal}
-
-Let $H$ be a diagonal Hamiltonian on $n$ qubits with
-eigenvalues $\lambda_j \geq 0$ (which may be arbitrarily
-large) in the computational basis.  This is the simplest case
-because no diagonalization step is needed: the encoding
-unitary acts directly on the ancilla, conditioned on the
-computational-basis state $\ket{j}$ of the system register.
-
-For each eigenvalue, the encoding state $\ket{\lambda_j}$ is
-prepared from $\ket{0}$ by a $Y$-rotation:
-\begin{equation}
-	R_y(2\alpha_j)\ket{0} = U_{\lambda_j}\ket{0} = \ket{\lambda_j}, \qquad \alpha_j = \arctan(1/\lambda_j),
-	\label{eq:diagonal-ry}
-\end{equation}
-since $\cos\alpha_j = \lambda_j/\sqrt{1+\lambda_j^2}$ and
-$\sin\alpha_j = 1/\sqrt{1+\lambda_j^2}$.  The full encoding
-unitary satisfies
-$U_{\lambda_j} = R_y(2\alpha_j)\,\sigma_z$ (note
-$\det U_{\lambda_j} = -1$), and the stereographic signal
-operator~\eqref{eq:signal-operator} in each eigenspace becomes
-$S_{\lambda_j} = U_{\lambda_j}\sigma_z = R_y(2\alpha_j)$,
-a pure rotation.
-
-The block encoding~\eqref{eq:stereo-block} is therefore a
-uniformly controlled rotation: for each $j$, apply
-$R_y(2\alpha_j)$ on the ancilla conditioned on the system
-register being in state $\ket{j}$.  For a 2-qubit system
-($N=4$ eigenvalues), the circuit is:
-\begin{equation}
-	\begin{quantikz}[column sep=0.5cm, row sep=0.5cm]
-		\lstick{$\ket{0}_a$} & \gate[style={inner sep=4pt}]{R_y(2\alpha_j)} & \qw \\
-		\lstick{$\ket{j_1}$} & \ctrl{-1}\vqw{1} & \qw \\
-		\lstick{$\ket{j_0}$} & \ctrl{-1} & \qw
-	\end{quantikz}
-	\label{eq:diagonal-circuit}
-\end{equation}
-where the double control line indicates a uniformly controlled
-rotation: the angle
-$\alpha_j = \arctan(1/\lambda_j)$ is selected by the
-computational-basis state $\ket{j} = \ket{j_1 j_0}$.
-Standard decomposition techniques~\cite{NielsenChuang2010}
-yield $\mathcal{O}(N)$ CNOT gates and $\mathcal{O}(N)$
-single-qubit rotations, matching the gate complexity of
-standard diagonal block encoding---but with a single ancilla
-qubit rather than $\lceil\log_2\alpha\rceil + 1$, and with
-rotation angles that depend only on individual eigenvalues,
-not on $\max_j \lambda_j$.  Adding a new eigenvalue
-$\lambda_{N}$ to the spectrum does not change the encoding of
-any existing eigenvalue.
-
-\subsubsection{Pauli-$Z$ Sum Hamiltonians}
-\label{subsubsec:pauli-z}
-
-When additional algebraic structure is present, the gate count
-can be reduced below $\mathcal{O}(N)$.  Consider a Hamiltonian
-that is a sum of tensor products of Pauli-$Z$ operators and
-identity:
-\begin{equation}
-	H = \sum_{k=1}^{m} c_k\, Z_{i_k},
-	\label{eq:pauli-z-ham}
-\end{equation}
-where $Z_{i_k}$ denotes $Z$ on qubit $i_k$ (and identity
-elsewhere) and $c_k > 0$.  Such Hamiltonians include classical
-Ising models and arise as the diagonal part of many physically
-relevant systems.  Since each $Z_{i_k}$ has eigenvalues
-$\pm 1$, the eigenvalues of $H$ are
-$\lambda_{\mathbf{s}} = c_1 s_1 + \cdots + c_m s_m$ with
-$s_k \in \{+1, -1\}$, and the Hamiltonian is already diagonal
-in the computational basis, so the diagonal construction
-applies directly.
-
-However, the rotation angle
-$\alpha_\mathbf{s} = \arctan(1/\lambda_\mathbf{s})$ depends on
-$\lambda_\mathbf{s}$ only through the partial sums
-$\sum c_k s_k$, which are determined by $m$ bits rather than
-$n$ qubits.  This allows one to compute the partial sums into
-$m$ ancilla qubits via a reversible adder, apply a
-controlled-$R_y$ conditioned on the result, and uncompute.  The
-gate complexity is $\mathcal{O}(\mathrm{poly}(m))$ rather than
-$\mathcal{O}(2^n)$, making this efficient when $m \ll n$.
-
-\begin{remark}[Positivity]
-	Equation~\eqref{eq:pauli-z-ham} with $c_k > 0$ has eigenvalues in $[-\sum c_k, +\sum c_k]$, which includes negative values. To apply the stereographic encoding (which assumes $\lambda_j \geq 0$), shift by $\lambda_{\mathrm{shift}} = \sum_k c_k$ so that $H' = H + \lambda_{\mathrm{shift}} I \geq 0$. The decoded function then computes $f(\lambda + \lambda_{\mathrm{shift}})$, which must be accounted for in the target function design.
-\end{remark}
-
-\subsubsection{Two-Qubit Heisenberg Model}
-\label{subsubsec:heisenberg}
-
-The first two examples have computational-basis eigenstates. As a
-non-trivial example requiring a genuine change of basis, consider
-the isotropic Heisenberg model with a longitudinal field on two
-qubits:
+To see concretely how the construction works despite this
+restriction, consider the isotropic Heisenberg model with a
+longitudinal field on two qubits:
 \begin{equation}
 	H = J(X \otimes X + Y \otimes Y + Z \otimes Z) + h(Z \otimes I),
 	\label{eq:heisenberg}
 \end{equation}
-where $J$ is the exchange coupling and $h$ is the field strength.
-The Hamiltonian is block-diagonal in the standard basis:
-$\ket{00}$ and $\ket{11}$ are eigenstates with eigenvalues
-$\lambda_1 = J + h$ and $\lambda_4 = J - h$, while the
-$\{\ket{01}, \ket{10}\}$ subspace has the $2\times 2$ block
-\begin{equation}
-	\begin{pmatrix} -J+h & 2J \\ 2J & -J-h \end{pmatrix}
-\end{equation}
-with eigenvalues
-\begin{equation}
-	\lambda_{2,3} = -J \pm \sqrt{h^2 + 4J^2}.
-	\label{eq:heisenberg-spectrum}
-\end{equation}
-For $J = 1$, $h = 0.5$, the eigenvalues are
-$\lambda \approx \{-3.06, 0.50, 1.06, 1.50\}$.  When $h = 0$,
-the eigenstates in the $\{\ket{01},\ket{10}\}$ subspace reduce
-to the Bell states $(\ket{01}\pm\ket{10})/\sqrt{2}$ with
-eigenvalues $J$ and $-3J$.
-
-The change-of-basis unitary $V$ that diagonalizes $H$ (i.e.,
-$H = V^\dagger D V$ with
-$D = \mathrm{diag}(\lambda_1, \ldots, \lambda_4)$) acts
-non-trivially only on the $\{\ket{01}, \ket{10}\}$ subspace as
-a Givens rotation, decomposable into $\mathcal{O}(1)$ elementary
-gates.  The full stereographic block encoding on 3 qubits
-(2 system + 1 ancilla) is then
+where $J$ is the exchange coupling and $h$ the field strength.
+This is a non-trivial example requiring a genuine change of
+basis: $\ket{00}$ and $\ket{11}$ are eigenstates with
+eigenvalues $J + h$ and $J - h$, but the
+$\{\ket{01}, \ket{10}\}$ subspace has eigenvalues
+$\lambda_{2,3} = -J \pm \sqrt{h^2 + 4J^2}$
+and eigenstates that reduce to Bell states when $h = 0$.  The
+change-of-basis unitary $V$ acts non-trivially only on this
+two-dimensional subspace as a Givens rotation, decomposable into
+$\mathcal{O}(1)$ elementary gates.  The full stereographic block
+encoding on 3 qubits (2 system $+$ 1 ancilla) is
 \begin{equation}
 	U = (V^\dagger \otimes I_a) \cdot U_{\mathrm{diag}} \cdot (V \otimes I_a),
 	\label{eq:heisenberg-stereo}
 \end{equation}
-where $U_{\mathrm{diag}}$ is the diagonal stereographic encoding
-from the first example, giving the circuit:
+where $U_{\mathrm{diag}}$ is a uniformly controlled
+$R_y(2\gamma_j)$ on the ancilla, conditioned on the
+computational-basis state of the diagonalized system register:
 \begin{equation}
 	\begin{quantikz}[column sep=0.4cm, row sep=0.5cm]
-		\lstick{$\ket{0}_a$} & \qw & \gate[style={inner sep=4pt}]{R_y(2\alpha_j)} & \qw & \qw \\
+		\lstick{$\ket{0}_a$} & \qw & \gate[style={inner sep=4pt}]{R_y(2\gamma_j)} & \qw & \qw \\
 		\lstick{$\ket{\psi_1}$} & \gate[2]{V} & \ctrl{-1}\vqw{1} & \gate[2]{V^\dagger} & \qw \\
 		\lstick{$\ket{\psi_0}$} & \qw & \ctrl{-1} & \qw & \qw
 	\end{quantikz}
 	\label{eq:heisenberg-circuit}
 \end{equation}
-The three steps---diagonalize ($V$), encode
-($U_{\mathrm{diag}}$), un-diagonalize ($V^\dagger$)---each
-require $\mathcal{O}(1)$ gates, giving a total gate count that
-is constant, independent of $\|H\|$, and uses a single ancilla
-qubit.
+The total gate count is constant and independent of $\|H\|$.
+For $J = 1$, $h = 0.5$, the eigenvalues are
+$\lambda \approx \{-3.06, 0.50, 1.06, 1.50\}$; after shifting
+by $|\lambda_{\min}|$, the stereographic encoding compresses
+even the largest shifted eigenvalue onto the Bloch sphere
+without truncation.  This example is verified numerically in
+Section~\ref{sec:cost-analysis}.
 
-\begin{remark}[Positivity shift for Heisenberg]
-	For $J > 0$, the smallest eigenvalue $\lambda_{\min} = -J - \sqrt{h^2+4J^2}$ is negative. Shifting by $\lambda_{\mathrm{shift}} = |\lambda_{\min}|$ makes all eigenvalues non-negative, with the shifted minimum at zero. This zero eigenvalue maps to the south pole of the Bloch sphere ($\ket{1}$) under stereographic encoding and requires special handling for functions like $1/\lambda$ (e.g., regularization by a small shift $\delta > 0$).
-\end{remark}
-
-
-
-
+The Heisenberg model illustrates the general pattern: for any
+Hamiltonian with a known diagonalization $H = V^\dagger D V$,
+the stereographic block encoding reduces to a uniformly
+controlled rotation sandwiched between $V$ and $V^\dagger$.
+The difficulty is entirely in the diagonalization step---once
+$V$ is available as a quantum circuit, the encoding is
+straightforward.  A companion paper will develop this
+construction systematically, analyze the decoding protocol when
+the system register is in a superposition of eigenspaces, and
+investigate the gate complexity for broader classes of
+Hamiltonians.

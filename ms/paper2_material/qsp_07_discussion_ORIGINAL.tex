@@ -10,7 +10,7 @@ $S_z = V^{-1}W(\rtilde)V$ with $V = \mathrm{diag}(1,i)$
 (Proposition~\ref{prop:basis-change}) makes this reduction
 precise: the full machinery of standard QSP---phase-finding
 algorithms~\cite{DongMengWhaleyEtAl2021,Haah2019}, the
-function class characterization, and convergence theory---applies
+function class characterization, convergence theory---applies
 immediately, and the ``unboundedness'' is a free consequence of
 the encoding/decoding interface.  The stereographic viewpoint
 also illuminates standard QSP itself: even the standard
@@ -19,19 +19,17 @@ unbounded rational functions of the real-line parameter
 (Section~\ref{subsec:further-consequences}).
 
 At the same time, the construction has clear limitations.
-The measurement overhead grows as
+Stereographic block encoding requires knowledge of the
+eigenbasis (Section~\ref{sec:block-encoding}), restricting
+applicability to structured Hamiltonians---we have given
+explicit circuits for diagonal, Pauli-$Z$ sum, and Heisenberg
+models, but these do not cover the general case addressed by
+QSVT~\cite{GSLW2019}.  The measurement overhead grows as
 $\mathcal{O}(r^6/\epsilon^2)$ for large eigenvalues
 (Eq.~\eqref{eq:shot-count}), making the approach impractical
-when $r \gg 1$.  As sketched in
-Section~\ref{sec:block-encoding}, lifting the single-qubit
-theory to a multi-qubit eigenvalue transformation is
-straightforward when the eigenbasis of the Hamiltonian is known,
-but this is a strong assumption that restricts applicability to
-structured operators.  The practical advantage window is
+when $r \gg 1$.  The practical advantage window is
 depth-limited devices processing operators with moderate
-eigenvalues and known eigenbasis structure; a full development
-of the multi-qubit framework will be presented in a companion
-paper.
+eigenvalues and known eigenbasis structure.
 
 Our construction rests on the QSP/QSVT framework established
 by Low and Chuang~\cite{LowChuang2017,LowChuang2019} and
@@ -80,20 +78,15 @@ with Cauchy--Lorentz weight $1/(1+r^2)$, which downweights
 large-$r$ errors where stereographic compression is most
 severe.
 
-On the multi-qubit side, the key open question is whether
-the eigenbasis requirement of the stereographic block encoding
-(Section~\ref{sec:block-encoding}) can be relaxed---perhaps
-by combining stereographic encoding with quantum phase
-estimation, or by constructing a stereographic analogue of the
-QSVT product for block-encoded matrices.  Extending the class
-of tractable Hamiltonians to sparse models with known
-eigenbasis structure, integrable models, or tensor-network
-states would establish the practical scope; we pursue these
-directions in a companion paper.  At a more fundamental level,
-replacing the phase rotations $\exp[i\phi\PauliZ]$ with general
-signal-type operators $O_\alpha$ parameterized by
-$\alpha \in \hat{\C}$ yields a generalized normalization
-condition
+Extending the class of tractable Hamiltonians---sparse models
+with known eigenbasis structure, integrable models, or
+tensor-network states---would establish the practical scope of
+the approach, and the key question is whether the eigenbasis
+requirement can be relaxed, perhaps by combining stereographic
+encoding with quantum phase estimation.  Replacing the phase
+rotations $\exp[i\phi\PauliZ]$ with general signal-type
+operators $O_\alpha$ parameterized by $\alpha \in \hat{\C}$
+yields a normalization condition
 \begin{equation}
 	|P|^2 + |Q|^2 = (1{+}r^2)^d \textstyle\prod_j(1{+}|\alpha_j|^2),
 	\label{eq:generalized-norm}
@@ -101,7 +94,11 @@ condition
 whose forward direction follows from the same inductive
 argument as Theorem~\ref{thm:unnormalized}, but whose
 converse---decomposing arbitrary polynomial pairs into such a
-product---remains open.
+product---remains open.  Finally, extending stereographic
+encoding to the full QSVT framework, where the signal is a
+block-encoded matrix rather than a scalar, requires defining a
+matrix-valued stereographic encoding and analyzing its
+interaction with the QSVT product structure.
 
 The stereographic projection is one of the oldest maps in
 mathematics, but its application to quantum signal processing

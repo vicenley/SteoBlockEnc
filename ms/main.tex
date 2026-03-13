@@ -95,12 +95,12 @@
 	algorithms and convergence results apply directly.  The
 	base-case functions are identified with Boyd's rational
 	Chebyshev functions, connecting QSP to classical approximation
-	theory on unbounded domains.  We formulate a stereographic
-	block encoding for operators with unbounded spectra, give
-	explicit circuit constructions, and show that the coherent
-	normalization overhead of standard QSP is replaced by a
-	polynomial sampling cost that grows with the eigenvalue
-	magnitude.
+	theory on unbounded domains.  We characterize the cost
+	tradeoff: the coherent normalization overhead of standard QSP
+	is replaced by a polynomial sampling cost that grows with the
+	signal magnitude, and we sketch how the construction extends to
+	multi-qubit eigenvalue transformations via stereographic block
+	encoding.
 \end{abstract}
 
 \maketitle
@@ -117,18 +117,21 @@
 % Sec 4: Main result --- stereographic QSP lifts boundedness
 \input{sections/qsp_04_main}
 
-% Sec 5: Consequence --- block encoding with unbounded spectra
-\input{sections/qsp_05_block_encoding}
-
-% Sec 6: Cost analysis and applications
+% Sec 5: Cost analysis and applications
 \input{sections/qsp_06_cost_analysis}
+
+% Sec 6: Outlook --- extension to multi-qubit systems
+\input{sections/qsp_05_block_encoding}
 
 % Sec 7: Discussion
 \input{sections/qsp_07_discussion}
 
 % Acknowledgments
 \begin{acknowledgments}
-	We thank (to be completed).
+	This material is based upon work supported by the U.S.\
+	Department of Energy, Office of Science, Accelerated Research
+	in Quantum Computing, Fundamental Algorithmic Research toward
+	Quantum Utility (FAR-Qu).
 \end{acknowledgments}
 
 % Appendix: deferred proofs
