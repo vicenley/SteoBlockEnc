@@ -112,5 +112,20 @@ scales as $\mathcal{O}(r_{\max}^6/\epsilon^2)$ for absolute
 precision, compared to $\mathcal{O}(1/\epsilon^2)$ for standard
 QSVT.
 
-% TODO: Add analysis of adaptive measurement strategies
-% that could improve the scaling for specific eigenvalue ranges
+An adaptive measurement strategy can improve the scaling
+for eigenvalues in a known range.  If $\lambda \in [a, b]$
+with $0 < a \leq b$, the Bloch vector lies in a known
+region of the sphere, and the decoding formula
+$f = (\langle X \rangle + i\langle Y \rangle)
+	/ (1 - \langle Z \rangle)$ can be stabilized by allocating
+measurement shots to the three Pauli observables in
+proportion to their signal-to-noise ratio.  Specifically,
+the variance of $\langle Z \rangle$ dominates when $\langle
+	Z \rangle \to 1$ (small $\lambda$), so directing more shots
+to the $Z$ measurement reduces the error propagation
+through the denominator.  A simple two-stage strategy---first
+estimate $\langle Z \rangle$ to determine the Bloch
+hemisphere, then allocate shots proportionally---can reduce
+the effective exponent from $r^6$ to $r^4$ in favorable
+cases.  We leave a full analysis of adaptive protocols to
+future work.

@@ -55,6 +55,36 @@ this paper is to delineate precisely which Hamiltonian classes are
 tractable and what the construction costs in each case.
 
 % ---------------------------------------------------------------
+%  PARAGRAPH 3b: Positioning against recent work
+% ---------------------------------------------------------------
+
+Several recent developments extend or circumvent the standard
+QSP/QSVT framework.  Generalized QSP~\cite{MotlaghWiebe2023}
+lifts the parity and realness constraints but retains bounded
+polynomial output.  Hamiltonian block
+encoding~\cite{KangSu2025} achieves matrix arithmetics with at
+most two ancilla qubits, without explicit normalization, yet
+still produces bounded transformations.  Randomized
+QSVT~\cite{WangZhangHazraEtAl2025} avoids block encoding
+entirely through importance sampling, and
+Ref.~\cite{MahasingheEtAl2025} uses GQSP with symmetric
+combinations of unitary conjugates.  Practical block encoding
+circuits for matrix polynomials have been developed using
+FOQCS-LCU~\cite{NibbiEtAl2026}, and for bosonic
+systems using QSVT itself~\cite{KaneEtAl2025}.  Meanwhile,
+multivariate QSP has been placed on rigorous footing via
+adversary bounds~\cite{Laneve2025} and modular
+composition~\cite{RossiCeroniChuang2025}.
+Spectral information has been exploited to reduce
+QSVT circuit depth~\cite{Suresh2026}, and single-ancilla
+ground-state preparation without block encoding has been
+demonstrated using power-cosine QSP filters~\cite{Jo2026}.
+Stereographic block encoding occupies a distinct niche among
+these: it is the only approach that produces genuinely unbounded
+eigenvalue transformations, at the cost of requiring the
+eigenbasis.
+
+% ---------------------------------------------------------------
 %  PARAGRAPH 4: Contributions of this paper
 % ---------------------------------------------------------------
 

@@ -180,8 +180,26 @@ encoding:
 	The total gate count for the stereographic block encoding
 	of the two-qubit Heisenberg model~\eqref{eq:heisenberg} is
 	$\mathcal{O}(1)$: a constant number of elementary gates
-	independent of $J$, $h$, and $\|H\|$.
-	% TODO: Enumerate exact gate count after decomposition
+	independent of $J$, $h$, and $\|H\|$.  Specifically:
+	\begin{itemize}
+		\item The Givens rotation $V$ decomposes into 2 CNOT
+		      gates and 1 controlled-$R_y$ (the controlled-$R_y$
+		      itself costs 2 CNOTs and 2 single-qubit
+		      rotations~\cite{NielsenChuang2010}), for a total
+		      of 4 CNOTs and 2 single-qubit gates.
+		\item The uniformly controlled $R_y(2\gamma_j)$ on
+		      the ancilla, conditioned on the 2-qubit system
+		      register, decomposes into at most 4 CNOTs and 4
+		      single-qubit rotations (using the recursive
+		      decomposition for uniformly controlled rotations).
+		\item The undiagonalization $V^\dagger$ has the same
+		      cost as $V$: 4 CNOTs and 2 single-qubit gates.
+	\end{itemize}
+	The total is at most $12$ CNOTs and $8$ single-qubit
+	rotations for the block encoding $U$.  Each QSP step adds
+	1 phase gate (on the ancilla) and 1 signal operator
+	application (the block encoding), giving a total circuit
+	depth of $\mathcal{O}(d)$ where $d$ is the QSP degree.
 \end{proposition}
 
 \begin{remark}[Positivity shift for Heisenberg]
@@ -194,4 +212,39 @@ encoding:
 	encoding).
 \end{remark}
 
-% TODO: Add 3-qubit Heisenberg or other larger example
+\subsection{Scalability: Three-Qubit Heisenberg Chain}
+\label{subsec:three-qubit}
+
+As an indication of scalability, consider the open three-qubit
+Heisenberg chain
+\begin{equation}
+	H_3 = J(\vec{\sigma}_1 \cdot \vec{\sigma}_2
+	+ \vec{\sigma}_2 \cdot \vec{\sigma}_3)
+	+ h\, Z_1.
+	\label{eq:heisenberg-3}
+\end{equation}
+The Hilbert space dimension is $2^3 = 8$, so stereographic
+block encoding uses 4 qubits (3 system + 1 ancilla).  The
+key question is whether the diagonalization $V_3$ admits an
+efficient circuit implementation.
+
+For the two-qubit case, the Givens rotation has
+$\mathcal{O}(1)$ gate count because the Hamiltonian is
+block-diagonal with at most $2\times 2$ blocks.
+The three-qubit Hamiltonian has larger blocks: the total
+$S_z$ is still conserved, giving sectors of dimension 1
+($S_z = \pm 3/2$), 3 ($S_z = +1/2$), and 3 ($S_z = -1/2$).
+Diagonalizing the $3\times 3$ blocks requires two Givens
+rotations per block, giving $\mathcal{O}(1)$ two-qubit
+gates---still constant, though with a larger constant than
+the two-qubit case.
+
+More generally, for an $n$-qubit Heisenberg chain with
+conserved $S_z$, the largest symmetry sector has dimension
+$\binom{n}{\lfloor n/2 \rfloor} = \Theta(2^n/\sqrt{n})$,
+and the diagonalization cost grows accordingly.  For small
+$n$ (up to $\sim\!6$ qubits), the diagonalization is
+tractable via exact Givens decompositions.  Beyond this,
+the construction requires either additional structure
+(e.g., Bethe ansatz circuits~\cite{Bethe1931}) or
+approximate diagonalization.

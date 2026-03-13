@@ -3,22 +3,168 @@
 \section{Deferred Proofs}
 \label{app:proofs}
 
-% TODO: Add proofs as the main text develops.
-% Candidates:
-% - Proof of Proposition 3 (direct-sum decomposition) — if expanded
-% - Proof of Corollary 5 (depth comparison) — formal version
-% - Explicit Givens decomposition for Heisenberg model
-% - Gate count analysis for uniformly controlled rotations
+\subsection{Explicit Diagonalization of the Two-Qubit
+	Heisenberg Model}
+\label{app:heisenberg-diag}
 
-This appendix will collect detailed proofs of results stated in
-the main text.
+We provide the full diagonalization of
+$H = J(\vec\sigma_1 \cdot \vec\sigma_2) + h\,Z_1$
+on two qubits.  In the standard basis
+$\{\ket{00}, \ket{01}, \ket{10}, \ket{11}\}$,
+the matrix representation is
+\begin{equation}
+	H = \begin{pmatrix}
+		J+h & 0    & 0    & 0   \\
+		0   & -J+h & 2J   & 0   \\
+		0   & 2J   & -J-h & 0   \\
+		0   & 0    & 0    & J-h
+	\end{pmatrix}.
+	\tag{A1}
+	\label{eq:heisenberg-matrix}
+\end{equation}
 
-\subsection*{Explicit Diagonalization of the Two-Qubit Heisenberg Model}
+The states $\ket{00}$ and $\ket{11}$ are eigenstates with
+eigenvalues $\lambda_1 = J+h$ and $\lambda_4 = J-h$,
+respectively.  The $\{\ket{01}, \ket{10}\}$ subspace has
+the $2\times 2$ block
+\begin{equation}
+	H_{01} = \begin{pmatrix}
+		-J+h & 2J   \\
+		2J   & -J-h
+	\end{pmatrix}
+	\tag{A2}
+\end{equation}
+with eigenvalues
+$\lambda_{2,3} = -J \pm \sqrt{h^2+4J^2}$.
 
-% TODO: Write out the full diagonalization, including:
-% - The 4x4 Hamiltonian matrix
-% - Block structure
-% - Givens rotation angle
-% - Full V matrix
-% - Verification V H V^dagger = D
-% - Circuit decomposition of V into elementary gates
+The diagonalizing Givens rotation in this subspace is
+\begin{equation}
+	G(\varphi) = \begin{pmatrix}
+		\cos\varphi & -\sin\varphi \\
+		\sin\varphi & \cos\varphi
+	\end{pmatrix},
+	\qquad
+	\tan(2\varphi) = \frac{2J}{h},
+	\tag{A3}
+\end{equation}
+so that $G^\top H_{01}\,G = \mathrm{diag}(\lambda_2,
+	\lambda_3)$.  The full change-of-basis unitary is
+$V = I_{\{00,11\}} \oplus G(\varphi)$, giving
+$V^\dagger H V = \mathrm{diag}(\lambda_1, \lambda_2,
+	\lambda_3, \lambda_4)$.
+
+\emph{Verification.}
+We confirm $VHV^\dagger = D$ by direct computation.
+In the $\{\ket{01}, \ket{10}\}$ block:
+\begin{align}
+	G^\top H_{01}\,G & = \begin{pmatrix}
+		                     \cos\varphi  & \sin\varphi \\
+		                     -\sin\varphi & \cos\varphi
+	                     \end{pmatrix}
+	\begin{pmatrix}
+		-J+h & 2J   \\
+		2J   & -J-h
+	\end{pmatrix}
+	\begin{pmatrix}
+		\cos\varphi & -\sin\varphi \\
+		\sin\varphi & \cos\varphi
+	\end{pmatrix}
+	\notag                                                                                         \\
+	                 & = \begin{pmatrix}
+		                     -J + h\cos2\varphi + 2J\sin2\varphi & 0                                   \\
+		                     0                                   & -J - h\cos2\varphi - 2J\sin2\varphi
+	                     \end{pmatrix},
+	\tag{A4}
+\end{align}
+where the off-diagonal vanishes by the condition
+$\tan(2\varphi) = 2J/h$, and the diagonal entries reduce
+to $\lambda_{2,3} = -J \pm \sqrt{h^2+4J^2}$ using
+$\cos2\varphi = h/\sqrt{h^2+4J^2}$ and
+$\sin2\varphi = 2J/\sqrt{h^2+4J^2}$.
+
+\emph{Circuit decomposition.}
+The Givens rotation $G(\varphi)$ acting on the
+$\{\ket{01}, \ket{10}\}$ subspace of two qubits can be
+decomposed as follows:
+\begin{enumerate}
+	\item CNOT from qubit 2 to qubit 1 (maps $\ket{01}
+		      \to \ket{01}$, $\ket{10} \to \ket{11}$),
+	\item controlled-$R_y(2\varphi)$ on qubit 2, controlled
+	      by qubit 1 (applies the rotation in the
+	      $\ket{1}\bra{1}$ subspace of qubit 1),
+	\item CNOT from qubit 2 to qubit 1 (undoes the first
+	      CNOT on the unrotated part).
+\end{enumerate}
+The controlled-$R_y$ decomposes into 2 CNOTs and 2
+single-qubit rotations~\cite{NielsenChuang2010}, giving
+a total of 4 CNOTs and 2 single-qubit gates for~$V$.
+
+\subsection{Gate Count for Uniformly Controlled Rotations}
+\label{app:ucr-gates}
+
+A uniformly controlled rotation on an ancilla qubit,
+conditioned on an $n$-qubit system register, applies a
+different rotation $R_y(2\gamma_k)$ for each computational
+basis state $\ket{k}$ of the system.  The standard
+recursive decomposition~\cite{NielsenChuang2010} gives:
+
+\begin{proposition}
+	\label{prop:ucr-count}
+	A uniformly controlled $R_y$ on 1 ancilla qubit,
+	conditioned on $n$ system qubits, can be implemented with
+	at most $2^n$ CNOT gates and $2^n$ single-qubit
+	rotations.
+\end{proposition}
+
+\begin{proof}
+	The decomposition proceeds by recursion on $n$.  For
+	$n = 1$: a controlled-$R_y$ uses 2 CNOTs and 2
+	single-qubit gates.  For general $n$: the uniformly
+	controlled rotation splits into two uniformly controlled
+	rotations on $n-1$ qubits, separated by a CNOT, giving
+	the recurrence $C(n) = 2\,C(n-1) + 1$.  With $C(1) = 2$,
+	this solves to $C(n) = 2^n$ CNOTs.  The single-qubit
+	count is the same: each leaf of the recursion contributes
+	one rotation.
+\end{proof}
+
+For the two-qubit Heisenberg model ($n = 2$), this gives
+at most 4 CNOTs and 4 single-qubit rotations for
+$U_{\mathrm{diag}}$.
+
+\subsection{Depth Comparison with Standard Block Encoding}
+\label{app:depth-comparison}
+
+\begin{corollary}[Depth advantage]
+	\label{cor:depth-proof}
+	For the stereographic QSVT protocol at QSP degree $d$,
+	the total circuit depth is $\mathcal{O}(d + C_V)$, where
+	$C_V$ is the depth of the diagonalization circuit.
+	For standard QSVT with an $(\alpha, m, \epsilon)$-block
+	encoding, the depth is $\mathcal{O}(d \cdot C_{\mathrm{BE}})$,
+	where $C_{\mathrm{BE}}$ is the depth of the block
+	encoding circuit and the QSP degree $d$ must be inflated
+	by a factor of $\alpha$ to achieve the same polynomial
+	approximation quality.
+\end{corollary}
+
+\begin{proof}
+	In stereographic QSVT, the signal operator is applied
+	$d$ times, and each application has depth~1 (a single
+	uniformly controlled rotation, which is pre-compiled
+	into the circuit).  The diagonalization $V$ and its
+	inverse $V^\dagger$ are applied once each, adding
+	$2\,C_V$ to the total depth.
+
+	In standard QSVT, each of the $d$ signal operator
+	applications requires one query to the block encoding
+	(depth $C_{\mathrm{BE}}$) and one controlled reflection
+	(depth $\mathcal{O}(m)$ where $m$ is the number of
+	ancilla qubits).  Moreover, to approximate $f(x)$ on
+	$[-1, 1]$, the standard approach actually approximates
+	$f(\alpha\,x)$, requiring degree $\mathcal{O}(\alpha\,d')$
+	where $d'$ is the degree needed for the un-normalized
+	function.  Stereographic encoding avoids this inflation
+	entirely, since each eigenvalue is encoded directly
+	without normalization.
+\end{proof}

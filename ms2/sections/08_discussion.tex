@@ -28,9 +28,33 @@ exact diagonalization is tractable.  The Heisenberg model
 the change of basis is a Givens rotation with $\mathcal{O}(1)$
 gate complexity.
 
-% TODO: Expand discussion of integrable models.
-% Which Bethe-ansatz models have efficient circuit implementations
-% of the diagonalization?
+For Bethe-ansatz-solvable models, the eigenstates are
+parameterized by rapidities satisfying algebraic equations,
+and the challenge is converting these solutions into
+quantum circuits.  The XXX and XXZ spin chains have
+eigenstates expressible as coordinate Bethe wave functions,
+which can in principle be prepared by circuits of depth
+polynomial in the system size~$n$ and the number of
+magnons~$M$.  For the two-magnon sector ($M=2$), the
+wave function is a sum of $\binom{n}{2}$ computational
+basis states with known amplitudes, and state preparation
+via amplitude encoding has gate complexity
+$\mathcal{O}(n^2)$.  Whether the full diagonalization
+$V$ (across all magnon sectors simultaneously) can be
+implemented efficiently is an open question that connects
+to the broader program of quantum simulation of integrable
+models.
+
+Free-fermion systems (e.g., the transverse-field Ising
+model) provide a more immediately tractable class: the
+Jordan--Wigner transformation maps the Hamiltonian to a
+quadratic form in fermionic operators, and diagonalization
+reduces to a unitary rotation in the single-particle
+Hilbert space.  This rotation can be implemented as a
+circuit of $\mathcal{O}(n^2)$ Givens rotations, each
+costing $\mathcal{O}(1)$ elementary gates, giving a total
+diagonalization cost of $\mathcal{O}(n^2)$---polynomial
+and practical for moderate~$n$.
 
 \subsection{Connection to Quantum Phase Estimation}
 \label{subsec:qpe-connection}
@@ -47,8 +71,26 @@ of~$H/\alpha$.  The advantage of stereographic encoding over
 standard QSVT in this hybrid setting is unclear and deserves
 further investigation.
 
-% TODO: Formalize the hybrid QPE + stereo-QSP protocol.
-% Under what conditions does it outperform standard QSVT?
+A concrete hybrid protocol would proceed as follows:
+(i)~run QPE with $t$ bits of precision, projecting the
+system into an approximate eigenspace;
+(ii)~read the QPE register to obtain an estimate
+$\tilde{\lambda}$ of the eigenvalue;
+(iii)~apply a single-qubit stereographic QSP sequence
+on the ancilla using $\tilde{\lambda}$ as the signal
+parameter, producing an unbounded rational transformation
+$f(\tilde{\lambda})$.  Step~(iii) requires no block encoding
+and has depth $\mathcal{O}(d)$ independent of $\|H\|$.
+However, steps~(i--ii) require $\mathcal{O}(t)$ controlled
+applications of $e^{iH\tau}$ and $t$ ancilla qubits for the
+phase register.  The total cost is therefore dominated by
+the QPE step: $\mathcal{O}(t \cdot C_{e^{iH\tau}})$, where
+$C_{e^{iH\tau}}$ is the cost of implementing the time
+evolution.  This hybrid is advantageous only if $C_{e^{iH\tau}}
+	\ll \alpha \cdot C_{\mathrm{BE}}$ (the cost of one
+$\alpha$-normalized block encoding query), which can occur
+for Hamiltonians with efficient Trotter decompositions but
+expensive block encodings.
 
 \subsection{Generalized Signal Operators}
 \label{subsec:generalized}
@@ -73,17 +115,68 @@ class of achievable functions and relax the parity constraint.
 \label{subsec:related}
 
 Stereographic block encoding is complementary to several recent
-extensions of the QSP framework.
-GQSP~\cite{MotlaghWiebe2023} lifts the parity and realness
-constraints and provides faster angle-finding, but retains
-bounded output.  Hamiltonian block encoding~\cite{KangSu2025}
-uses at most two ancilla qubits without explicit normalization,
-but still produces bounded polynomial transformations.
-Randomized QSVT~\cite{WangZhangHazraEtAl2025} avoids block
-encodings through importance sampling, addressing a different
-cost bottleneck.  Stereographic encoding is the only approach
+extensions of the QSP framework, each addressing a different
+limitation of the standard approach.
+
+\emph{Lifting parity and realness.}
+GQSP~\cite{MotlaghWiebe2023} removes the parity and realness
+constraints of standard QSP and provides a fast angle-finding
+algorithm for polynomials of degree~$\sim 10^7$, but the output
+remains a bounded polynomial of the block-encoded signal.
+Modular QSP~\cite{RossiCeroniChuang2025} extends this to
+composable multi-input-output gadgets in several variables, and
+adversary bounds have been used to characterize achievable
+multivariate QSP protocols~\cite{Laneve2025}.  These
+generalizations enlarge the class of achievable \emph{bounded}
+polynomials; stereographic encoding enlarges the output range
+instead.
+
+\emph{Reducing or avoiding block encoding overhead.}
+Hamiltonian block encoding~\cite{KangSu2025} achieves quantum
+matrix arithmetics with at most two ancilla qubits without
+explicit normalization, but still produces bounded
+transformations.  Randomized QSVT~\cite{WangZhangHazraEtAl2025}
+avoids block encodings entirely through importance sampling, with
+gate complexity independent of the number of Hamiltonian terms.
+Mahasinghe et al.~\cite{MahasingheEtAl2025} use GQSP with
+symmetric combinations of unitary conjugates to synthesize
+Hermitian matrix functions without block encoding.  The
+power-cosine QSP filter~\cite{Jo2026} achieves ground-state
+preparation using only a single ancilla and controlled
+time-evolution operators, avoiding block encoding through
+mid-circuit measurement and reset.
+
+\emph{Practical block encoding circuits.}
+The FOQCS-LCU framework~\cite{NibbiEtAl2026} reduces the
+overhead for block-encoding matrix polynomials, with circuit
+depth scaling linearly in the polynomial degree and independent
+of system size.  Kane et al.~\cite{KaneEtAl2025} use QSVT and
+QETU for block encoding lattice boson Hamiltonians, introducing
+the LOVE-LCU approach that outperforms asymptotically superior
+methods for systems up to $\sim 11$ qubits.  Tang and
+Lai~\cite{TangLai2026} extend block encoding to structured
+dense matrices via hierarchical low-rank compression.
+
+\emph{Exploiting spectral information.}
+Suresh~\cite{Suresh2026} shows that when eigenvalues of the
+block-encoded matrix are partially known, spectrally corrected
+polynomial approximations can reduce QSVT circuit depth by up
+to $5\times$.  Stereographic encoding takes this to its logical
+extreme: when the full eigenbasis is known, the normalization
+$\alpha$ can be removed entirely, and the eigenvalue
+transformation becomes exact at each eigenspace.
+
+In summary, stereographic block encoding is the only approach
 that produces genuinely unbounded output, at the cost of the
 eigenbasis requirement and increased sampling overhead.
+It is most naturally compared with spectral correction
+methods~\cite{Suresh2026}, which exploit partial spectral
+knowledge to reduce depth within the standard framework, and
+with block-encoding-free approaches~\cite{MahasingheEtAl2025,
+	Jo2026,WangZhangHazraEtAl2025}, which trade the block encoding
+requirement for other constraints.  The three approaches are
+complementary and target different points on the
+information--overhead tradeoff.
 
 \subsection{Open Problems}
 \label{subsec:open}
