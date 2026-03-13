@@ -52,13 +52,19 @@ $a = \cos\theta$.
 	\end{quantikz}
 	\caption{%
 		Geometric picture of quantum signal processing.
-		\textbf{(a)}~Each application of the signal unitary
-		$W(a)$ rotates the state by $\theta = \arccos(a)$ on a
-		great circle of the Bloch sphere.  After $k$ applications
-		the $\ket{0}$-amplitude is
-		$\cos(k\theta) = T_k(a)$, a Chebyshev polynomial of the
-		signal~$a$; the dashed line shows the projection
-		$T_2(a)$ for $k=2$.
+		\textbf{(a)}~Grover's algorithm in the two-dimensional
+		plane spanned by the target state $\ket{\psi_*}$ and its
+		complement $\ket{\psi_*^{\perp}}$.  The initial
+		superposition $\ket{\psi_0} = \ket{S}$ lies at angle
+		$\theta$ from $\ket{\psi_*^{\perp}}$, where
+		$\sin\theta = \braket{\psi_*}{\psi_0}$.  The oracle
+		reflects about $\ket{\psi_*^{\perp}}$ (dashed), and
+		the combined Grover operator $G$ rotates by $2\theta$
+		toward the target; after $k$ iterations the target-state
+		amplitude is $\sin\!\big((2k{+}1)\theta\big)$---a
+		trigonometric polynomial of the signal
+		$a = \cos\theta$.  The dashed projection shows $\sin 3\theta$
+		after one iteration.
 		\textbf{(b)}~The QSP circuit generalizes this structure:
 		signal rotations $W(a)$ alternate with tunable phase gates
 		$\exp[i\phi_j Z]$.  In Grover's algorithm all phases are

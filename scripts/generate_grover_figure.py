@@ -1,17 +1,20 @@
 #!/usr/bin/env python3
 """
-Generate the Grover/QSP Bloch-sphere figure (panel a) for Section II.
+Generate the Grover/QSP geometric figure (panel a) for Section II.
 
 Produces ms/figures/grover_bloch.pdf — a single-column-width figure showing
-the 2D great-circle cross-section of the Bloch sphere.  The signal unitary
-W(a) rotates by θ = arccos(a) in the xz-plane; successive applications walk
-the state along the circle, and the |0⟩-amplitude is cos(kθ) = T_k(a).
+the geometric interpretation of Grover's algorithm in the 2D plane spanned
+by {|ψ_*⟩, |ψ_*⊥⟩}, bridging to the QSP framework.
 
-Convention:
-  - Vertical axis  = |0⟩ (top)  / |1⟩ (bottom)  [= cos component]
-  - Horizontal axis = sin component
-  - Angle θ from the |0⟩ axis defines the signal a = cos θ
-  - Each W(a) application rotates clockwise by θ
+Convention (following Benenti et al., Fig 3.24):
+  - Vertical axis   = |ψ_*⟩  (target state)
+  - Horizontal axis  = |ψ_*⊥⟩ (complement of target)
+  - |ψ₀⟩ = |S⟩ (equal superposition) at angle θ from horizontal
+  - Oracle O reflects about |ψ_*⊥⟩ axis
+  - Grover operator G rotates by 2θ toward |ψ_*⟩
+  - After k iterations: state at angle (2k+1)θ, target amplitude = sin((2k+1)θ)
+
+QSP bridge: a = cos θ is the signal; amplitudes are Chebyshev polynomials.
 
 Style matches the other publication figures (serif fonts, Okabe-Ito palette).
 """
@@ -23,9 +26,9 @@ import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 from matplotlib import rcParams
-from matplotlib.patches import Arc, FancyArrowPatch
+from matplotlib.patches import Arc
 
-# ── Publication style (matches generate_figures_from_data.py) ────────────────
+# ── Publication style ────────────────────────────────────────────────────────
 rcParams.update(
     {
         "font.family": "serif",
@@ -45,6 +48,7 @@ rcParams.update(
         "savefig.bbox": "tight",
         "savefig.pad_inches": 0.03,
         "text.usetex": True,
+        "text.latex.preamble": r"\usepackage{amsmath}\usepackage{braket}",
         "mathtext.fontset": "cm",
         "lines.linewidth": 1.0,
     }
@@ -63,18 +67,37 @@ C = {
     "black": "#000000",
     "gray": "#999999",
     "lightgray": "#CCCCCC",
+    "darkgray": "#555555",
 }
 
 COLWIDTH = 3.4  # REVTeX single-column width in inches
 
 
-def draw_grover_bloch(ax):
-    """
-    Draw the 2D great-circle cross-section with QSP signal rotations.
+def _arrow(ax, x, y, color, lw=0.9, zorder=5):
+    """Draw an arrow from origin to (x, y)."""
+    ax.annotate(
+        "",
+        xy=(x, y),
+        xytext=(0, 0),
+        arrowprops=dict(
+            arrowstyle="-|>",
+            color=color,
+            lw=lw,
+            shrinkA=0,
+            shrinkB=1.5,
+            mutation_scale=8,
+        ),
+        zorder=zorder,
+    )
 
-    |0⟩ at top, |1⟩ at bottom.  The signal unitary W(a) rotates by
-    θ = arccos(a) clockwise; after k applications the state is at angle
-    kθ from |0⟩ and its |0⟩-amplitude is cos(kθ) = T_k(a).
+
+def draw_grover_qsp(ax):
+    """
+    Draw Grover's geometric interpretation bridged to QSP.
+
+    2D plane: horizontal = |ψ_*⊥⟩, vertical = |ψ_*⟩.
+    |ψ₀⟩ at angle θ from horizontal.  Oracle reflects about horizontal.
+    Grover operator G rotates by 2θ toward the target.
     """
     R = 1.0
 
@@ -88,91 +111,135 @@ def draw_grover_bloch(ax):
         zorder=1,
     )
 
-    # Thin gray cross-hairs (axes through origin)
-    ax.plot([0, 0], [-1.15, 1.15], color=C["lightgray"], lw=0.4, zorder=0)
-    ax.plot([-1.15, 1.15], [0, 0], color=C["lightgray"], lw=0.4, zorder=0)
+    # ── Axes ─────────────────────────────────────────────────────────────
+    # Light gray cross-hairs
+    ax.plot([0, 0], [-1.12, 1.12], color=C["lightgray"], lw=0.4, zorder=0)
+    ax.plot([-1.12, 1.12], [0, 0], color=C["lightgray"], lw=0.4, zorder=0)
 
     # ── Parameters ───────────────────────────────────────────────────────
-    theta_deg = 25  # slightly larger angle for clearer visualization
-    theta = np.radians(theta_deg)
+    # θ = angle between |ψ₀⟩ and horizontal axis
+    # Choose θ ≈ 20° for N ≈ 8 (sin θ ≈ 1/√N)
+    theta = np.radians(20)
 
-    # State after k applications: math polar angle = 90° - kθ
-    n_states = 4
-    colors = [C["blue"], C["green"], C["orange"], C["red"]]
-    labels = [
-        r"$|0\rangle$",
-        r"$W|0\rangle$",
-        r"$W^{\!2}|0\rangle$",
-        r"$W^{\!3}|0\rangle$",
-    ]
+    # ── Key states ───────────────────────────────────────────────────────
+    # All angles measured from the positive horizontal axis (|ψ_*⊥⟩)
 
-    states = []
-    for k in range(n_states):
-        polar = np.pi / 2 - k * theta
-        x = R * np.cos(polar)
-        y = R * np.sin(polar)
-        states.append((x, y, polar))
+    # |ψ₀⟩ = |S⟩ — initial superposition at angle θ
+    psi0_angle = theta
+    psi0 = (R * np.cos(psi0_angle), R * np.sin(psi0_angle))
 
-    # ── State vectors (arrows from origin) ───────────────────────────────
-    for k, (x, y, _) in enumerate(states):
-        ax.annotate(
-            "",
-            xy=(x, y),
-            xytext=(0, 0),
-            arrowprops=dict(
-                arrowstyle="-|>",
-                color=colors[k],
-                lw=1.2 if k == 0 else 0.9,
-                shrinkA=0,
-                shrinkB=1.5,
-                mutation_scale=8,
-            ),
-            zorder=5,
-        )
-        ax.plot(x, y, "o", color=colors[k], markersize=3.0, zorder=6)
+    # O|ψ₀⟩ — oracle reflection about horizontal axis (flip sign of |ψ_*⟩)
+    Opsi_angle = -theta
+    Opsi = (R * np.cos(Opsi_angle), R * np.sin(Opsi_angle))
+
+    # G|ψ₀⟩ — after 1 Grover iteration, at angle 3θ
+    Gpsi_angle = 3 * theta
+    Gpsi = (R * np.cos(Gpsi_angle), R * np.sin(Gpsi_angle))
+
+    # G²|ψ₀⟩ — after 2 iterations, at angle 5θ
+    G2psi_angle = 5 * theta
+    G2psi = (R * np.cos(G2psi_angle), R * np.sin(G2psi_angle))
+
+    # ── Draw O|ψ₀⟩ first (dashed, behind everything) ─────────────────────
+    ax.plot(
+        [0, Opsi[0]],
+        [0, Opsi[1]],
+        color=C["darkgray"],
+        lw=0.7,
+        ls="--",
+        zorder=2,
+    )
+    ax.plot(Opsi[0], Opsi[1], "o", color=C["darkgray"], markersize=2.5, zorder=3)
+    ax.annotate(
+        r"$O\ket{\psi_0}$",
+        Opsi,
+        textcoords="offset points",
+        xytext=(6, -6),
+        fontsize=7,
+        color=C["darkgray"],
+        ha="left",
+        va="top",
+        zorder=7,
+    )
+
+    # Dotted reflection line connecting |ψ₀⟩ to O|ψ₀⟩
+    ax.plot(
+        [psi0[0], Opsi[0]],
+        [psi0[1], Opsi[1]],
+        color=C["lightgray"],
+        lw=0.5,
+        ls=":",
+        zorder=1,
+    )
+
+    # ── State vectors ────────────────────────────────────────────────────
+    # |ψ₀⟩ = |S⟩
+    _arrow(ax, *psi0, C["blue"], lw=1.2)
+    ax.plot(*psi0, "o", color=C["blue"], markersize=3.5, zorder=6)
+
+    # G|ψ₀⟩
+    _arrow(ax, *Gpsi, C["green"], lw=1.0)
+    ax.plot(*Gpsi, "o", color=C["green"], markersize=3.0, zorder=6)
+
+    # G²|ψ₀⟩
+    _arrow(ax, *G2psi, C["orange"], lw=0.9)
+    ax.plot(*G2psi, "o", color=C["orange"], markersize=3.0, zorder=6)
 
     # ── State labels ─────────────────────────────────────────────────────
-    label_offsets = [
-        (-5, 8),  # |0⟩: above-left
-        (5, 6),  # W|0⟩: above-right
-        (6, 2),  # W²|0⟩: right
-        (6, -2),  # W³|0⟩: right-below
-    ]
-    label_ha = ["right", "left", "left", "left"]
-    for k, (x, y, _) in enumerate(states):
-        ax.annotate(
-            labels[k],
-            (x, y),
-            textcoords="offset points",
-            xytext=label_offsets[k],
-            fontsize=8,
-            color=colors[k],
-            ha=label_ha[k],
-            va="center",
-            zorder=7,
-        )
+    ax.annotate(
+        r"$\ket{\psi_0}\!=\!\ket{S}$",
+        psi0,
+        textcoords="offset points",
+        xytext=(5, 5),
+        fontsize=7.5,
+        color=C["blue"],
+        ha="left",
+        va="bottom",
+        zorder=7,
+    )
+    ax.annotate(
+        r"$G\ket{\psi_0}$",
+        Gpsi,
+        textcoords="offset points",
+        xytext=(5, 5),
+        fontsize=7.5,
+        color=C["green"],
+        ha="left",
+        va="bottom",
+        zorder=7,
+    )
+    ax.annotate(
+        r"$G^2\ket{\psi_0}$",
+        G2psi,
+        textcoords="offset points",
+        xytext=(5, 3),
+        fontsize=7.5,
+        color=C["orange"],
+        ha="left",
+        va="bottom",
+        zorder=7,
+    )
 
-    # ── θ arc (from |0⟩ to W|0⟩) ─────────────────────────────────────────
-    arc_r = 0.48
-    arc = Arc(
+    # ── Angle θ: from horizontal to |ψ₀⟩ ─────────────────────────────────
+    arc_r = 0.50
+    arc_theta = Arc(
         (0, 0),
         2 * arc_r,
         2 * arc_r,
         angle=0,
-        theta1=np.degrees(states[1][2]),  # W|0⟩ angle
-        theta2=90,  # |0⟩ angle
+        theta1=0,
+        theta2=np.degrees(theta),
         color=C["black"],
         linewidth=0.7,
         zorder=3,
     )
-    ax.add_patch(arc)
-
-    # θ label — placed just outside the arc midpoint
-    mid_angle = np.pi / 2 - 0.5 * theta
-    lr = arc_r + 0.12
+    ax.add_patch(arc_theta)
+    # θ label
+    mid_th = theta / 2
+    lr = arc_r + 0.10
     ax.text(
-        lr * np.cos(mid_angle),
-        lr * np.sin(mid_angle),
+        lr * np.cos(mid_th),
+        lr * np.sin(mid_th),
         r"$\theta$",
         fontsize=8.5,
         ha="center",
@@ -180,77 +247,97 @@ def draw_grover_bloch(ax):
         zorder=7,
     )
 
-    # ── Small rotation arrows between successive states ──────────────────
-    # Show θ arcs between states 1→2 and 2→3 to reinforce "rotate by θ"
-    for k_start in [1, 2]:
-        arc_rk = 0.30 + k_start * 0.07
-        a_start = np.degrees(states[k_start + 1][2])
-        a_end = np.degrees(states[k_start][2])
-        small_arc = Arc(
-            (0, 0),
-            2 * arc_rk,
-            2 * arc_rk,
-            angle=0,
-            theta1=a_start,
-            theta2=a_end,
-            color=C["gray"],
-            linewidth=0.4,
-            linestyle=":",
-            zorder=2,
-        )
-        ax.add_patch(small_arc)
-
-    # ── Projection: show cos(2θ) = T_2(a) for the k=2 state ─────────────
-    k_proj = 2
-    x_p, y_p, _ = states[k_proj]
-
-    # Dashed horizontal line from state to vertical axis
-    ax.plot(
-        [0, x_p],
-        [y_p, y_p],
-        color=C["orange"],
-        linewidth=0.6,
-        linestyle="--",
-        zorder=2,
-    )
-    # Small tick on vertical axis
-    ax.plot(
-        [-0.03, 0.03],
-        [y_p, y_p],
-        color=C["orange"],
+    # ── 2θ rotation arc: from |ψ₀⟩ to G|ψ₀⟩ ─────────────────────────────
+    arc_2th_r = 0.70
+    arc_2th = Arc(
+        (0, 0),
+        2 * arc_2th_r,
+        2 * arc_2th_r,
+        angle=0,
+        theta1=np.degrees(theta),
+        theta2=np.degrees(3 * theta),
+        color=C["red"],
         linewidth=0.8,
         zorder=3,
     )
-    # T_2(a) label on vertical axis
+    ax.add_patch(arc_2th)
+    # 2θ label
+    mid_2th = 2 * theta
+    lr2 = arc_2th_r + 0.11
     ax.text(
-        -0.08,
-        y_p,
-        r"$T_2(a)$",
-        fontsize=7,
-        ha="right",
+        lr2 * np.cos(mid_2th),
+        lr2 * np.sin(mid_2th),
+        r"$2\theta$",
+        fontsize=7.5,
+        ha="center",
         va="center",
-        color=C["orange"],
+        color=C["red"],
         zorder=7,
     )
 
-    # Dashed vertical line from state down to horizontal axis
-    ax.plot(
-        [x_p, x_p],
-        [0, y_p],
-        color=C["orange"],
-        linewidth=0.4,
+    # ── 2θ rotation arc: from G|ψ₀⟩ to G²|ψ₀⟩ ───────────────────────────
+    arc_2th2_r = 0.55
+    arc_2th2 = Arc(
+        (0, 0),
+        2 * arc_2th2_r,
+        2 * arc_2th2_r,
+        angle=0,
+        theta1=np.degrees(3 * theta),
+        theta2=np.degrees(5 * theta),
+        color=C["gray"],
+        linewidth=0.5,
         linestyle=":",
         zorder=2,
     )
+    ax.add_patch(arc_2th2)
+
+    # ── Projection: sin(3θ) for G|ψ₀⟩ onto vertical axis ────────────────
+    # This shows the target-state amplitude after 1 iteration
+    Gpsi_proj_y = Gpsi[1]  # = sin(3θ)
+    ax.plot(
+        [0, Gpsi[0]],
+        [Gpsi_proj_y, Gpsi_proj_y],
+        color=C["green"],
+        linewidth=0.5,
+        linestyle="--",
+        zorder=2,
+    )
+    ax.plot(
+        [-0.03, 0.03],
+        [Gpsi_proj_y, Gpsi_proj_y],
+        color=C["green"],
+        linewidth=0.8,
+        zorder=3,
+    )
+    ax.text(
+        -0.07,
+        Gpsi_proj_y,
+        r"$\sin 3\theta$",
+        fontsize=6.5,
+        ha="right",
+        va="center",
+        color=C["green"],
+        zorder=7,
+    )
 
     # ── Axis labels ──────────────────────────────────────────────────────
-    # Vertical axis: |0⟩ at top, |1⟩ at bottom  (= cos component)
-    # Note: |0⟩ is already labeled as a state; add standalone pole labels
-    # only for |1⟩ at bottom
+    # |ψ_*⟩ at top of vertical axis
     ax.text(
         0.06,
-        -R - 0.07,
-        r"$|1\rangle$",
+        R + 0.07,
+        r"$\ket{\psi_*}$",
+        fontsize=8.5,
+        ha="left",
+        va="bottom",
+        color=C["black"],
+        zorder=7,
+    )
+
+    # |ψ_*⊥⟩ at right end of horizontal axis
+    ax.text(
+        R + 0.06,
+        -0.07,
+        r"$\ket{\psi_*^{\!\perp}}$",
         fontsize=8,
         ha="left",
         va="top",
@@ -258,10 +345,11 @@ def draw_grover_bloch(ax):
         zorder=7,
     )
 
-    # a = cos θ annotation — placed cleanly to the left of the vertical axis
+    # ── QSP bridge annotation ────────────────────────────────────────────
+    # a = cos θ, sin θ = ⟨ψ_*|ψ₀⟩
     ax.text(
         -0.55,
-        -1.18,
+        -1.15,
         r"$a = \cos\theta$",
         fontsize=7.5,
         ha="center",
@@ -271,18 +359,18 @@ def draw_grover_bloch(ax):
     )
 
     # ── Clean up ─────────────────────────────────────────────────────────
-    ax.set_xlim(-1.20, 1.55)
-    ax.set_ylim(-1.30, 1.30)
+    ax.set_xlim(-1.15, 1.55)
+    ax.set_ylim(-1.22, 1.22)
     ax.set_aspect("equal")
     ax.axis("off")
 
 
 def main():
-    # Larger figure: 0.75 × COLWIDTH for better readability in two-column format
     figsize = COLWIDTH * 0.75
     fig, ax = plt.subplots(1, 1, figsize=(figsize, figsize))
-    draw_grover_bloch(ax)
+    draw_grover_qsp(ax)
 
+    os.makedirs(FIGDIR, exist_ok=True)
     outpath = os.path.join(FIGDIR, "grover_bloch.pdf")
     fig.savefig(outpath, format="pdf")
     plt.close(fig)
