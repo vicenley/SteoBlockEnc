@@ -108,7 +108,15 @@ whose forward direction follows from the same inductive argument
 as the unnormalized formulation
 (Section~\ref{subsec:review-function-class}), but whose
 converse---decomposing arbitrary polynomial pairs into such a
-product---remains open.  This generalization could enlarge the
+product---remains open.  Recent work establishing that GQSP is
+equivalent to the nonlinear Fourier transform on
+$SU(2)$~\cite{Laneve2025b,AlexisBeckerEtAl2026} provides a
+natural framework for attacking this question: the
+stereographic generalization corresponds to a deformation of the
+standard NLFT, and the inverse NLFT algorithms of
+Ni et al.~\cite{NiSarkarYingLin2025} could potentially be
+adapted to compute phase factors for the generalized product.
+This generalization could enlarge the
 class of achievable functions and relax the parity constraint.
 
 \subsection{Comparison with Related Work}
@@ -116,20 +124,45 @@ class of achievable functions and relax the parity constraint.
 
 Stereographic block encoding is complementary to several recent
 extensions of the QSP framework, each addressing a different
-limitation of the standard approach.
+limitation of the standard approach.  We refer the reader to
+Lin~\cite{Lin2025} and Joven et al.~\cite{JovenEtAl2025} for
+comprehensive surveys of the rapidly evolving landscape.
 
 \emph{Lifting parity and realness.}
 GQSP~\cite{MotlaghWiebe2023} removes the parity and realness
 constraints of standard QSP and provides a fast angle-finding
 algorithm for polynomials of degree~$\sim 10^7$, but the output
 remains a bounded polynomial of the block-encoded signal.
+Berry et al.~\cite{BerryMotlaghPantaleoniWiebe2024} show that
+GQSP can double the efficiency of Hamiltonian simulation by
+exploiting controlled forward/reverse block encoding steps.
 Modular QSP~\cite{RossiCeroniChuang2025} extends this to
 composable multi-input-output gadgets in several variables, and
 adversary bounds have been used to characterize achievable
-multivariate QSP protocols~\cite{Laneve2025}.  These
-generalizations enlarge the class of achievable \emph{bounded}
-polynomials; stereographic encoding enlarges the output range
-instead.
+multivariate QSP protocols~\cite{Laneve2025}.  The mathematical
+foundations have been deepened through the $SU(2n)$-valued
+nonlinear Fourier transform~\cite{AlexisBeckerEtAl2026},
+the proof that GQSP and the NLFT on $SU(2)$ are
+equivalent~\cite{Laneve2025b}, a numerically stable
+inverse NLFT algorithm for phase factor
+computation~\cite{NiSarkarYingLin2025}, and a Solovay--Kitaev
+theorem for QSP that connects gate approximation theory to
+QSP circuit synthesis~\cite{Rossi2025}.
+These generalizations enlarge the class of achievable
+\emph{bounded} polynomials; stereographic encoding enlarges the
+output range instead.
+
+\emph{Eigenvalue transformation beyond QSVT.}
+Jiang and An~\cite{JiangAn2026} develop contour-integral based
+quantum eigenvalue transformation, which goes beyond the QSVT
+framework to implement non-polynomial functions using only three
+additional qubits.  Their approach outperforms existing methods
+for asymptotically stable ODEs and, like stereographic encoding,
+performs eigenvalue (rather than singular value) transformations.
+The key difference is that contour-integral methods still require
+a standard block encoding as input, inheriting the normalization
+overhead $\alpha$, whereas stereographic encoding removes it at
+the cost of the eigenbasis requirement.
 
 \emph{Reducing or avoiding block encoding overhead.}
 Hamiltonian block encoding~\cite{KangSu2025} achieves quantum
@@ -150,33 +183,83 @@ mid-circuit measurement and reset.
 The FOQCS-LCU framework~\cite{NibbiEtAl2026} reduces the
 overhead for block-encoding matrix polynomials, with circuit
 depth scaling linearly in the polynomial degree and independent
-of system size.  Kane et al.~\cite{KaneEtAl2025} use QSVT and
+of system size.  Liu et al.~\cite{LiuZhuLowLinYang2025}
+achieve $\tilde{\mathcal{O}}(\sqrt{L})$ T-count scaling for
+second-quantized Hamiltonians and reduce subnormalization from
+$\mathcal{O}(L)$ to $\mathcal{O}(\sqrt{L})$ via
+particle-subspace block encoding.
+Zecchi et al.~\cite{ZecchiEtAl2026} provide
+$\mathcal{O}(\mathrm{poly}(n))$ circuits for banded matrices
+with periodic diagonal structure---a class that overlaps with
+our diagonal Hamiltonian construction, though their approach
+uses LCU rather than eigenbasis-conditioned rotations.
+Schillo, Sturm, and Quay~\cite{SchilloSturmQuay2026} introduce
+stabilizer-based block encoding of Pauli-string linear
+combinations with logarithmic ancilla scaling.
+Products between block encodings~\cite{DongLiXue2025} enable
+efficient matrix-matrix and Kronecker products with exponential
+qubit savings, and the COMPOSER
+framework~\cite{PengLiuKowalski2026} provides compile-once
+block encodings where geometry updates are absorbed by re-dialed
+single-qubit rotations.
+Kane et al.~\cite{KaneEtAl2025} use QSVT and
 QETU for block encoding lattice boson Hamiltonians, introducing
 the LOVE-LCU approach that outperforms asymptotically superior
 methods for systems up to $\sim 11$ qubits.  Tang and
 Lai~\cite{TangLai2026} extend block encoding to structured
 dense matrices via hierarchical low-rank compression.
+Concrete resource estimates for block-encoding-based simulation
+of scalar field theories~\cite{HardyEtAl2024} indicate that
+meaningful calculations require $\sim 4 \times 10^6$ physical
+qubits and $\sim 10^{12}$ T-gates, highlighting the importance
+of reducing block encoding overhead.
 
 \emph{Exploiting spectral information.}
 Suresh~\cite{Suresh2026} shows that when eigenvalues of the
 block-encoded matrix are partially known, spectrally corrected
 polynomial approximations can reduce QSVT circuit depth by up
-to $5\times$.  Stereographic encoding takes this to its logical
+to $5\times$.  Deka and Zak~\cite{DekaZak2025} reduce the
+block-encoding normalization constant~$\alpha$ by 25\% for
+electronic Hamiltonians via combined symmetry shifts and tensor
+factorizations, underscoring that the normalization overhead is
+a practical bottleneck actively being optimized.
+Stereographic encoding takes this to its logical
 extreme: when the full eigenbasis is known, the normalization
 $\alpha$ can be removed entirely, and the eigenvalue
 transformation becomes exact at each eigenspace.
 
+\emph{Noise resilience.}
+Liu et al.~\cite{LiuDongAnNiu2026} introduce ensemble-based
+QSP, which mitigates coherent phase errors in QSP circuits
+through measurement averaging over noisy ensembles, without
+increasing circuit depth.  This complements our noise analysis
+(Section~\ref{sec:numerics}): the sampling overhead inherent
+in stereographic decoding could potentially be combined with
+ensemble averaging to suppress both coherent errors and
+the additional shot noise from Pauli measurement.  Realistic
+resource estimation for early fault-tolerant implementations
+can be performed using the FLASQ cost
+model~\cite{HugginsEtAl2025}, which captures spacetime
+volume overhead including routing and Clifford costs.
+Experimentally, programmable bosonic QSP has been demonstrated
+in trapped-ion systems for simulating anharmonic
+dynamics~\cite{McGarryEtAl2026}, providing the first
+experimental validation of QSP-based Hamiltonian simulation.
+
 In summary, stereographic block encoding is the only approach
 that produces genuinely unbounded output, at the cost of the
 eigenbasis requirement and increased sampling overhead.
-It is most naturally compared with spectral correction
-methods~\cite{Suresh2026}, which exploit partial spectral
-knowledge to reduce depth within the standard framework, and
-with block-encoding-free approaches~\cite{MahasingheEtAl2025,
-	Jo2026,WangZhangHazraEtAl2025}, which trade the block encoding
-requirement for other constraints.  The three approaches are
-complementary and target different points on the
-information--overhead tradeoff.
+It is most naturally compared with contour-integral eigenvalue
+transformation~\cite{JiangAn2026}, which also goes beyond
+QSVT but retains standard block encoding, and with spectral
+correction methods~\cite{Suresh2026}, which exploit partial
+spectral knowledge to reduce depth within the standard
+framework.  Block-encoding-free
+approaches~\cite{MahasingheEtAl2025,
+	Jo2026,WangZhangHazraEtAl2025} trade the block encoding
+requirement for other constraints.  These approaches target
+different points on the information--overhead tradeoff and
+are complementary rather than competing.
 
 \subsection{Open Problems}
 \label{subsec:open}

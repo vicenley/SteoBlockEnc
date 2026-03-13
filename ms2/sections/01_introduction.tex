@@ -58,27 +58,38 @@ tractable and what the construction costs in each case.
 %  PARAGRAPH 3b: Positioning against recent work
 % ---------------------------------------------------------------
 
-Several recent developments extend or circumvent the standard
-QSP/QSVT framework.  Generalized QSP~\cite{MotlaghWiebe2023}
-lifts the parity and realness constraints but retains bounded
-polynomial output.  Hamiltonian block
-encoding~\cite{KangSu2025} achieves matrix arithmetics with at
-most two ancilla qubits, without explicit normalization, yet
-still produces bounded transformations.  Randomized
-QSVT~\cite{WangZhangHazraEtAl2025} avoids block encoding
-entirely through importance sampling, and
+The QSP/QSVT landscape has expanded rapidly along several
+fronts (see Refs.~\cite{Lin2025,JovenEtAl2025} for recent
+surveys).  Generalized QSP~\cite{MotlaghWiebe2023}
+lifts the parity and realness constraints, retaining bounded
+polynomial output but enabling a $2\times$ speedup for
+Hamiltonian simulation~\cite{BerryMotlaghPantaleoniWiebe2024}.
+The mathematical foundations have been
+deepened through connections to nonlinear Fourier analysis on
+$SU(2n)$~\cite{AlexisBeckerEtAl2026,Laneve2025b}.
+Hamiltonian block encoding~\cite{KangSu2025} achieves matrix
+arithmetics with at most two ancilla qubits, without explicit
+normalization, yet still produces bounded transformations.
+Randomized QSVT~\cite{WangZhangHazraEtAl2025} avoids block
+encoding entirely through importance sampling, and
 Ref.~\cite{MahasingheEtAl2025} uses GQSP with symmetric
-combinations of unitary conjugates.  Practical block encoding
-circuits for matrix polynomials have been developed using
-FOQCS-LCU~\cite{NibbiEtAl2026}, and for bosonic
-systems using QSVT itself~\cite{KaneEtAl2025}.  Meanwhile,
-multivariate QSP has been placed on rigorous footing via
+combinations of unitary conjugates.  Contour-integral
+eigenvalue transformation~\cite{JiangAn2026} extends
+beyond QSVT for non-polynomial functions using only three
+additional qubits.  On the practical side, new block encoding
+circuits have reduced gate counts for second-quantized
+Hamiltonians~\cite{LiuZhuLowLinYang2025}, sparse
+banded matrices~\cite{ZecchiEtAl2026}, Pauli-string linear
+combinations via stabilizer
+methods~\cite{SchilloSturmQuay2026}, and matrix
+polynomials via FOQCS-LCU~\cite{NibbiEtAl2026}.
+Multivariate QSP has been placed on rigorous footing via
 adversary bounds~\cite{Laneve2025} and modular
 composition~\cite{RossiCeroniChuang2025}.
 Spectral information has been exploited to reduce
-QSVT circuit depth~\cite{Suresh2026}, and single-ancilla
-ground-state preparation without block encoding has been
-demonstrated using power-cosine QSP filters~\cite{Jo2026}.
+QSVT circuit depth~\cite{Suresh2026}, and ensemble-based
+QSP~\cite{LiuDongAnNiu2026} provides noise-resilient
+implementations through measurement averaging.
 Stereographic block encoding occupies a distinct niche among
 these: it is the only approach that produces genuinely unbounded
 eigenvalue transformations, at the cost of requiring the
