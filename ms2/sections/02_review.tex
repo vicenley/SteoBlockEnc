@@ -1,0 +1,80 @@
+\section{Review of Stereographic QSP}
+\label{sec:review}
+
+This section summarizes the single-qubit stereographic QSP
+framework established in the companion
+paper~\cite{KharaziLeytonOrtega2026a}.  The material is presented
+without proofs (which can be found in that reference) but in
+sufficient detail to make the present paper self-contained.
+
+\subsection{Stereographic Encoding}
+\label{subsec:review-encoding}
+
+For $z \in \C$, the stereographically encoded quantum state is
+\begin{equation}
+	\ket{z} = \frac{1}{\sqrt{|z|^2 + 1}}\big(z\ket{0} + \ket{1}\big).
+	\label{eq:encoding}
+\end{equation}
+In polar form $z = re^{i\theta}$ with $r \geq 0$, the encoding
+maps $\C \cup \{\infty\}$ bijectively to the Bloch sphere:
+$z = 0$ maps to $\ket{1}$ (south pole), $z \to \infty$ to
+$\ket{0}$ (north pole), and $|z| = 1$ traces the equator.
+The Bloch vector of $\ket{z}$ is exactly the stereographic
+image of~$z$.  The state is prepared from $\ket{0}$ by the
+encoding unitary
+\begin{equation}
+	U_z = \frac{1}{\sqrt{1+r^2}}\!\begin{pmatrix}
+		re^{i\theta} & 1 \\ 1 & -re^{-i\theta}
+	\end{pmatrix} \in \U(2),
+	\label{eq:encoding-unitary}
+\end{equation}
+and the encoded value is recovered from the output state
+$\alpha\ket{0} + \beta\ket{1}$ via the amplitude ratio
+\begin{equation}
+	z = \frac{\langle\PauliX\rangle + i\langle\PauliY\rangle}
+	{1 - \langle\PauliZ\rangle} = \frac{\alpha}{\beta}.
+	\label{eq:decoding}
+\end{equation}
+
+\subsection{Signal Operator and Basis Change}
+\label{subsec:review-signal}
+
+The stereographic signal operator
+$S_z \equiv U_z\,\PauliZ$ encodes the unbounded parameter
+$r$ into a unitary gate.  For real signals ($\theta = 0$), it
+reduces to a rotation $R(\phi)$ with $\phi = \arccos(\rtilde)$
+and $\rtilde = r/\sqrt{1+r^2} \in [0,1)$.  The key structural
+result is the basis change identity
+\begin{equation}
+	S_z = V^{-1}\,W(\rtilde)\,V, \qquad V = \mathrm{diag}(1,i),
+	\label{eq:basis-change}
+\end{equation}
+where $W(\rtilde)$ is the standard QSP signal unitary.  This
+conjugation extends to the full QSP product:
+\begin{equation}
+	W_{\bm{\phi}}^{(\mathrm{stereo})}(r)
+	= V^{-1}\,U_{\bm{\phi}}^{(\mathrm{std})}(\rtilde)\,V,
+	\label{eq:full-basis-change}
+\end{equation}
+so that stereo-QSP is standard QSP in a rotated basis.
+
+\subsection{Function Class and Unnormalized Formulation}
+\label{subsec:review-function-class}
+
+The output state of a degree-$d$ stereographic QSP sequence is
+\begin{equation}
+	W_{\bm{\phi}}\ket{0} = P(\rtilde)\ket{0} + Q(\rtilde)\ket{1},
+	\label{eq:qsp-state}
+\end{equation}
+with $|P(\rtilde)|^2 + |Q(\rtilde)|^2 = 1$.  Decoding yields
+the rational function $f(r) = P(\rtilde)/Q(\rtilde)$, which can
+be unbounded.  The unnormalized signal operator
+\begin{equation}
+	O_r = \sqrt{1+r^2}\,S_z
+	= \begin{pmatrix} r & -1 \\ 1 & r \end{pmatrix}
+	\label{eq:unnormalized-signal}
+\end{equation}
+has polynomial entries in~$r$, and the unnormalized QSP product
+satisfies $|\tilde{P}(r)|^2 + |\tilde{Q}(r)|^2 = (1+r^2)^d$,
+where $\tilde{P}$ and $\tilde{Q}$ are polynomials in~$r$ with
+$\deg(\tilde{P}) \leq d$ and $\deg(\tilde{Q}) \leq d-1$.

@@ -1,0 +1,86 @@
+\section{Numerical Results}
+\label{sec:numerics}
+
+This section presents numerical simulations that verify the
+theoretical predictions and explore the practical performance of
+stereographic block encoding.  All quantum circuit simulations
+use the Qulacs library~\cite{Qulacs2021} (v0.6.13); the
+simulation code and data are available in the accompanying
+repository.
+
+% TODO: All subsections below need simulation scripts and figures.
+% Scripts will be placed in scripts/paper2/ and figures in ms2/figures/.
+
+\subsection{Heisenberg Model Verification}
+\label{subsec:heisenberg-numerics}
+
+We verify the stereographic block encoding of the two-qubit
+Heisenberg model~\eqref{eq:heisenberg} by constructing the
+full 3-qubit circuit in Qulacs and comparing the decoded
+eigenvalues with exact diagonalization.
+
+% TODO: Simulation over a grid of (J, h) values.
+% Compare decoded eigenvalues with exact spectrum.
+% Table of errors.
+% Figure: decoded vs exact eigenvalues for representative
+% parameter sweep.
+
+\subsection{Gate Count Benchmarks}
+\label{subsec:gate-counts}
+
+We compare the gate count of stereographic block encoding with
+standard block encoding for the three Hamiltonian classes of
+Section~\ref{sec:circuits}.
+
+% TODO: Table comparing gate counts (CNOT, single-qubit) for:
+% - Diagonal Hamiltonians (n = 2, 3, 4 qubits)
+% - Pauli-Z sums (m = 2, 4, 8 terms)
+% - Heisenberg model (2 qubits)
+% Compare with standard block encoding gate counts.
+% Figure: gate count scaling as a function of system size.
+
+\subsection{Eigenvalue Transformation Accuracy}
+\label{subsec:transform-accuracy}
+
+We apply the full stereographic QSVT protocol to compute
+$f(\lambda) = 1/\lambda$ (eigenvalue inversion) on the
+Heisenberg model and compare with exact results.
+
+% TODO: For the Heisenberg model with J=1, h=0.5:
+% - Compute QSP phases for 1/r using the companion paper's
+%   phase-finding code
+% - Run the full QSVT circuit in Qulacs
+% - Compare decoded f(lambda_j) with exact 1/lambda_j
+% - Vary QSP degree d and plot convergence
+% Figure: convergence of decoded eigenvalue inversion vs degree.
+
+\subsection{Larger Systems}
+\label{subsec:larger-systems}
+
+To explore scalability, we extend the construction to larger
+systems.
+
+% TODO: 3-qubit Heisenberg chain (or other tractable model).
+% Construct the diagonalization circuit V.
+% Run stereographic QSVT in Qulacs.
+% Compare gate counts and accuracy with 2-qubit case.
+% Figure: scaling of accuracy and gate count with system size.
+
+\subsection{Noise Analysis}
+\label{subsec:noise}
+
+We analyze the sensitivity of stereographic block encoding to
+finite measurement statistics and gate noise.
+
+% TODO: Sampling noise analysis:
+% - Fix circuit, vary number of shots N
+% - Plot decoded error vs N, verify r^6/epsilon^2 scaling
+% - Compare with standard QSVT sampling cost
+%
+% Gate noise analysis:
+% - Add depolarizing noise to Qulacs simulation
+% - Plot decoded error vs noise rate
+% - Identify crossover: when does depth advantage overcome
+%   sampling overhead?
+% Figure: error vs shots (log-log) showing r^6 scaling.
+% Figure: error vs noise rate comparing stereo vs standard.

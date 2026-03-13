@@ -1,0 +1,108 @@
+\section{Discussion}
+\label{sec:discussion}
+
+\subsection{Tractable Hamiltonian Classes}
+\label{subsec:tractable}
+
+The eigenbasis requirement
+(Section~\ref{subsec:eigenbasis}) restricts stereographic block
+encoding to structured Hamiltonians.  The three classes identified
+in that section---computational-basis diagonal operators,
+Hamiltonians with known diagonalization, and QPE-assisted
+encoding---cover a range of physically relevant systems.
+
+Diagonal operators arise naturally in quantum chemistry
+(diagonal Coulomb integrals), combinatorial optimization
+(QUBO/Ising cost functions), and classical simulation.  For
+these, stereographic block encoding provides a concrete advantage:
+the encoding depends only on individual eigenvalues, not on the
+global norm, and the single-ancilla construction is simpler than
+standard block encoding.
+
+Hamiltonians with known diagonalization include integrable spin
+chains solvable by the Bethe ansatz~\cite{Bethe1931}, free-fermion
+models diagonalizable by the Jordan--Wigner
+transformation~\cite{JordanWigner1928}, and small systems where
+exact diagonalization is tractable.  The Heisenberg model
+(Section~\ref{subsec:heisenberg}) is a representative example:
+the change of basis is a Givens rotation with $\mathcal{O}(1)$
+gate complexity.
+
+% TODO: Expand discussion of integrable models.
+% Which Bethe-ansatz models have efficient circuit implementations
+% of the diagonalization?
+
+\subsection{Connection to Quantum Phase Estimation}
+\label{subsec:qpe-connection}
+
+Quantum phase estimation (QPE) can, in principle, extract the
+eigenvalues of a Hamiltonian into a register, enabling conditioned
+operations on each eigenspace.  This suggests a hybrid approach:
+use QPE to resolve eigenspaces, then apply stereographic encoding
+conditioned on the QPE register.  However, this reintroduces the
+resources that stereographic encoding aims to avoid: QPE requires
+$\mathcal{O}(\log(1/\epsilon))$ ancilla qubits and
+$\mathcal{O}(\alpha/\epsilon)$ queries to a block encoding
+of~$H/\alpha$.  The advantage of stereographic encoding over
+standard QSVT in this hybrid setting is unclear and deserves
+further investigation.
+
+% TODO: Formalize the hybrid QPE + stereo-QSP protocol.
+% Under what conditions does it outperform standard QSVT?
+
+\subsection{Generalized Signal Operators}
+\label{subsec:generalized}
+
+Replacing the phase rotations $\exp[i\phi\PauliZ]$ in the QSP
+product with general signal-type operators $O_\alpha$
+parameterized by $\alpha \in \hat{\C}$ yields a generalized
+normalization condition
+\begin{equation}
+	|P|^2 + |Q|^2
+	= (1{+}r^2)^d \textstyle\prod_j(1{+}|\alpha_j|^2),
+	\label{eq:generalized-norm}
+\end{equation}
+whose forward direction follows from the same inductive argument
+as the unnormalized formulation
+(Section~\ref{subsec:review-function-class}), but whose
+converse---decomposing arbitrary polynomial pairs into such a
+product---remains open.  This generalization could enlarge the
+class of achievable functions and relax the parity constraint.
+
+\subsection{Comparison with Related Work}
+\label{subsec:related}
+
+Stereographic block encoding is complementary to several recent
+extensions of the QSP framework.
+GQSP~\cite{MotlaghWiebe2023} lifts the parity and realness
+constraints and provides faster angle-finding, but retains
+bounded output.  Hamiltonian block encoding~\cite{KangSu2025}
+uses at most two ancilla qubits without explicit normalization,
+but still produces bounded polynomial transformations.
+Randomized QSVT~\cite{WangZhangHazraEtAl2025} avoids block
+encodings through importance sampling, addressing a different
+cost bottleneck.  Stereographic encoding is the only approach
+that produces genuinely unbounded output, at the cost of the
+eigenbasis requirement and increased sampling overhead.
+
+\subsection{Open Problems}
+\label{subsec:open}
+
+Several questions remain open:
+\begin{enumerate}
+	\item Can the eigenbasis requirement be relaxed for specific
+	      Hamiltonian classes, perhaps by exploiting partial
+	      spectral information (e.g., knowledge of the ground
+	      state but not the full eigenbasis)?
+	\item What is the optimal measurement strategy for
+	      extracting $f(\lambda_j)$ from a superposition of
+	      eigenspaces?  Can adaptive measurement schemes improve
+	      the $\mathcal{O}(r^6/\epsilon^2)$ scaling?
+	\item Does the generalized normalization
+	      condition~\eqref{eq:generalized-norm} admit a
+	      completeness theorem analogous to the standard QSP
+	      theorem?
+	\item Can stereographic encoding be combined with
+	      tensor-network techniques for Hamiltonians with
+	      known matrix product operator (MPO) structure?
+\end{enumerate}

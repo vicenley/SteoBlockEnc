@@ -63,7 +63,7 @@ docs/_build/
 docs/_static/
 docs/_templates/
 
-# Manuscript
+# Manuscript (Paper 1)
 ms/*.pdf
 ms/*.dvi
 ms/*.aux
@@ -75,13 +75,38 @@ ms/*.toc
 ms/*.lof
 ms/*.lot
 ms/*.synctex.gz
+ms/*.fdb_latexmk
+ms/*.fls
 ms/*.bak*
 ms/sections/*.bak*
 ms/sections/indent.log
 ms/figures/*.png
+ms/figures/*.svg
 ms/figures/indent.log
 ms/figures/*.aux
 ms/figures/*.log
+
+# Manuscript (Paper 2)
+ms2/*.pdf
+ms2/*.dvi
+ms2/*.aux
+ms2/*.log
+ms2/*.out
+ms2/*.bbl
+ms2/*.blg
+ms2/*.toc
+ms2/*.lof
+ms2/*.lot
+ms2/*.synctex.gz
+ms2/*.fdb_latexmk
+ms2/*.fls
+ms2/*.bak*
+ms2/sections/*.bak*
+ms2/sections/indent.log
+ms2/figures/*.png
+ms2/figures/indent.log
+ms2/figures/*.aux
+ms2/figures/*.log
 
 # Logs
 logs/

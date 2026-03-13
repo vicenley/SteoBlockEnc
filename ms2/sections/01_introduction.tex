@@ -1,0 +1,99 @@
+\section{Introduction}
+\label{sec:introduction}
+
+% ---------------------------------------------------------------
+%  PARAGRAPH 1: Context — Paper 1 summary
+% ---------------------------------------------------------------
+
+In a companion paper~\cite{KharaziLeytonOrtega2026a} we introduced
+stereographic quantum signal processing (stereo-QSP), showing that
+the boundedness constraint of QSP~\cite{LowChuang2017,GSLW2019}
+can be lifted by changing the classical encoding and decoding
+interface rather than the quantum algorithm.  A single-qubit signal
+$r \in [0,\infty)$ is compressed into the bounded QSP domain via
+$\rtilde = r/\sqrt{1+r^2}$, and Pauli-measurement decoding
+recovers the ratio $P(\rtilde)/Q(\rtilde)$---an unbounded rational
+function of the original parameter.  The key structural result is
+that the stereographic and standard QSP signal operators are
+unitarily equivalent via $V = \mathrm{diag}(1,i)$, so all existing
+phase-finding algorithms and convergence results apply directly.
+
+% ---------------------------------------------------------------
+%  PARAGRAPH 2: The multi-qubit question
+% ---------------------------------------------------------------
+
+The natural next question---and the subject of this paper---is
+whether stereographic encoding extends to multi-qubit Hamiltonians.
+In the standard quantum singular value transformation
+(QSVT)~\cite{GSLW2019} framework, a Hamiltonian
+$H$ with $\|H\| = \alpha$ is embedded into a larger unitary via an
+$(\alpha, m, \epsilon)$-block encoding, which stores $H/\alpha$ in
+the top-left block.  The normalization factor
+$\alpha \geq \|H\|$ inflates the circuit depth by a factor
+of~$\alpha$ and forces the QSP polynomial to approximate
+$f(\alpha\,\cdot\,)$ on $[-1,1]$.  Stereographic block encoding
+replaces this with an exact, single-ancilla embedding that places
+each eigenvalue directly onto the Bloch sphere, removing the
+normalization entirely.
+
+% ---------------------------------------------------------------
+%  PARAGRAPH 3: The eigenbasis requirement — honest assessment
+% ---------------------------------------------------------------
+
+This advantage comes at a price: the construction requires
+knowledge of the eigenbasis.  Whereas standard block encoding
+embeds $H/\alpha$ into a unitary without distinguishing eigenspaces,
+the stereographic version applies a different encoding rotation in
+each eigenspace, conditioning on the eigenstates of~$H$.  For
+generic Hamiltonians, the eigenbasis is the object one wishes to
+compute, and the construction becomes circular.  Stereographic block
+encoding is therefore restricted to \emph{structured Hamiltonians}
+whose eigenbasis is known or efficiently computable: diagonal
+operators, integrable models, or operators whose spectral
+decomposition is available as a quantum circuit.  A central goal of
+this paper is to delineate precisely which Hamiltonian classes are
+tractable and what the construction costs in each case.
+
+% ---------------------------------------------------------------
+%  PARAGRAPH 4: Contributions of this paper
+% ---------------------------------------------------------------
+
+Our contributions are as follows.  We give a formal treatment of
+stereographic block encoding, proving that it is exact (no
+$\epsilon$ parameter), uses a single ancilla qubit, and produces
+circuit depth $\mathcal{O}(d)$ independent of $\|H\|$
+(Section~\ref{sec:block-encoding}).  We show explicitly that the
+single-qubit QSP protocol lifts to a multi-qubit eigenvalue
+transformation, with phase gates commuting through the system
+register and the signal operator decomposing as a direct sum over
+eigenspaces (Section~\ref{sec:qsvt}).  We construct explicit
+circuits for three Hamiltonian classes of increasing
+complexity---diagonal operators, Pauli-$Z$ sums with reversible
+adders, and the Heisenberg model with a Givens-rotation change of
+basis---providing gate counts, depth analysis, and comparison with
+standard block encoding (Section~\ref{sec:circuits}).  We analyze
+the decoding protocol when the system register is in a superposition
+of eigenspaces, characterizing the post-measurement state and the
+measurement overhead (Section~\ref{sec:decoding}).  Finally, we
+present expanded numerical simulations---Qulacs-verified circuits
+for the Heisenberg model at multiple parameter values, gate-count
+benchmarks, and noise analysis---establishing the practical scope of
+the approach (Section~\ref{sec:numerics}).
+
+% ---------------------------------------------------------------
+%  PARAGRAPH 5: Paper organization
+% ---------------------------------------------------------------
+
+The remainder of this paper is organized as follows.
+Section~\ref{sec:review} provides a self-contained review of
+stereographic QSP from the companion paper.
+Section~\ref{sec:block-encoding} defines stereographic block
+encoding and compares it with standard block encoding.
+Section~\ref{sec:qsvt} develops the full QSVT protocol.
+Section~\ref{sec:circuits} constructs explicit circuits for three
+Hamiltonian classes.
+Section~\ref{sec:decoding} analyzes the decoding and measurement
+protocol.
+Section~\ref{sec:numerics} presents numerical results.
+Section~\ref{sec:discussion} discusses connections to prior work,
+tractable Hamiltonian classes, and open problems.

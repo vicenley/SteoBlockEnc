@@ -1,0 +1,126 @@
+\section{Stereographic QSVT Protocol}
+\label{sec:qsvt}
+
+With the block encoding in place, we now show how the
+single-qubit QSP protocol lifts to a multi-qubit eigenvalue
+transformation.  The key observations are that the phase gates
+act only on the ancilla (and thus commute with the system
+register), and that the signal operator decomposes as a direct
+sum over eigenspaces.
+
+\subsection{Lifting QSP to Multiple Eigenspaces}
+\label{subsec:lifting}
+
+For a Hamiltonian with known diagonalization
+$H = V^\dagger D V$ and spectral decomposition
+$H = \sum_j \lambda_j \ket{j}\bra{j}$, the stereographic
+signal operator on the full Hilbert space
+$\Hil_a \otimes \Hil_s$ is
+\begin{equation}
+	\mathcal{S} = \sum_j S_{\lambda_j} \otimes \ket{j}\bra{j},
+	\label{eq:multi-signal}
+\end{equation}
+where $S_{\lambda_j} = U_{\lambda_j}\PauliZ$ is the
+single-qubit signal operator for eigenvalue $\lambda_j$.
+
+\begin{proposition}[Direct-Sum Decomposition]
+	\label{prop:direct-sum}
+	The phase gate
+	$\exp[i\phi\PauliZ] \otimes \Id_s$ commutes with the
+	eigenspace projectors $\Id_a \otimes \ket{j}\bra{j}$.
+	Consequently, the degree-$d$ stereographic QSVT product
+	\begin{equation}
+		\mathcal{W}_{\bm{\phi}}
+		= \prod_{k=0}^{d}
+		\bigl(\exp[i\phi_k\PauliZ] \otimes \Id_s\bigr)
+		\cdot \mathcal{S}
+		\label{eq:qsvt-product}
+	\end{equation}
+	decomposes as
+	\begin{equation}
+		\mathcal{W}_{\bm{\phi}}
+		= \sum_j W_{\bm{\phi}}(\lambda_j) \otimes
+		\ket{j}\bra{j},
+		\label{eq:qsvt-decomposition}
+	\end{equation}
+	where $W_{\bm{\phi}}(\lambda_j)$ is the single-qubit
+	stereographic QSP product evaluated at $r = \lambda_j$.
+\end{proposition}
+
+\begin{proof}
+	Since $\exp[i\phi\PauliZ] \otimes \Id_s$ is diagonal in
+	$\Hil_a$ and acts as the identity on $\Hil_s$, it commutes
+	with $\Id_a \otimes \ket{j}\bra{j}$.  Therefore each
+	alternating factor in the QSVT product can be grouped within
+	the eigenspace projection, giving the direct-sum
+	decomposition.
+\end{proof}
+
+\subsection{The Full Protocol Circuit}
+\label{subsec:full-circuit}
+
+For a Hamiltonian with known diagonalization
+$H = V^\dagger D V$, the full stereographic QSVT circuit is:
+\begin{equation}
+	\begin{quantikz}[column sep=0.2cm, row sep=0.4cm]
+		\lstick{\footnotesize$\ket{0}_a$} & \gate{\phi_d} & \gate{W_j} & \ \cdots\ \qw & \gate{W_j} & \gate{\phi_0} & \meter{} \\
+		\lstick{\footnotesize$\ket{\psi}_s$} & \gate[2]{V} & \ctrl{-1}\vqw{1} & \ \cdots\ \qw & \ctrl{-1}\vqw{1} & \gate[2]{V^\dagger} & \qw \\
+		& & \ctrl{-1} & \ \cdots\ \qw & \ctrl{-1} & & \qw
+	\end{quantikz}
+	\label{eq:full-protocol-circuit}
+\end{equation}
+Each $\phi_k$ box denotes $R_z(\phi_k) = \exp[i\phi_k\PauliZ]$
+on the ancilla, and $W_j \equiv W(\tilde{\lambda}_j)$ is the
+stereographic signal unitary conditioned on eigenstate $\ket{j}$.
+
+\begin{theorem}[Eigenvalue Transformation]
+	\label{thm:eigenvalue-transform}
+	Let $H = \sum_j \lambda_j \ket{j}\bra{j}$ be a Hermitian
+	operator with stereographic block encoding~$U$, and let
+	$\bm{\phi}$ be a set of QSP phases realizing polynomials
+	$(P, Q)$ with $|P|^2 + |Q|^2 = 1$.  Then the stereographic
+	QSVT protocol produces the state
+	\begin{equation}
+		\mathcal{W}_{\bm{\phi}}\ket{0}_a\ket{j}_s
+		= \bigl(P(\tilde{\lambda}_j)\ket{0}
+		+ Q(\tilde{\lambda}_j)\ket{1}\bigr)\ket{j}_s,
+		\label{eq:eigenvalue-state}
+	\end{equation}
+	where $\tilde{\lambda}_j = \lambda_j/\sqrt{1+\lambda_j^2}$.
+	Pauli-measurement decoding of the ancilla yields
+	\begin{equation}
+		f(\lambda_j)
+		= \frac{P(\tilde{\lambda}_j)}{Q(\tilde{\lambda}_j)},
+		\label{eq:eigenvalue-transform}
+	\end{equation}
+	a rational function of $\lambda_j$ of total degree
+	$\leq d$, with circuit depth $\mathcal{O}(d)$ independent
+	of $\|H\|$.
+\end{theorem}
+
+\begin{proof}
+	By Proposition~\ref{prop:direct-sum}, the QSVT product
+	decomposes into independent single-qubit QSP products in
+	each eigenspace.  The result then follows from the
+	single-qubit theory~\cite{KharaziLeytonOrtega2026a}.
+\end{proof}
+
+\subsection{Depth Advantage}
+\label{subsec:depth-advantage}
+
+\begin{corollary}[Depth Comparison]
+	\label{cor:depth}
+	For a degree-$d$ polynomial transformation of the
+	eigenvalues of a Hermitian operator $H$ with
+	$\|H\| = \alpha$:
+	\begin{enumerate}
+		\item Standard QSVT requires circuit depth
+		      $\mathcal{O}(d \cdot \alpha)$.
+		\item Stereographic QSVT requires circuit depth
+		      $\mathcal{O}(d + C_V)$, where $C_V$ is the
+		      gate complexity of the diagonalization $V$.
+	\end{enumerate}
+	The depth saving is a multiplicative factor of~$\alpha$
+	in the QSP component, at the cost of requiring the
+	diagonalization circuit~$V$.
+\end{corollary}

@@ -1,0 +1,197 @@
+\section{Circuit Constructions}
+\label{sec:circuits}
+
+The abstract definition~\eqref{eq:stereo-block} becomes concrete
+once one specifies how to implement the eigenspace-conditioned
+unitaries $U_{\lambda_j}$.  We present three examples of increasing
+complexity, each with explicit gate counts.
+
+\subsection{Diagonal Hamiltonians}
+\label{subsec:diagonal}
+
+Let $H$ be a diagonal Hamiltonian on $n$ qubits with eigenvalues
+$\lambda_j \geq 0$ in the computational basis.  No diagonalization
+step is needed: the encoding unitary acts directly on the ancilla,
+conditioned on the computational-basis state of the system register.
+
+For each eigenvalue, the encoding state is prepared by a
+$Y$-rotation:
+\begin{equation}
+	R_y(2\gamma_j)\ket{0} = \ket{\lambda_j},
+	\qquad \gamma_j = \arctan(1/\lambda_j),
+	\label{eq:diagonal-ry}
+\end{equation}
+since $\cos\gamma_j = \lambda_j/\sqrt{1+\lambda_j^2}$ and
+$\sin\gamma_j = 1/\sqrt{1+\lambda_j^2}$.  The stereographic signal
+operator in each eigenspace becomes
+$S_{\lambda_j} = U_{\lambda_j}\PauliZ = R_y(2\gamma_j)$, a pure
+rotation.
+
+The block encoding is a uniformly controlled rotation: for each
+computational-basis state $\ket{j}$, apply $R_y(2\gamma_j)$ on the
+ancilla.  For an $n$-qubit system ($N = 2^n$ eigenvalues):
+\begin{equation}
+	\begin{quantikz}[column sep=0.5cm, row sep=0.5cm]
+		\lstick{$\ket{0}_a$} & \gate[style={inner sep=4pt}]{R_y(2\gamma_j)} & \qw \\
+		\lstick{$\ket{j_{n-1}}$} & \ctrl{-1}\vqw{1} & \qw \\
+		\lstick{$\vdots\phantom{0}$} & \vdots & \\
+		\lstick{$\ket{j_0}$} & \ctrl{-3} & \qw
+	\end{quantikz}
+	\label{eq:diagonal-circuit}
+\end{equation}
+
+\begin{proposition}[Diagonal Gate Count]
+	\label{prop:diagonal-gates}
+	The uniformly controlled $R_y$ in~\eqref{eq:diagonal-circuit}
+	can be decomposed into $\mathcal{O}(2^n)$ CNOT gates and
+	$\mathcal{O}(2^n)$ single-qubit rotations using standard
+	decomposition techniques~\cite{NielsenChuang2010}.  The total
+	gate count is $\mathcal{O}(N)$ where $N = 2^n$ is the number
+	of eigenvalues, matching the complexity of standard diagonal
+	block encoding but using a single ancilla qubit.
+\end{proposition}
+
+\begin{remark}
+	Adding a new eigenvalue to the spectrum does not change the
+	encoding of any existing eigenvalue: the rotation angles depend
+	only on individual eigenvalues $\lambda_j$, not on the global
+	property $\max_j \lambda_j$.  In standard block encoding, by
+	contrast, changing $\|H\|$ changes $\alpha$ and thus the
+	encoding of \emph{every} eigenvalue.
+\end{remark}
+
+\subsection{Pauli-\texorpdfstring{$Z$}{Z} Sum Hamiltonians}
+\label{subsec:pauli-z}
+
+When additional algebraic structure is present, the gate count
+can be reduced below $\mathcal{O}(N)$.  Consider a Hamiltonian
+that is a sum of tensor products of Pauli-$Z$ operators and
+identity:
+\begin{equation}
+	H = \sum_{k=1}^{m} c_k\, Z_{i_k},
+	\label{eq:pauli-z-ham}
+\end{equation}
+where $Z_{i_k}$ denotes $Z$ on qubit $i_k$ (and identity
+elsewhere) and $c_k > 0$.  Such Hamiltonians include classical
+Ising models and arise as the diagonal part of many physically
+relevant systems.
+
+Since each $Z_{i_k}$ has eigenvalues $\pm 1$, the eigenvalues
+of~$H$ are
+$\lambda_{\mathbf{s}} = c_1 s_1 + \cdots + c_m s_m$ with
+$s_k \in \{+1, -1\}$, and the Hamiltonian is already diagonal in
+the computational basis.  However, the rotation angle
+$\gamma_\mathbf{s} = \arctan(1/\lambda_\mathbf{s})$ depends on
+$\lambda_\mathbf{s}$ only through the partial sums
+$\sum c_k s_k$, which are determined by $m$ bits rather than $n$
+qubits.
+
+\begin{proposition}[Pauli-$Z$ Sum Gate Count]
+	\label{prop:pauli-z-gates}
+	The stereographic block encoding
+	of~\eqref{eq:pauli-z-ham} can be implemented by:
+	\begin{enumerate}
+		\item Computing the partial sum
+		      $\lambda = \sum c_k s_k$ into $m$ ancilla
+		      qubits via a reversible adder
+		      ($\mathcal{O}(\poly(m))$ gates),
+		\item applying a controlled-$R_y$ on the encoding
+		      ancilla conditioned on the partial-sum
+		      register ($\mathcal{O}(\poly(m))$ gates),
+		\item uncomputing the partial sum
+		      ($\mathcal{O}(\poly(m))$ gates).
+	\end{enumerate}
+	The total gate complexity is $\mathcal{O}(\poly(m))$
+	rather than $\mathcal{O}(2^n)$, making this efficient
+	when $m \ll n$.
+\end{proposition}
+
+\begin{remark}[Positivity shift]
+	\label{rem:positivity-pauli}
+	Equation~\eqref{eq:pauli-z-ham} with $c_k > 0$ has
+	eigenvalues in $[-\sum c_k, +\sum c_k]$, which includes
+	negative values.  A spectral shift by
+	$\lambda_{\mathrm{shift}} = \sum_k c_k$ restores
+	positivity.
+\end{remark}
+
+\subsection{Heisenberg Model}
+\label{subsec:heisenberg}
+
+As a non-trivial example requiring a genuine change of basis,
+consider the isotropic Heisenberg model with a longitudinal field
+on two qubits:
+\begin{equation}
+	H = J(X \otimes X + Y \otimes Y + Z \otimes Z) + h(Z \otimes I),
+	\label{eq:heisenberg}
+\end{equation}
+where $J$ is the exchange coupling and $h$ the field strength.
+
+The Hamiltonian is block-diagonal in the standard basis:
+$\ket{00}$ and $\ket{11}$ are eigenstates with eigenvalues
+$\lambda_1 = J + h$ and $\lambda_4 = J - h$, while the
+$\{\ket{01}, \ket{10}\}$ subspace has the $2\times 2$ block
+\begin{equation}
+	\begin{pmatrix} -J+h & 2J \\ 2J & -J-h \end{pmatrix}
+\end{equation}
+with eigenvalues
+\begin{equation}
+	\lambda_{2,3} = -J \pm \sqrt{h^2 + 4J^2}.
+	\label{eq:heisenberg-spectrum}
+\end{equation}
+
+The change-of-basis unitary $V$ that diagonalizes $H$ acts
+non-trivially only on the $\{\ket{01}, \ket{10}\}$ subspace as
+a Givens rotation.  Explicitly,
+\begin{equation}
+	V = \begin{pmatrix}
+		1 & 0           & 0            & 0 \\
+		0 & \cos\varphi & -\sin\varphi & 0 \\
+		0 & \sin\varphi & \cos\varphi  & 0 \\
+		0 & 0           & 0            & 1
+	\end{pmatrix},
+	\label{eq:givens-rotation}
+\end{equation}
+where $\tan(2\varphi) = 2J/h$ (or $\varphi = \pi/4$ when
+$h = 0$, giving Bell-state eigenvectors).  This decomposes into
+$\mathcal{O}(1)$ elementary gates (a controlled-$R_y$ and
+CNOT gates).
+
+The full stereographic block encoding on 3 qubits (2 system +
+1 ancilla) is
+\begin{equation}
+	U = (V^\dagger \otimes I_a) \cdot U_{\mathrm{diag}}
+	\cdot (V \otimes I_a),
+	\label{eq:heisenberg-stereo}
+\end{equation}
+where $U_{\mathrm{diag}}$ is the diagonal stereographic
+encoding:
+\begin{equation}
+	\begin{quantikz}[column sep=0.4cm, row sep=0.5cm]
+		\lstick{$\ket{0}_a$} & \qw & \gate[style={inner sep=4pt}]{R_y(2\gamma_j)} & \qw & \qw \\
+		\lstick{$\ket{\psi_1}$} & \gate[2]{V} & \ctrl{-1}\vqw{1} & \gate[2]{V^\dagger} & \qw \\
+		\lstick{$\ket{\psi_0}$} & \qw & \ctrl{-1} & \qw & \qw
+	\end{quantikz}
+	\label{eq:heisenberg-circuit}
+\end{equation}
+
+\begin{proposition}[Heisenberg Gate Count]
+	\label{prop:heisenberg-gates}
+	The total gate count for the stereographic block encoding
+	of the two-qubit Heisenberg model~\eqref{eq:heisenberg} is
+	$\mathcal{O}(1)$: a constant number of elementary gates
+	independent of $J$, $h$, and $\|H\|$.
+	% TODO: Enumerate exact gate count after decomposition
+\end{proposition}
+
+\begin{remark}[Positivity shift for Heisenberg]
+	\label{rem:positivity-heisenberg}
+	For $J > 0$, the smallest eigenvalue
+	$\lambda_{\min} = -J - \sqrt{h^2+4J^2}$ is negative.
+	Shifting by $|\lambda_{\min}|$ makes all eigenvalues
+	non-negative, with the shifted minimum at zero (mapping
+	to the south pole of the Bloch sphere under stereographic
+	encoding).
+\end{remark}
+
+% TODO: Add 3-qubit Heisenberg or other larger example

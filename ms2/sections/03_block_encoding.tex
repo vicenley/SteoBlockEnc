@@ -1,0 +1,186 @@
+\section{Stereographic Block Encoding}
+\label{sec:block-encoding}
+
+The single-qubit theory of
+Section~\ref{sec:review} transforms a scalar signal $r$ into
+an unbounded rational function.  To apply this machinery to a
+multi-qubit Hamiltonian
+$H = \sum_j \lambda_j\ket{j}\bra{j}$, one needs a way to feed
+each eigenvalue $\lambda_j$ into the QSP circuit
+simultaneously.  This section defines the stereographic block
+encoding, compares it with the standard framework, and analyzes
+its structural properties.
+
+\subsection{Standard Block Encoding}
+\label{subsec:standard-block}
+
+To fix notation and set up the comparison, we begin with the
+standard framework.
+
+\begin{definition}[Standard Block Encoding~\cite{GSLW2019}]
+	\label{def:standard-block}
+	An $(\alpha, m, \epsilon)$-block encoding of a Hermitian
+	operator $H$ acting on $n$ qubits is a unitary $U$ acting
+	on $n + m$ qubits such that
+	\begin{equation}
+		\|H - \alpha(\bra{0}^{\otimes m} \otimes I)\, U\,
+		(\ket{0}^{\otimes m} \otimes I)\| \leq \epsilon,
+		\label{eq:standard-block}
+	\end{equation}
+	where $\alpha \geq \|H\|$.
+\end{definition}
+
+To apply QSVT and compute $f(H)$, one constructs a degree-$d$
+polynomial $P$ satisfying $|P(\lambda/\alpha)| \leq 1$ for all
+eigenvalues $\lambda$, then finds QSP phases for $P$.  This
+approach incurs two costs: the subnormalization factor
+$\alpha \geq \|H\|$ increases circuit depth by a factor
+of~$\alpha$, and the polynomial $P$ must approximate
+$f(\alpha\,\cdot\,)$ on $[-1,1]$, which may require high
+degree if $f$ has sharp features or singularities.
+
+\subsection{Stereographic Block Encoding}
+\label{subsec:stereo-block}
+
+The stereographic alternative removes both costs by encoding
+each eigenvalue directly, without normalization.
+
+\begin{definition}[Stereographic Block Encoding]
+	\label{def:stereo-block}
+	Let $H$ be a Hermitian operator with spectral decomposition
+	$H = \sum_j \lambda_j \ket{j}\bra{j}$, where
+	$\lambda_j \geq 0$.  A stereographic block encoding of~$H$
+	is a unitary $U$ acting on $n + 1$ qubits such that
+	\begin{equation}
+		U = \sum_j U_{\lambda_j} \otimes \ket{j}\bra{j},
+		\label{eq:stereo-block}
+	\end{equation}
+	where $U_{\lambda_j}$ is the single-qubit encoding
+	unitary~\eqref{eq:encoding-unitary} with $r = \lambda_j$
+	and $\theta = 0$.
+\end{definition}
+
+Explicitly, in the eigenspace of eigenvalue $\lambda_j$:
+\begin{equation}
+	U_{\lambda_j} = \frac{1}{\sqrt{1+\lambda_j^2}}
+	\begin{pmatrix} \lambda_j & 1 \\ 1 & -\lambda_j \end{pmatrix},
+	\label{eq:encoding-eigenspace}
+\end{equation}
+which maps $\ket{0}\ket{j} \mapsto \ket{\lambda_j}\ket{j}$
+using a single ancilla qubit.
+
+Several structural properties distinguish the stereographic
+construction from the standard one.
+
+\begin{proposition}[Properties of Stereographic Block Encoding]
+	\label{prop:stereo-properties}
+	Let $U$ be a stereographic block encoding of~$H$ as in
+	Definition~\ref{def:stereo-block}.  Then:
+	\begin{enumerate}
+		\item \textbf{Exactness.}  The encoding is exact:
+		      there is no approximation error $\epsilon$.
+		      Each eigenvalue $\lambda_j$ is encoded into
+		      the Bloch sphere coordinates without
+		      truncation.
+		\item \textbf{Single ancilla.}  The encoding uses
+		      exactly one ancilla qubit, regardless of
+		      $\|H\|$ or the number of system qubits~$n$.
+		\item \textbf{No normalization.}  The encoding does
+		      not require knowledge of $\|H\|$, and no
+		      normalization factor enters the construction.
+		\item \textbf{Eigenbasis dependence.}
+		      Constructing~\eqref{eq:stereo-block} requires
+		      the ability to apply $U_{\lambda_j}$
+		      conditioned on the eigenspace $\ket{j}$
+		      of~$H$.
+	\end{enumerate}
+\end{proposition}
+
+\begin{proof}
+	Parts (1)--(3) follow directly from the
+	definition: $U_{\lambda_j}$ is the exact encoding
+	unitary for $r = \lambda_j$, acts on a single ancilla
+	qubit, and depends only on~$\lambda_j$ (not on any
+	global property of~$H$).  Part~(4) is immediate from
+	the structure of~\eqref{eq:stereo-block}: the sum over
+	eigenspace projectors $\ket{j}\bra{j}$ requires the
+	ability to distinguish eigenspaces.
+\end{proof}
+
+\subsection{The Eigenbasis Requirement}
+\label{subsec:eigenbasis}
+
+The eigenbasis requirement (Proposition~\ref{prop:stereo-properties},
+part~4) is the principal limitation of stereographic block encoding
+and deserves careful analysis.  In the standard QSVT framework,
+$H/\alpha$ is embedded into a unitary without knowledge of the
+eigenstates, and the QSP polynomial acts simultaneously in all
+eigenspaces precisely because the block encoding does not
+distinguish them.  The eigenbasis requirement restricts
+stereographic block encoding to \emph{structured Hamiltonians}
+whose eigenbasis is known or efficiently computable.
+
+We identify three classes of increasing generality:
+
+\textit{Class~1: Computational-basis diagonal operators.}
+Hamiltonians that are diagonal in the computational basis require
+no change of basis: the encoding rotation is conditioned directly
+on the computational-basis state.  This includes classical Ising
+models, diagonal parts of molecular Hamiltonians, and any operator
+of the form $H = \sum_j \lambda_j \ket{j}\bra{j}$ with $\ket{j}$
+being computational-basis states.
+
+\textit{Class~2: Known diagonalization.}
+Hamiltonians $H = V^\dagger D V$ where the change-of-basis
+unitary~$V$ is efficiently implementable as a quantum circuit.
+This includes integrable spin chains (solved by Jordan--Wigner or
+Bethe ansatz), free-fermion models (Bogoliubov transformation),
+and Hamiltonians with analytically known eigenbases (e.g., the
+Heisenberg model on small systems).
+
+\textit{Class~3: QPE-assisted encoding.}  For Hamiltonians where
+the eigenbasis is not known a priori, quantum phase estimation
+(QPE) can in principle extract eigenvalues into a register,
+enabling conditioned rotations.  However, this reintroduces the
+resources (ancilla qubits, circuit depth) that stereographic
+encoding aims to avoid, and the advantage over standard QSVT
+becomes unclear.  We discuss this connection further in
+Section~\ref{sec:discussion}.
+
+\begin{remark}[Positivity assumption]
+	\label{rem:positivity}
+	Definition~\ref{def:stereo-block} assumes
+	$\lambda_j \geq 0$.  For Hamiltonians with negative
+	eigenvalues, a spectral shift
+	$H' = H + |\lambda_{\min}|I \geq 0$ restores positivity.
+	The shift changes the target function:
+	$f(\lambda) \to f(\lambda - |\lambda_{\min}|)$, which must
+	be accounted for in the polynomial design.  The shift
+	$|\lambda_{\min}|$ is a single scalar and does not require
+	knowledge of the full eigenbasis.
+\end{remark}
+
+\subsection{Comparison with Standard Block Encoding}
+\label{subsec:comparison}
+
+Table~\ref{tab:block-comparison} summarizes the structural
+differences.
+
+\begin{table}[t]
+	\caption{Comparison of standard and stereographic block
+		encoding for a Hermitian operator $H$ with
+		$\|H\| = \alpha$.}
+	\label{tab:block-comparison}
+	\begin{ruledtabular}
+		\begin{tabular}{lll}
+			                 & Standard              & Stereographic    \\
+			\hline
+			Encoding type    & Approximate           & Exact            \\
+			Ancilla qubits   & $m \geq 1$            & $1$              \\
+			Normalization    & $\alpha \geq \|H\|$   & Not required     \\
+			Eigenbasis       & Not required          & Required         \\
+			Depth per query  & $\mathcal{O}(\alpha)$ & $\mathcal{O}(1)$ \\
+			Applicable class & All Hermitian         & Structured       \\
+		\end{tabular}
+	\end{ruledtabular}
+\end{table}

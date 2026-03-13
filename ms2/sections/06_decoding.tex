@@ -1,0 +1,116 @@
+\section{Decoding and Measurement}
+\label{sec:decoding}
+
+The single-qubit decoding formula~\eqref{eq:decoding} recovers
+the encoded value from the amplitude ratio of the output state.
+In the multi-qubit setting, the system register is generically in
+a superposition of eigenspaces, and measuring the ancilla affects
+the system state.  This section analyzes what $f(H)$ means in the
+stereographic framework, characterizes the post-measurement state,
+and quantifies the measurement overhead.
+
+\subsection{Eigenspace Superposition}
+\label{subsec:superposition}
+
+Suppose the initial system state is a superposition
+$\ket{\psi} = \sum_j c_j \ket{j}$, where $\ket{j}$ are
+eigenstates of~$H$ with eigenvalues~$\lambda_j$.  After the
+stereographic QSVT protocol
+(Theorem~\ref{thm:eigenvalue-transform}), the joint state of
+ancilla and system is
+\begin{equation}
+	\mathcal{W}_{\bm{\phi}}\ket{0}_a\ket{\psi}_s
+	= \sum_j c_j
+	\bigl(P(\tilde{\lambda}_j)\ket{0}
+	+ Q(\tilde{\lambda}_j)\ket{1}\bigr)\ket{j}_s.
+	\label{eq:superposition-state}
+\end{equation}
+This is an entangled state of ancilla and system: the ancilla
+state depends on which eigenspace the system occupies.
+
+\subsection{Post-Measurement State}
+\label{subsec:post-measurement}
+
+Measuring the ancilla in the computational basis collapses the
+system into a conditional state.  Projecting onto
+$\ket{0}_a$ gives the (unnormalized) state
+\begin{equation}
+	\ket{\psi_0} = \sum_j c_j\, P(\tilde{\lambda}_j)\,\ket{j}_s,
+	\label{eq:post-measurement-0}
+\end{equation}
+with probability
+$p_0 = \sum_j |c_j|^2\,|P(\tilde{\lambda}_j)|^2$.
+Projecting onto $\ket{1}_a$ gives
+\begin{equation}
+	\ket{\psi_1} = \sum_j c_j\, Q(\tilde{\lambda}_j)\,\ket{j}_s,
+	\label{eq:post-measurement-1}
+\end{equation}
+with probability $p_1 = 1 - p_0$.
+
+\begin{proposition}[Post-Measurement Interpretation]
+	\label{prop:post-measurement}
+	The post-measurement state $\ket{\psi_0}$ (conditioned on
+	ancilla outcome $\ket{0}$) is the result of applying the
+	operator $P(\tilde{H})$ to $\ket{\psi}$, where
+	$\tilde{H} = H/\sqrt{\Id + H^2}$ is the
+	stereographically compressed Hamiltonian (defined via
+	functional calculus).  Similarly, $\ket{\psi_1}$
+	corresponds to $Q(\tilde{H})\ket{\psi}$.
+\end{proposition}
+
+This means stereographic QSVT implements a \emph{probabilistic}
+polynomial transformation of~$H$: with probability $p_0$, the
+system is transformed by $P(\tilde{H})$, and with probability
+$p_1$, by $Q(\tilde{H})$.
+
+\subsection{Extracting the Rational Function}
+\label{subsec:extracting}
+
+The decoded rational function $f(\lambda_j) =
+	P(\tilde{\lambda}_j)/Q(\tilde{\lambda}_j)$ is extracted from
+measurements of the ancilla Pauli operators.  For an input
+eigenstate $\ket{j}$, the decoding formula~\eqref{eq:decoding}
+applies directly.  For a superposition input, one obtains the
+\emph{expectation value}
+\begin{equation}
+	\frac{\langle\PauliX\rangle_a}
+	{1 - \langle\PauliZ\rangle_a}
+	= \frac{\sum_j |c_j|^2\,\re[P\bar{Q}]\,\sqrt{1+\lambda_j^2}}
+	{\sum_j |c_j|^2\,|Q|^2},
+	\label{eq:superposition-decoding}
+\end{equation}
+which is a weighted average over eigenspaces, \emph{not}
+$f(\lambda_j)$ for any single eigenvalue.  To extract
+$f(\lambda_j)$ for individual eigenvalues, one must either:
+\begin{enumerate}
+	\item prepare the input in a single eigenstate $\ket{j}$
+	      (which requires eigenbasis knowledge), or
+	\item combine the protocol with eigenvalue-resolving
+	      techniques such as quantum phase estimation.
+\end{enumerate}
+
+\subsection{Measurement Overhead}
+\label{subsec:overhead}
+
+The measurement overhead for stereographic decoding was analyzed
+in the companion paper~\cite{KharaziLeytonOrtega2026a}.  For a
+single eigenvalue $r = \lambda_j$, achieving absolute precision
+$\epsilon$ in the decoded value requires
+\begin{equation}
+	N = \mathcal{O}\!\left(\frac{(1+r^2)^2(1+r)^2}{\epsilon^2}\right)
+	= \mathcal{O}\!\left(\frac{r^6}{\epsilon^2}\right)
+	\quad \text{for } r \gg 1
+	\label{eq:shot-count}
+\end{equation}
+measurement shots.  For relative precision the scaling improves
+to $\mathcal{O}(r^4/\epsilon_{\mathrm{rel}}^2)$.
+
+In the multi-qubit setting, the relevant quantity is the
+\emph{maximum} eigenvalue being decoded:
+$r_{\max} = \max_j \lambda_j$.  The total measurement budget
+scales as $\mathcal{O}(r_{\max}^6/\epsilon^2)$ for absolute
+precision, compared to $\mathcal{O}(1/\epsilon^2)$ for standard
+QSVT.
+
+% TODO: Add analysis of adaptive measurement strategies
+% that could improve the scaling for specific eigenvalue ranges
