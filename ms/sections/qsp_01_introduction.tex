@@ -1,0 +1,149 @@
+\section{Introduction}
+\label{sec:introduction}
+
+% ---------------------------------------------------------------
+%  PARAGRAPH 1: MOTIVATION — Why QSP/QSVT matters
+% ---------------------------------------------------------------
+
+Quantum signal processing
+(QSP)~\cite{LowChuang2017,GSLW2019} and its extension to quantum
+singular value transformation
+(QSVT)~\cite{GSLW2019} have emerged as a unifying framework for
+quantum algorithms.  By interleaving a signal unitary with tunable
+phase rotations, QSP constructs polynomial transformations of a
+quantum operator's eigenvalues, subsuming Hamiltonian
+simulation~\cite{LowChuang2017,BerryChildsCleveEtAl2015}, quantum
+linear-systems solvers~\cite{HHL2009}, eigenvalue filtering, and a
+wide range of linear-algebraic primitives under a single algorithmic
+paradigm~\cite{MartynRossiTanChuang2021}.  The framework's power
+stems from a precise characterization of the achievable function
+class: every bounded polynomial of definite parity can be realized,
+and the corresponding phase angles can be found
+efficiently~\cite{DongMengWhaleyEtAl2021,Haah2019}.
+
+% ---------------------------------------------------------------
+%  PARAGRAPH 2: THE BOUNDEDNESS CONSTRAINT — What it costs
+% ---------------------------------------------------------------
+
+A fundamental limitation of this framework, however, is
+\emph{boundedness}.  The signal value $a = \cos(\theta/2)$ lies in
+$[-1,1]$, and the output polynomial must satisfy $|P(a)| \leq 1$ for
+all $a$ in that interval---a direct consequence of
+unitarity~\cite{LowChuang2017}.  When QSP is applied via block
+encoding to a Hermitian operator~$H$, this constraint forces a
+normalization $H \to H/\alpha$ with $\alpha \geq \|H\|$, which
+requires knowledge of the operator norm, increases circuit depth by a
+factor of~$\alpha$~\cite{GSLW2019,MartynRossiTanChuang2021}, and
+restricts the target transformation to functions approximable by
+polynomials bounded by~$1$ on $[-1,1]$---excluding unbounded functions
+such as $1/\lambda$, $\lambda$, or $\tan(\lambda)$ without truncation
+and regularization.  That boundedness is a genuine restriction, not merely
+a technical inconvenience, was formalized by Tang and
+Tian~\cite{TangTian2024}, who exhibit functions well-approximable by
+unbounded polynomials on $[-1,1]$ but provably inapproximable by
+bounded ones.
+
+% ---------------------------------------------------------------
+%  PARAGRAPH 3: LANDSCAPE — Recent QSP advances (none lift boundedness)
+% ---------------------------------------------------------------
+
+Recent work has extended the QSP framework in several directions.  One
+line of development broadens the achievable function class: generalized
+QSP (GQSP)~\cite{MotlaghWiebe2023} replaces $Z$-rotation signal
+processing operators with full $\SU(2)$ rotations, lifting the parity
+and realness constraints, while Quantum Phase
+Processing~\cite{WangZhangYuWang2023} applies trigonometric
+transformations to eigenphases and Rossi, Ceroni, and
+Chuang~\cite{RossiCeroniChuang2025} extend QSP to composable
+multivariable polynomial transforms.  A second line reduces the
+classical or quantum cost of the framework:
+Alase~\cite{Alase2025} bypasses the angle-finding bottleneck by
+constructing QSP circuits directly from function evaluations,
+Randomized QSVT~\cite{WangZhangHazraEtAl2025} avoids block encodings
+through importance sampling, and Kang and Su~\cite{KangSu2025}
+introduce Hamiltonian block encoding using at most two ancilla qubits
+without explicit normalization.  These advances enrich the QSP toolkit
+in expressiveness, classical preprocessing cost, and circuit depth,
+yet all retain a common limitation: the output remains a bounded
+function, $|P| \leq 1$.  No existing QSP variant produces unbounded
+output.
+
+% ---------------------------------------------------------------
+%  PARAGRAPH 4: APPROACH — What this paper does
+% ---------------------------------------------------------------
+
+In this work we ask whether the boundedness constraint can be lifted
+without modifying the quantum algorithm itself.  We show that it can,
+through a change of the classical encoding and decoding interface.
+The key idea is to compose QSP with \emph{stereographic encoding}---the
+conformal bijection between the extended complex plane
+$\hat{\C} = \C \cup \{\infty\}$ and the Bloch
+sphere~$\Sphere$.  On the input side, an unbounded parameter
+$r \in [0,\infty)$ is compressed into the bounded QSP domain via
+$\rtilde = r/\sqrt{1+r^2} \in [0,1)$, so that QSP operates
+internally on a bounded signal.  On the output side, decoding the QSP
+output state via Pauli measurements produces the \emph{ratio}
+$P(\rtilde)/Q(\rtilde)$ of the two state components---a rational
+function that diverges wherever $Q(\rtilde) = 0$.  The external
+input--output relationship $r \mapsto f(r)$ is therefore an unbounded
+rational function of the original unbounded parameter, even though QSP
+operates internally on bounded values.  The unitarity constraint
+$|P(\rtilde)|^2 + |Q(\rtilde)|^2 = 1$ is preserved, but it no longer
+implies boundedness of the output: the ratio of two bounded quantities
+need not be bounded.  A key structural result is that stereographic
+and standard QSP signal operators are related by the basis change
+$V = \mathrm{diag}(1,i)$, so the entire machinery of standard
+QSP---phase-finding algorithms, function-class characterization,
+convergence theory---applies directly, with no new algorithms required.
+
+% ---------------------------------------------------------------
+%  PARAGRAPH 5: SUMMARY OF RESULTS
+% ---------------------------------------------------------------
+
+Our main contributions are as follows.  We define the stereographic
+encoding $\ket{z} = (z\ket{0}+\ket{1})/\sqrt{|z|^2+1}$ and show
+that single-qubit gates act as M\"obius transformations on the encoded
+value (Section~\ref{sec:encoding}).  We then prove that the $k$-fold
+stereographic signal operator produces the state
+$T_k(\rtilde)\ket{0} + U_{k-1}(\rtilde)/\!\sqrt{1+r^2}\,\ket{1}$,
+where $T_k$ and $U_{k-1}$ are Chebyshev polynomials whose compositions
+with the stereographic map are Boyd's rational Chebyshev
+functions~\cite{Boyd1990}---an orthogonal basis on
+$(-\infty,\infty)$ with weight $1/(1+r^2)$.  Decoding this state
+yields the unbounded rational function
+$z_k(r) = \cot(k\arctan(1/r))$, with $k$ interlacing zeros and poles
+on $[0,\infty)$.  The stereographic and standard QSP signal operators
+are unitarily equivalent via $V = \mathrm{diag}(1,i)$, immediately
+establishing the full function class and the existence of phase
+factors from the standard QSP theorem
+(Section~\ref{sec:main}).  Finally, we formulate stereographic block
+encoding for operators with unbounded spectra, provide explicit
+circuit constructions for three Hamiltonian classes---diagonal,
+Pauli-$Z$ sum, and Heisenberg---and quantify the measurement
+overhead, showing that absolute precision $\epsilon$ requires
+$\mathcal{O}(r^6/\epsilon^2)$ shots.  This polynomial sampling cost
+replaces the coherent normalization overhead of standard QSP, and we
+identify the regime---depth-limited devices, moderate eigenvalues,
+known eigenbasis---where stereographic encoding offers a practical
+advantage (Section~\ref{sec:block-encoding}).
+
+% ---------------------------------------------------------------
+%  PARAGRAPH 6: PAPER ORGANIZATION
+% ---------------------------------------------------------------
+
+The remainder of this paper is organized as follows.
+Section~\ref{sec:preliminaries} reviews the standard QSP framework,
+the role of Chebyshev polynomials, and the boundedness constraint.
+Section~\ref{sec:encoding} introduces stereographic encoding as a
+geometric alternative to amplitude encoding, deriving its decoding
+formula and gate--M\"obius correspondence.
+Sections~\ref{sec:main} and \ref{sec:block-encoding} contain the
+main results: the stereographic signal operator, Chebyshev state
+generation, the basis-change reduction to standard QSP, and the
+application to block encoding with unbounded spectra.
+Section~\ref{sec:cost-analysis} quantifies the depth-versus-sampling
+tradeoff, compares with standard and generalized QSP, and presents
+numerical results for four target functions.
+Section~\ref{sec:discussion} discusses connections to prior work
+and open problems.  The overall framework is illustrated
+schematically in Fig.~\ref{fig:schematic}.

@@ -1,0 +1,92 @@
+\appendix
+
+\section{Deferred Proofs}
+\label{app:proofs}
+
+This appendix collects proofs of results stated in the main
+text whose arguments are routine calculations.
+
+\subsection*{Proof of Theorem~\ref{thm:chebyshev} (Chebyshev States)}
+
+\begin{proof}
+	Since $S_z|_{\theta=0} = R(\phi)$ by~\eqref{eq:rotation-form}, $S_z^k = R(k\phi)$ with $\phi = \arccos\rtilde$. Using the Chebyshev identities $\cos(k\arccos x) = T_k(x)$ and $\sin(k\arccos x) = U_{k-1}(x)\sqrt{1-x^2}$, together with $\sqrt{1-\rtilde^2} = 1/\sqrt{1+r^2}$:
+	\begin{equation}
+		R(k\phi)\ket{0} = \begin{pmatrix} \cos(k\phi) \\ \sin(k\phi) \end{pmatrix} = \begin{pmatrix} T_k(\rtilde) \\ U_{k-1}(\rtilde)/\sqrt{1+r^2} \end{pmatrix}. \tag{A1}
+	\end{equation}
+\end{proof}
+
+\subsection*{Proof of Corollary~\ref{cor:existence} (Existence of Phases)}
+
+\begin{proof}
+	By Theorem~\ref{thm:standard-qsp}, there exist phases
+	$\bm{\phi}$ such that the standard QSP product
+	$U_{\bm{\phi}}^{(\mathrm{std})}(\rtilde)$ has
+	$\bra{0}U_{\bm{\phi}}^{(\mathrm{std})}\ket{0} = P(\rtilde)$.
+	Since~\eqref{eq:basis-change} preserves the $(0,0)$ matrix
+	element and the phase operators are the same, these
+	\emph{same phases} achieve the target in the stereographic
+	protocol.
+\end{proof}
+
+\subsection*{Proof of Proposition~\ref{prop:zeros-poles} (Zeros and Poles)}
+
+\begin{proof}
+	The zeros of $\cot(k\arctan(1/r))$ occur at
+	$k\arctan(1/r) = (2m-1)\pi/2$, giving
+	$r = \cot((2m-1)\pi/(2k))$.  The poles occur at
+	$k\arctan(1/r) = m\pi$, giving $r = \cot(m\pi/k)$.
+	As $r \to 0^+$, $\arctan(1/r) \to \pi/2$, so
+	$\cot(k\pi/2) = 0$ if $k$ is odd and $\cot(k\pi/2)$
+	diverges if $k$ is even.
+\end{proof}
+
+\subsection*{Proof of Theorem~\ref{thm:unnormalized} (Unnormalized Formulation)}
+
+\begin{proof}
+	We proceed by induction on $d$.
+
+	\textit{Base case} ($d = 0$):
+	$\widetilde{W}_{\bm{\phi}} = \exp[i\phi_0\PauliZ] =
+		\begin{psmallmatrix} e^{i\phi_0} & 0 \\
+			0 & e^{-i\phi_0} \end{psmallmatrix}$, so
+	$\tilde{P} = e^{i\phi_0}$ and $\tilde{Q} = 0$.  Then
+	$|\tilde{P}|^2 + |\tilde{Q}|^2 = 1 = (1+r^2)^0$.
+
+	\textit{Inductive step}: Suppose that after $d-1$ signal
+	applications we have polynomials $P, Q$ satisfying
+	$|P|^2 + |Q|^2 = (1+r^2)^{d-1}$ with the stated parity and
+	degree conditions.  Appending one more factor of
+	$\exp[i\phi\PauliZ]\,O_r$ gives
+	\begin{equation}
+		\exp[i\phi\PauliZ] O_r \begin{pmatrix} P & -Q^* \\ Q & P^* \end{pmatrix} = \begin{pmatrix} \widetilde{P} & -\widetilde{Q}^* \\ \widetilde{Q} & \widetilde{P}^* \end{pmatrix},
+		\tag{A3}
+	\end{equation}
+	where $\widetilde{P} = e^{i\phi}(rP - Q)$ and
+	$\widetilde{Q} = e^{-i\phi}(P + rQ)$.  Computing the
+	sum of squared moduli:
+	\begin{align}
+		|\widetilde{P}|^2 + |\widetilde{Q}|^2 & = |rP - Q|^2 + |P + rQ|^2 \nonumber             \\
+		                                      & = r^2|P|^2 + |Q|^2 + |P|^2 + r^2|Q|^2 \nonumber \\
+		                                      & = (1+r^2)(|P|^2 + |Q|^2) \nonumber              \\
+		                                      & = (1+r^2)^d.
+		\tag{A4}
+	\end{align}
+	The cross terms $-rPQ^* - rP^*Q$ from $|rP-Q|^2$ and
+	$+rPQ^* + rP^*Q$ from $|P+rQ|^2$ cancel exactly, reflecting
+	the orthogonality of the columns of~$O_r$.  The degree of
+	$\widetilde{P}$ is $\deg(P)+1 \leq d$ (from the $rP$ term),
+	and the parity alternates because multiplication by~$r$ flips
+	parity.
+\end{proof}
+
+\subsection*{Proof of Eq.~\eqref{eq:error-bound} (Error Amplification)}
+
+\begin{proof}
+	For a real signal, $z = \langle\PauliX\rangle/(1 - \langle\PauliZ\rangle)$. The partial derivatives are
+	\begin{align}
+		\frac{\partial z}{\partial\langle\PauliX\rangle} & = \frac{1}{1-\langle\PauliZ\rangle} = \frac{1+r^2}{2}, \nonumber                  \\
+		\frac{\partial z}{\partial\langle\PauliZ\rangle} & = \frac{\langle\PauliX\rangle}{(1-\langle\PauliZ\rangle)^2} = \frac{r(1+r^2)}{2},
+		\tag{A2}
+	\end{align}
+	using $\langle\PauliX\rangle = 2r/(1+r^2)$ and $1 - \langle\PauliZ\rangle = 2/(1+r^2)$. The triangle inequality gives~\eqref{eq:error-bound}.
+\end{proof}

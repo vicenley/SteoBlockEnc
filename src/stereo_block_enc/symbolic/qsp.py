@@ -34,7 +34,11 @@ class QSPStereographic:
         Return the encoding unitary U_z for z = r*exp(iθ).
         
         From Eq. 41:
-        U_z = 1/√(1+r²) [[r*exp(iθ), 1], [exp(-iθ), -r]]
+        U_z = 1/√(1+r²) [[z, 1], [1, -z̄]]
+        where z = r*exp(iθ), z̄ = r*exp(-iθ)
+        
+        First column is |z⟩ = (z, 1)^T / √(1+|z|²)
+        Second column is orthogonal: (1, -z̄)^T / √(1+|z|²)
         
         Parameters
         ----------
@@ -53,10 +57,13 @@ class QSPStereographic:
         if theta is None:
             theta = self.theta
             
+        z = r * exp(I*theta)
+        z_conj = r * exp(-I*theta)
         norm = sqrt(r**2 + 1)
+        
         U = Matrix([
-            [r * exp(I*theta), 1],
-            [exp(-I*theta), -r]
+            [z, 1],
+            [1, -z_conj]
         ]) / norm
         
         return U
@@ -66,7 +73,8 @@ class QSPStereographic:
         Return U_z σ_z (the signal operator).
         
         From Eq. 42:
-        U_z σ_z = 1/√(1+r²) [[r, -exp(iθ)], [exp(-iθ), r]]
+        U_z σ_z = U_z · diag(1, -1)
+                = 1/√(1+r²) [[z, -1], [1, z̄]]
         
         Parameters
         ----------
@@ -84,7 +92,7 @@ class QSPStereographic:
             theta = self.theta
             
         sigma_z = Matrix([[1, 0], [0, -1]])
-        return self.encoding_unitary(r, theta) * sigma_z
+        return simplify(self.encoding_unitary(r, theta) * sigma_z)
     
     def r_tilde(self, r=None):
         """

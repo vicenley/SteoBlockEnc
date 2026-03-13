@@ -1,0 +1,183 @@
+\section{Stereographic Encoding}
+\label{sec:encoding}
+
+A single-qubit pure state
+$\ket{\psi} = \psi_0\ket{0} + \psi_1\ket{1}$ lives in the
+two-dimensional Hilbert space $\C^2$, subject to the normalization
+$|\psi_0|^2 + |\psi_1|^2 = 1$.  Since the global phase is
+unobservable, the physical state space is the complex projective
+line $\C P^1$, which is topologically a sphere.  This sphere is
+made concrete by the Bloch representation: the expectation values
+of the three Pauli matrices define a unit vector
+\begin{equation}
+	\vec{n} = \big(\langle\PauliX\rangle,\;
+	\langle\PauliY\rangle,\;
+	\langle\PauliZ\rangle\big) \in \Sphere,
+	\label{eq:bloch-vector}
+\end{equation}
+where $\langle\sigma_j\rangle = \bra{\psi}\sigma_j\ket{\psi}$,
+with the north pole $(0,0,1)$ corresponding to $\ket{0}$ and the
+south pole to $\ket{1}$.
+
+Encoding classical data into this state space is the first step in
+any quantum algorithm that processes classical inputs.  The most
+common strategy, amplitude encoding, writes a real number $x$
+directly into a state amplitude:
+$\ket{\psi} = x\ket{0} + \sqrt{1-x^2}\,\ket{1}$, which
+immediately forces $|x| \leq 1$.  Values outside $[-1,1]$ must be
+rescaled by a normalization factor that propagates through the
+subsequent computation---precisely the mechanism behind the
+boundedness constraint of QSP discussed in
+Section~\ref{sec:preliminaries}.
+
+Stereographic projection provides a fundamentally different
+encoding that avoids this restriction.  Projecting from the
+north pole of the unit sphere $\Sphere \subset \R^3$ onto the
+equatorial plane defines a conformal bijection
+\begin{equation}
+	(u, v, w) \;\longmapsto\; z = \frac{u + iv}{1 - w},
+	\label{eq:stereo-forward}
+\end{equation}
+from $\Sphere \setminus \{(0,0,1)\}$ to $\C$, with the
+convention that the north pole maps to $z = \infty$ and the
+south pole $(0,0,-1)$ to $z = 0$.  The inverse map sends a
+complex number back to the sphere:
+\begin{equation}
+	z \;\longmapsto\; (u, v, w) = \left(\frac{2\re(z)}{|z|^2 + 1},\;
+	\frac{2\im(z)}{|z|^2 + 1},\;
+	\frac{|z|^2 - 1}{|z|^2 + 1}\right),
+	\label{eq:stereo-inverse}
+\end{equation}
+where $(u,v,w) \in \Sphere$.  The crucial observation is that the Bloch
+sphere~\eqref{eq:bloch-vector} and the stereographic
+sphere~\eqref{eq:stereo-inverse} are the \emph{same} sphere: if
+we identify $z$ with the amplitude ratio~$\psi_0/\psi_1$, the
+Bloch vector of~$\ket{\psi}$ is exactly the stereographic image
+of~$z$.  Every complex number---no matter how large---therefore
+has a unique image on the Bloch sphere, with the radial coordinate
+$r = |z| \in [0,\infty)$ compressed into the bounded altitude
+$w = (r^2 - 1)/(r^2 + 1) \in [-1,1)$.  This motivates the
+following definition.
+
+\begin{definition}[Stereographic Encoding]
+	\label{def:stereo-encoding}
+	For $z \in \C$, the stereographically encoded quantum state is
+	\begin{equation}
+		\ket{z} = \frac{1}{\sqrt{|z|^2 + 1}}\big(z\ket{0} + \ket{1}\big).
+		\label{eq:encoding}
+	\end{equation}
+	In polar form $z = re^{i\theta}$ with $r \geq 0$, this reads
+	\begin{equation}
+		\ket{z} = \frac{1}{\sqrt{r^2+1}}\big(re^{i\theta}\ket{0} + \ket{1}\big).
+		\label{eq:encoding-polar}
+	\end{equation}
+\end{definition}
+
+The state~\eqref{eq:encoding} is normalized for all $z \in \C$,
+and the encoding maps $\C \cup \{\infty\}$ bijectively to the
+Bloch sphere: $z = 0$ maps to $\ket{1}$ (south pole),
+$z \to \infty$ to $\ket{0}$ (north pole), and $|z| = 1$ traces
+the equator.  Computing the Bloch vector of $\ket{z}$ gives
+\begin{equation}
+	\left(\langle\PauliX\rangle,\,
+	\langle\PauliY\rangle,\,
+	\langle\PauliZ\rangle\right) =
+	\left(\frac{2\re(z)}{|z|^2+1},\;
+	\frac{2\im(z)}{|z|^2+1},\;
+	\frac{|z|^2-1}{|z|^2+1}\right),
+	\label{eq:bloch-components}
+\end{equation}
+confirming the identification: the Bloch vector of $\ket{z}$ is
+the stereographic image of~$z$.
+
+An encoding is only useful if the encoded data can be read back
+out.  The decoding formula follows directly
+from~\eqref{eq:bloch-components}: since
+$\langle\PauliX\rangle + i\langle\PauliY\rangle = 2z/(|z|^2+1)$
+and $1 - \langle\PauliZ\rangle = 2/(|z|^2+1)$, their ratio
+recovers~$z$:
+\begin{equation}
+	z = \frac{\langle\PauliX\rangle + i\langle\PauliY\rangle}
+	{1 - \langle\PauliZ\rangle}.
+	\label{eq:decoding}
+\end{equation}
+This is precisely the inverse stereographic projection---the same
+map that sends Bloch coordinates back to the complex plane.
+Equivalently, for a state
+$\alpha\ket{0} + \beta\ket{1}$ in stereographic encoding, the
+decoded value is the amplitude ratio $\alpha/\beta$.  This
+observation is central to our main result: QSP produces a state
+$P(\rtilde)\ket{0} + Q(\rtilde)\ket{1}$, and decoding returns
+the potentially unbounded ratio~$P/Q$.
+
+The encoding state~\eqref{eq:encoding} is prepared from
+$\ket{0}$ by the unitary
+\begin{equation}
+	U_z = \frac{1}{\sqrt{1+r^2}}\!\begin{pmatrix}
+		re^{i\theta} & 1 \\ 1 & -re^{-i\theta}
+	\end{pmatrix},
+	\label{eq:encoding-unitary}
+\end{equation}
+satisfying $U_z\ket{0} = \ket{z}$ and $U_z^\dagger U_z = I$.
+In terms of $z$ directly, this reads
+\begin{equation}
+	U_z = \frac{1}{\sqrt{1+|z|^2}}
+	\begin{pmatrix} z & 1 \\ 1 & -\bar{z}\end{pmatrix},
+	\label{eq:encoding-unitary-compact}
+\end{equation}
+whose columns are $\ket{z}$ and its orthogonal complement.  Note
+that $\det(U_z) = -1$, so $U_z \in \U(2)$ but not $\SU(2)$.
+
+With the encoding, decoding, and state preparation in hand, the
+natural question is what happens when quantum gates act on an
+encoded state.  Since $\ket{z}$ is parametrized by a complex
+number, any unitary $U$ sends $\ket{z}$ to a new encoded state
+$\ket{f(z)}$---and the resulting function $f$ turns out to be a
+M\"obius transformation.
+
+\subsection{Quantum Gates as M\"obius Transformations}
+\label{subsec:mobius}
+
+Since decoding reads off the amplitude ratio $\alpha/\beta$,
+the action of any single-qubit gate on an encoded state has a
+clean algebraic description.  A unitary $U$ with matrix entries
+$(a,b;\,c,d)$ sends $\ket{z} \propto z\ket{0} + \ket{1}$ to
+a state with amplitudes $\alpha = az+b$ and $\beta = cz+d$,
+so the decoded output is the M\"obius transformation
+$f(z) = (az+b)/(cz+d)$.  The Pauli gates give the simplest
+examples:
+\begin{equation}
+	X: z \mapsto \frac{1}{z}, \qquad
+	Y: z \mapsto -\frac{1}{z}, \qquad
+	Z: z \mapsto -z.
+	\label{eq:pauli-mobius}
+\end{equation}
+These act as inversions, negations, and reflections of the
+encoded value---familiar M\"obius transformations of the Riemann
+sphere.  More generally, the gate
+$U_3(\vartheta,\varphi,\lambda) \in \SU(2)$ induces the M\"obius
+map $z \mapsto (az+b)/(cz+d)$ with
+\begin{equation}
+	\begin{pmatrix} a & b \\ c & d \end{pmatrix} =
+	\begin{pmatrix}
+		e^{-i\varphi}\cos\frac{\vartheta}{2} &
+		-e^{-i(\lambda+\varphi)}\sin\frac{\vartheta}{2} \\[4pt]
+		e^{i\lambda}\sin\frac{\vartheta}{2}  &
+		\cos\frac{\vartheta}{2}
+	\end{pmatrix}.
+	\label{eq:U3-mobius}
+\end{equation}
+The gate--M\"obius correspondence is a group homomorphism
+$\SU(2) \to \mathrm{PSL}(2,\C)$, the projective special linear
+group of $2\times 2$ matrices over $\C$ modulo scalar
+multiples---the natural symmetry group of M\"obius
+transformations.  In particular, $Z$-rotations act as phase
+rotations $R_z(\alpha): z \mapsto e^{i\alpha}z$.
+
+This correspondence transforms the problem of analyzing quantum
+circuits on encoded states into the algebraic study of composed
+M\"obius maps---that is, rational functions.  Each gate
+contributes a linear fractional factor, and the composition of
+the full QSP circuit yields the rational function whose numerator
+and denominator are the polynomials $P$ and $Q$ that appear in
+the output state.  The next section makes this precise.

@@ -2,8 +2,7 @@
     reprint,
     amsmath,amssymb,
     aps,
-    pra,  % Physical Review A - suitable for quantum computing
-    showpacs,
+    pra,  % Physical Review A
     superscriptaddress,
     floatfix
 ]{revtex4-2}
@@ -12,14 +11,36 @@
 \usepackage{graphicx}
 \usepackage{dcolumn}
 \usepackage{bm}
-\usepackage{braket}  % For bra-ket notation
-\usepackage{algorithm}
-\usepackage{algorithmic}
+\usepackage{mathtools}  % extends amsmath, provides psmallmatrix
+\usepackage{braket}     % bra-ket notation
 \usepackage{tikz}
-\usepackage{hyperref}  % Load last
-% Note: amsmath and amsopn already loaded by REVTeX
+\usetikzlibrary{
+  arrows.meta,
+  decorations.pathmorphing,
+  decorations.markings,
+  calc,
+  positioning,
+  shapes.geometric,
+  patterns
+}
+\usepackage{quantikz}
+\usepackage{hyperref}
 
-% Theorem environments for REVTeX
+% Theorem environments (amsthm provides \theoremstyle and \qedsymbol)
+\usepackage{amsthm}
+
+% APS-style theorem formatting (level-4 heading):
+% italic header, period, roman body, paragraph indent
+\newtheoremstyle{aps}%
+  {}{}%                    space above/below (defaults)
+  {}%                      body font: roman
+  {\parindent}%            indent: paragraph indent
+  {\itshape}%              head font: italic
+  {.}%                     punctuation after head
+  { }%                     space after head
+  {}%                      head spec: default
+
+\theoremstyle{aps}
 \newtheorem{theorem}{Theorem}
 \newtheorem{lemma}[theorem]{Lemma}
 \newtheorem{proposition}[theorem]{Proposition}
@@ -27,9 +48,6 @@
 \newtheorem{definition}[theorem]{Definition}
 \newtheorem{example}[theorem]{Example}
 \newtheorem{remark}[theorem]{Remark}
-
-% Proof environment (not provided by REVTeX)
-\newenvironment{proof}[1][Proof]{\noindent\textbf{#1.} }{\qed\par}
 
 % Custom commands
 \newcommand{\C}{\mathbb{C}}
@@ -45,62 +63,87 @@
 
 % Pauli matrices
 \newcommand{\PauliI}{\sigma_0}
-\newcommand{\PauliX}{\sigma_1}
-\newcommand{\PauliY}{\sigma_2}
-\newcommand{\PauliZ}{\sigma_3}
+\newcommand{\PauliX}{\sigma_x}
+\newcommand{\PauliY}{\sigma_y}
+\newcommand{\PauliZ}{\sigma_z}
 
-% Custom operators
-\DeclareMathOperator{\arccot}{arccot}
+% QSP-specific
+\newcommand{\rtilde}{\tilde{r}}
+\newcommand{\TB}{\mathrm{TB}}
+\newcommand{\SB}{\mathrm{SB}}
 
 \begin{document}
 
-% Title and authors (defined inside \begin{document} for REVTeX)
-\title{Stereographic Projection as a Quantum Encoding Strategy for Quantum Block Encoding and Signal Processing}
+\title{Lifting the Boundedness Constraint in Quantum Signal Processing via Stereographic Encoding}
+\thanks{This manuscript has been authored by UT-Battelle, LLC, under Contract No.\ DE-AC05-00OR22725 with the U.S.\ Department of Energy (DOE). The United States Government retains and the publisher, by accepting the article for publication, acknowledges that the United States Government retains a non-exclusive, paid-up, irrevocable, world-wide license to publish or reproduce the published form of this manuscript, or allow others to do so, for United States Government purposes. The Department of Energy will provide public access to these results of federally sponsored research in accordance with the DOE Public Access Plan.}
 
 \author{Tyler Kharazi}
-\affiliation{Institution TBD}
+\affiliation{Department of Chemistry, University of California, Berkeley, California 94720, USA}
 
 \author{Vicente Leyton-Ortega}
-\affiliation{Institution TBD}
+\email{leytonorteva@ornl.gov}
+\affiliation{Quantum Computational Science Group, Quantum Information Science Section, Computational Sciences and Engineering Division, Oak Ridge National Laboratory, Oak Ridge, Tennessee 37831, USA}
 
 \date{\today}
 
 \begin{abstract}
-We introduce a novel quantum encoding strategy based on stereographic projection that maps complex numbers to quantum states on the Bloch sphere. This encoding, $\ket{z} = \frac{1}{\sqrt{|z|^2+1}}(z\ket{0} + \ket{1})$, provides an unbounded encoding of the complex plane and exhibits a natural connection to quantum signal processing (QSP) through Chebyshev polynomials. We show that single-qubit quantum gates induce Möbius transformations on the encoded complex values, establishing a rich geometric structure. Under this encoding, the QSP protocol generates rational polynomial approximations with explicit zeros and poles. We derive the Hamiltonian dynamics for trajectories in the complex plane and compute the associated Berry phase. Applications to quantum eigenvalue transformation, quantum kernels, and classification are discussed.
+	Quantum signal processing (QSP) constructs polynomial
+	transformations of a quantum operator's eigenvalues, but the
+	signal and its output are fundamentally constrained to lie in
+	the interval $[-1,1]$.  We show that this boundedness
+	constraint can be lifted without modifying the quantum
+	algorithm, by changing only the classical encoding and decoding
+	interface.  Stereographic projection compresses an unbounded
+	real parameter onto the Bloch sphere, placing it within the QSP
+	domain, while Pauli-measurement decoding recovers the
+	\emph{ratio} of the two output-state components---an unbounded
+	rational function of the original parameter, even though the
+	internal polynomials remain bounded.  A simple basis change
+	shows that the stereographic and standard QSP signal operators
+	are unitarily equivalent, so all existing phase-finding
+	algorithms and convergence results apply directly.  The
+	base-case functions are identified with Boyd's rational
+	Chebyshev functions, connecting QSP to classical approximation
+	theory on unbounded domains.  We formulate a stereographic
+	block encoding for operators with unbounded spectra, give
+	explicit circuit constructions, and show that the coherent
+	normalization overhead of standard QSP is replaced by a
+	polynomial sampling cost that grows with the eigenvalue
+	magnitude.
 \end{abstract}
-
-% PACS numbers (Physics and Astronomy Classification Scheme)
-\pacs{03.67.Lx, 03.67.Ac, 02.30.Fn}
-% 03.67.Lx - Quantum computation architectures and implementations
-% 03.67.Ac - Quantum algorithms, protocols, and simulations  
-% 02.30.Fn - Several complex variables and analytic spaces
 
 \maketitle
 
-% Note: REVTeX handles table of contents differently - typically not used in journal articles
-% \tableofcontents
+% Sec 1: Introduction --- the QSP boundedness problem and our approach
+\input{sections/qsp_01_introduction}
 
-% Include sections
-\input{sections/01_introduction}
-\input{sections/02_preliminaries}
-\input{sections/03_encoding}
-\input{sections/04_mobius}
-\input{sections/05_qsp}
-\input{sections/06_dynamics}
-\input{sections/07_applications}
-\input{sections/08_discussion}
+% Sec 2: Quantum Signal Processing --- framework, Chebyshev, boundedness
+\input{sections/qsp_02_preliminaries}
 
-% Acknowledgments (optional)
+% Sec 3: Stereographic Encoding --- Bloch sphere, encoding, decoding, Möbius
+\input{sections/qsp_03_encoding}
+
+% Sec 4: Main result --- stereographic QSP lifts boundedness
+\input{sections/qsp_04_main}
+
+% Sec 5: Consequence --- block encoding with unbounded spectra
+\input{sections/qsp_05_block_encoding}
+
+% Sec 6: Cost analysis and applications
+\input{sections/qsp_06_cost_analysis}
+
+% Sec 7: Discussion
+\input{sections/qsp_07_discussion}
+
+% Acknowledgments
 \begin{acknowledgments}
-We thank... (to be completed)
+	We thank (to be completed).
 \end{acknowledgments}
 
-% Appendices
-\appendix
+% Appendix: deferred proofs
 \input{sections/appendix_proofs}
-\input{sections/appendix_formulas}
 
-% Bibliography - REVTeX style
+% Bibliography
 \bibliography{references}
 
 \end{document}

@@ -1,0 +1,113 @@
+\section{Discussion}
+\label{sec:discussion}
+
+The central observation of this paper is that stereographic
+projection, composed with standard QSP, converts the bounded
+polynomial output of the circuit into an unbounded rational
+function---without modifying the quantum algorithm itself.  The
+basis change identity
+$S_z = V^{-1}W(\rtilde)V$ with $V = \mathrm{diag}(1,i)$
+(Proposition~\ref{prop:basis-change}) makes this reduction
+precise: the full machinery of standard QSP---phase-finding
+algorithms~\cite{DongMengWhaleyEtAl2021,Haah2019}, the
+function class characterization, convergence theory---applies
+immediately, and the ``unboundedness'' is a free consequence of
+the encoding/decoding interface.  The stereographic viewpoint
+also illuminates standard QSP itself: even the standard
+protocol, when decoded via stereographic projection, produces
+unbounded rational functions of the real-line parameter
+(Section~\ref{subsec:further-consequences}).
+
+At the same time, the construction has clear limitations.
+Stereographic block encoding requires knowledge of the
+eigenbasis (Section~\ref{sec:block-encoding}), restricting
+applicability to structured Hamiltonians---we have given
+explicit circuits for diagonal, Pauli-$Z$ sum, and Heisenberg
+models, but these do not cover the general case addressed by
+QSVT~\cite{GSLW2019}.  The measurement overhead grows as
+$\mathcal{O}(r^6/\epsilon^2)$ for large eigenvalues
+(Eq.~\eqref{eq:shot-count}), making the approach impractical
+when $r \gg 1$.  The practical advantage window is
+depth-limited devices processing operators with moderate
+eigenvalues and known eigenbasis structure.
+
+Our construction rests on the QSP/QSVT framework established
+by Low and Chuang~\cite{LowChuang2017,LowChuang2019} and
+Gily\'en et al.~\cite{GSLW2019}, with comprehensive reviews by
+Martyn et al.~\cite{MartynRossiTanChuang2021} and
+Lin~\cite{Lin2022}.  The formal separation between bounded and
+unbounded polynomial approximations established by Tang and
+Tian~\cite{TangTian2024} provides the theoretical motivation:
+it shows that the boundedness constraint is a genuine barrier,
+not merely a technical inconvenience.  Among extensions,
+GQSP~\cite{MotlaghWiebe2023} is the closest in spirit: it
+lifts the parity and realness constraints on~$P$ and provides
+dramatically faster angle-finding, but retains the boundedness
+constraint $|P| \leq 1$.  Stereographic QSP is
+complementary---it lifts boundedness but not parity, and
+produces rational rather than polynomial output.  Quantum Phase
+Processing~\cite{WangZhangYuWang2023}, modular
+QSP~\cite{RossiCeroniChuang2025}, Randomized
+QSVT~\cite{WangZhangHazraEtAl2025}, Hamiltonian block
+encoding~\cite{KangSu2025}, and GQSP-based matrix function
+synthesis~\cite{MahasingheEtAl2025} each address different
+costs of the standard framework while retaining bounded output;
+our work changes the classical encoding/decoding interface
+rather than the quantum algorithm.  The connection to Boyd's
+rational Chebyshev
+functions~\cite{Boyd1990,Boyd1987} links stereographic QSP to
+classical approximation theory on unbounded domains, suggesting
+that convergence rates for rational Chebyshev expansions
+translate directly to QSP performance guarantees.
+
+The framework opens several directions for further work.  On
+the algorithmic side, finding QSP phases for a given target
+rational function $f(r)$ requires decomposing $f$ into a
+polynomial pair $(P, Q)$ satisfying the normalization
+constraint before invoking standard phase-finding; GQSP's
+efficient angle-finding~\cite{MotlaghWiebe2023} may simplify
+this step.  On the theoretical side, the numerical results in
+Figure~\ref{fig:target-gallery} demonstrate convergence for
+several targets, with the inset in panel~(e) showing that
+eigenvalue inversion converges fastest while bounded targets
+converge more slowly---understanding the precise relationship
+between rational Chebyshev convergence rates and the QSP
+normalization constraint is an open question.  The natural
+error metric on unbounded domains is the weighted $L^2$ norm
+with Cauchy--Lorentz weight $1/(1+r^2)$, which downweights
+large-$r$ errors where stereographic compression is most
+severe.
+
+Extending the class of tractable Hamiltonians---sparse models
+with known eigenbasis structure, integrable models, or
+tensor-network states---would establish the practical scope of
+the approach, and the key question is whether the eigenbasis
+requirement can be relaxed, perhaps by combining stereographic
+encoding with quantum phase estimation.  Replacing the phase
+rotations $\exp[i\phi\PauliZ]$ with general signal-type
+operators $O_\alpha$ parameterized by $\alpha \in \hat{\C}$
+yields a normalization condition
+\begin{equation}
+	|P|^2 + |Q|^2 = (1{+}r^2)^d \textstyle\prod_j(1{+}|\alpha_j|^2),
+	\label{eq:generalized-norm}
+\end{equation}
+whose forward direction follows from the same inductive
+argument as Theorem~\ref{thm:unnormalized}, but whose
+converse---decomposing arbitrary polynomial pairs into such a
+product---remains open.  Finally, extending stereographic
+encoding to the full QSVT framework, where the signal is a
+block-encoded matrix rather than a scalar, requires defining a
+matrix-valued stereographic encoding and analyzing its
+interaction with the QSVT product structure.
+
+The stereographic projection is one of the oldest maps in
+mathematics, but its application to quantum signal processing
+appears to be new.  The fact that a simple change of
+coordinates can bypass a fundamental constraint of QSP suggests
+that the interface between encoding and processing---the way
+classical data enters and exits the quantum circuit---deserves
+systematic study.  Other geometric constructions (hyperbolic
+encodings, projective coordinates) may yield analogous
+extensions, and the general question of which function classes
+are realizable under different encoding/decoding strategies
+remains open.

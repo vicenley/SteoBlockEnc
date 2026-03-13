@@ -1,0 +1,153 @@
+================================================================================
+SYMBOLIC VERIFICATION REPORT
+================================================================================
+Generated: 2026-03-06 (updated)
+Tools: SymPy 1.14.0, SageMath 10.7, NumPy/SciPy
+
+================================================================================
+PART I: ORIGINAL VERIFICATIONS (Phase 1)
+================================================================================
+
+✓ All symbolic equations verified successfully
+✓ Encoding state formula confirmed
+✓ Bloch vector formulas verified
+✓ Decoding formula validated
+✓ Möbius transformations for Pauli gates confirmed
+✓ Gate composition properties verified (X²=I, H²=I)
+✓ U3 gate transformation derived
+✓ Encoding unitary U_z is unitary (U†U = I)
+✓ Signal operator U_z σ_z computed
+✓ Chebyshev polynomial states generated for k=2,3,4,5
+✓ Rational polynomial approximations computed
+
+================================================================================
+PART II: NEW VERIFICATIONS (Phase 2)
+================================================================================
+
+--- Verification 1: Theorem 2 (QSP over RP¹) ---
+Claim: The unnormalized stereographic QSP product
+  W = R(φ₀) O_x R(φ₁) ... O_x R(φ_d)
+where O_x = [[x,1],[1,-x]] and R(φ) = [[e^{iφ},0],[0,e^{-iφ}]],
+satisfies |P(x)|² + |Q(x)|² = (1+x²)^d where P = W[0,0], Q = W[1,0].
+
+Results:
+  ✓ Symbolic (SageMath): Verified for d=1,...,7 with all phases = 0.
+    O_x^d * (O_x^d)^T = (1+x²)^d * I₂ for all d tested.
+  ✓ Numerical: Verified for d=1,...,8 with arbitrary random phases.
+    All matched to machine precision (< 10⁻⁸).
+
+Underlying reason: O_x * O_x^T = (1+x²) * I, so the norm is multiplicative.
+Phase rotations are unitary and preserve the norm.
+Symbolically: W * W^T = (1+x²)^d * I for all d (proven by induction).
+
+--- Verification 2: Boyd Rational Chebyshev Orthogonality ---
+Claim: TB_k(x) = T_k(x/√(1+x²)) are orthogonal with weight 1/(1+x²) on (-∞,∞).
+
+Results:
+  ✓ The correct Boyd functions are TB_k(x) = T_k(x/√(1+x²)), NOT cos(k·arccot(x)).
+    These differ for negative x and odd k due to branch cut issues with arccot.
+  ✓ Orthogonality verified numerically (SageMath):
+    ∫ TB_j(x) TB_k(x) / (1+x²) dx = δ_{jk} · c_k
+    where c_0 = π, c_k = π/2 for k ≥ 1. All integrals correct to 10⁻⁶.
+  ✓ Cross-orthogonality with SB_k requires the EXPLICIT Chebyshev change
+    of variable t = x/√(1+x²), confirming dt/√(1-t²) = dx/(1+x²).
+
+IMPORTANT CORRECTION: cos(k·arccot(x)) ≠ T_k(x/√(1+x²)) for negative x, odd k.
+The correct definition for the manuscript is TB_k(x) = T_k(x/√(1+x²)).
+
+--- Verification 3: Standard QSP Reinterpreted Stereographically ---
+Claim: Standard QSP output |ψ⟩ = P(a)|0⟩ + i√(1-a²)Q(a)|1⟩, under the
+substitution a = u/√(1+u²), decodes to F(u) = P(a_u)·√(1+u²)/Q(a_u).
+
+Results:
+  ✓ Symbolic: For d=1 (P=a, Q=1): z = α/β = -i·u.
+    The real decoded function is F(u) = |z| = u. Confirmed.
+  ✓ Numerical: For d=2 (P=T₂(a), Q=U₁(a)):
+    F(u=2) = P(a_u)·√(1+u²)/Q(a_u) = 0.750000
+    cot(2·arctan(1/2)) = 0.750000. Match confirmed.
+  ✓ General formula: F(u) = -i · P(a_u) · √(1+u²) / Q(a_u)
+    The factor of -i arises from the i·√(1-a²) in the standard signal operator.
+    The physical (real) decoded function strips this phase: F_real = P·√(1+u²)/Q.
+
+--- Verification 4: Backward Direction of Theorem 2 (RESOLVED) ---
+This was identified as the key open question from QSPExtended.pdf.
+
+RESOLUTION via basis change:
+  ✓ The normalized stereographic signal operator S_z = [[a,-s],[s,a]]
+    (where a = r/√(1+r²), s = 1/√(1+r²)) is related to the standard
+    QSP signal operator W(a) = [[a,is],[is,a]] by:
+    
+        S_z = U⁻¹ · W(a) · U    where  U = diag(1, i)
+    
+  ✓ Phase operators e^{iφσ_z} are INVARIANT under this conjugation.
+    
+  ✓ Therefore: W_stereo = U⁻¹ · W_standard · U (same phases!)
+    - W_stereo[0,0] = W_std[0,0] = P_std(a)
+    - W_stereo[1,0] = -i · W_std[1,0]
+    
+  ✓ Numerically verified to machine precision (max error < 10⁻¹⁵) for
+    arbitrary phases φ = [0.3, -0.8, 1.5] at 20 sample points.
+
+CONSEQUENCE: The backward direction of the stereographic QSP theorem
+INHERITS DIRECTLY from the standard QSP theorem. Given any target
+polynomial P(a) with |P(a)| ≤ 1 and definite parity, the standard QSP
+theorem guarantees the existence of phases. The SAME phases work for the
+stereographic version.
+
+--- Verification 5: Parity Constraints ---
+  ✓ For all d tested (d=1,...,5), with random phases:
+    - P(x) = W[0,0] has parity (-1)^d (same as d)
+    - Q(x) = W[1,0] has parity (-1)^{d+1} (opposite)
+  This matches the standard QSP parity constraint.
+
+--- Verification 6: Function Class Structure ---
+Key findings from phase-finding experiments:
+
+  ✓ Phase-finding with e^{iφσ_z} phases succeeds for:
+    - d=2, P = x²-1, Q = 2x (cost < 10⁻¹⁴)
+    - d=3, P = x³-3x, Q = 3x²-1 (cost < 10⁻¹³, recovers zero phases)
+    - Round-trip d=2 and d=5 (cost < 10⁻¹⁰)
+    - d=2, P = x²+1, Q = 0 (the "constant ∞" case, cost < 10⁻¹⁵)
+  
+  ✗ Fails for P,Q pairs with MIXED parity (confirmed: this violates the constraint).
+    Example: P = cos(t)·(x²-1) - sin(t)·2x has mixed even/odd terms.
+
+  ✓ With real SO(2) rotation phases (instead of σ_z phases):
+    The product collapses to a single rotation (SO(2) is abelian!).
+    Achievable functions: f(r) = cot(C + d·arctan(1/r)) — only a 1-parameter family.
+    This confirms that σ_z phases are ESSENTIAL for the full function class.
+
+  ✓ The decoded function P/Q is generally COMPLEX (not real).
+    For real decoded functions, one needs phase symmetries analogous to
+    the real-polynomial conditions in standard QSP.
+
+================================================================================
+SUMMARY OF NEW RESULTS FOR THE MANUSCRIPT
+================================================================================
+
+1. THEOREM (Forward direction, verified):
+   |P(x)|² + |Q(x)|² = (1+x²)^d for the unnormalized product.
+
+2. THEOREM (Backward direction, proven by reduction):
+   The stereographic QSP backward direction reduces to standard QSP
+   via the basis change U = diag(1, i). The standard QSP theorem
+   (GSLW) then guarantees existence of phases.
+
+3. PROPOSITION (Rational Chebyshev connection):
+   The base functions TB_k(x) = T_k(x/√(1+x²)) are Boyd's rational
+   Chebyshev functions, orthogonal on (-∞,∞) with weight 1/(1+x²).
+   These form a complete basis for functions on the real line with
+   algebraic decay.
+
+4. PROPOSITION (Standard QSP reinterpretation):
+   Standard QSP with signal a = r/√(1+r²) gives decoded functions
+   F(r) = P(a_r)·√(1+r²)/Q(a_r), which are unbounded rational functions
+   of r. This means existing QSP phase-finding algorithms can be
+   DIRECTLY REPURPOSED for the stereographic setting.
+
+5. OBSERVATION (Phase type matters):
+   Real SO(2) phase rotations commute with the signal operator and yield
+   only a 1-parameter family. The full function class requires σ_z phases
+   (which break SO(2) commutativity via the computational basis structure).
+
+================================================================================
