@@ -73,10 +73,10 @@ eigenstate $\ket{j}$, the decoding formula~\eqref{eq:decoding}
 applies directly.  For a superposition input, one obtains the
 \emph{expectation value}
 \begin{equation}
-	\frac{\langle\PauliX\rangle_a}
+	\frac{\langle\PauliX\rangle_a + i\langle\PauliY\rangle_a}
 	{1 - \langle\PauliZ\rangle_a}
-	= \frac{\sum_j |c_j|^2\,\re[P\bar{Q}]\,\sqrt{1+\lambda_j^2}}
-	{\sum_j |c_j|^2\,|Q|^2},
+	= \frac{\sum_j |c_j|^2\,P_j\bar{Q}_j}
+	{\sum_j |c_j|^2\,|Q_j|^2},
 	\label{eq:superposition-decoding}
 \end{equation}
 which is a weighted average over eigenspaces, \emph{not}

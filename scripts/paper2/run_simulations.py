@@ -185,7 +185,13 @@ def decode_ancilla_statevector(state_vec, n_qubits, V_diag, eigenstate_idx):
 
 
 def decode_ancilla_pauli(state, n_qubits):
-    """Decode using Pauli expectations on the ancilla (q0)."""
+    """Decode using Pauli expectations on the ancilla (q0).
+
+    The stereographic decoded function f = alpha/(-i*beta) maps to Pauli
+    expectations as Re(f) = -<Y>/(1-<Z>), Im(f) = <X>/(1-<Z>).
+    This follows from the V = diag(1, i) basis change in the stereographic
+    encoding.
+    """
     obs_x = Observable(n_qubits)
     obs_x.add_operator(1.0, "X 0")
     obs_y = Observable(n_qubits)
@@ -200,7 +206,8 @@ def decode_ancilla_pauli(state, n_qubits):
     denom = 1.0 - ez
     if abs(denom) < 1e-15:
         return np.inf
-    return (ex + 1j * ey) / denom
+    # Stereographic decoding: Re(f) = -Y/(1-Z), Im(f) = X/(1-Z)
+    return (-ey + 1j * ex) / denom
 
 
 def initialize_eigenstate(n_qubits, V_diag, eigenstate_idx):
@@ -255,9 +262,9 @@ def sim1_heisenberg_verification(n_trials=100, verbose=True):
             shift = -min(eigenvalues) + 0.5
             eig_shifted = eigenvalues + shift
 
-            # Find QSP phases
-            r_max = max(eig_shifted) + 3.0
-            r_samples = np.linspace(0.3, r_max, 60)
+            # Find QSP phases — use well-spaced samples covering eigenvalue range
+            r_max = max(eig_shifted) + 2.0
+            r_samples = np.linspace(0.2, r_max, 80)
             phases, cost = find_phases_stereo(
                 f_target=lambda r: 1.0 / r,
                 d=degree,
@@ -520,8 +527,8 @@ def sim3_eigenvalue_transform(n_trials=100, verbose=True):
     n_qubits = 3
 
     degrees = [2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 24, 28]
-    r_max = max(eig_shifted) + 3.0
-    r_samples = np.linspace(0.3, r_max, 60)
+    r_max = max(eig_shifted) + 2.0
+    r_samples = np.linspace(0.2, r_max, 80)
 
     all_errors = []  # shape: (len(degrees), 4) — max error per eigenstate
     all_decoded = []  # shape: (len(degrees), 4)
@@ -603,8 +610,12 @@ def sim3_eigenvalue_transform(n_trials=100, verbose=True):
 def sim4_noise_analysis(n_trials=50, verbose=True):
     """
     Analyze sensitivity to:
-      (a) Finite measurement statistics (sampling noise)
-      (b) Depolarizing gate noise
+      (a) Finite measurement statistics (sampling noise on decoded value)
+      (b) Depolarizing gate noise (density matrix simulation)
+
+    Uses eigenstate-resolved decoding throughout: the decoded value is
+    extracted by projecting the output state onto the known eigenstate,
+    yielding ancilla amplitudes alpha, beta with f = alpha/(-i*beta).
     """
     print("\n" + "=" * 70)
     print("SIM 4: Noise Analysis")
@@ -619,8 +630,8 @@ def sim4_noise_analysis(n_trials=50, verbose=True):
     degree = 14
 
     # Find phases
-    r_max = max(eig_shifted) + 3.0
-    r_samples = np.linspace(0.3, r_max, 60)
+    r_max = max(eig_shifted) + 2.0
+    r_samples = np.linspace(0.2, r_max, 80)
     phases, cost = find_phases_stereo(
         f_target=lambda r: 1.0 / r,
         d=degree,
@@ -628,57 +639,76 @@ def sim4_noise_analysis(n_trials=50, verbose=True):
         n_trials=n_trials,
     )
 
+    print(f"  Phase-finding cost: {cost:.2e}")
+
     # Build noiseless circuit
     circuit = build_qsp_circuit(n_qubits, V_diag, eig_shifted, phases)
 
     # ---- Part A: Sampling noise ----
-    print("\n  Part A: Sampling noise (simulated shot noise)")
+    # Model: the statevector decoding gives exact alpha_j, beta_j.
+    # Finite measurement (N shots) introduces Gaussian noise on the
+    # decoded real value with std ~ (1 + |f|^2) / sqrt(N), derived from
+    # the stereographic error amplification factor.
+    print("\n  Part A: Sampling noise (stereographic decoding)")
     shot_counts = [100, 500, 1000, 5000, 10000, 50000, 100000]
-    n_repetitions = 50  # statistical repetitions
+    n_repetitions = 200  # statistical repetitions for stable statistics
 
     sampling_results = {}
-    for j_eig in [0, 1, 2, 3]:  # test all eigenstates
+    for j_eig in [0, 1, 2, 3]:
         r_val = eig_shifted[j_eig]
         exact_val = 1.0 / r_val
 
-        # Get exact Pauli expectations
+        # Get exact decoded value from statevector
         state = initialize_eigenstate(n_qubits, V_diag, j_eig)
         circuit.update_quantum_state(state)
-
-        obs_x = Observable(n_qubits)
-        obs_x.add_operator(1.0, "X 0")
-        obs_y = Observable(n_qubits)
-        obs_y.add_operator(1.0, "Y 0")
-        obs_z = Observable(n_qubits)
-        obs_z.add_operator(1.0, "Z 0")
-
-        ex_exact = obs_x.get_expectation_value(state)
-        ey_exact = obs_y.get_expectation_value(state)
-        ez_exact = obs_z.get_expectation_value(state)
+        sv = state.get_vector()
+        z_exact_sv = decode_ancilla_statevector(sv, n_qubits, V_diag, j_eig)
 
         if verbose:
             print(
                 f"\n    Eigenstate j={j_eig}, λ'={r_val:.3f}, "
-                f"exact Pauli: X={ex_exact:.6f}, Y={ey_exact:.6f}, Z={ez_exact:.6f}"
+                f"exact=1/λ'={exact_val:.8f}, "
+                f"SV decoded={z_exact_sv.real:.8f}"
             )
+
+        # Extract ancilla amplitudes for this eigenstate
+        P_perm = standard_to_qulacs_perm(2)
+        eigvec_q = P_perm @ V_diag[:, j_eig]
+        alpha = 0.0 + 0.0j
+        beta = 0.0 + 0.0j
+        for k in range(4):
+            sys_bits = [(k >> b) & 1 for b in range(2)]
+            offset = sum(sys_bits[b] * (2 ** (b + 1)) for b in range(2))
+            alpha += eigvec_q[k].conj() * sv[0 + offset]
+            beta += eigvec_q[k].conj() * sv[1 + offset]
+
+        # Eigenstate-projected ancilla Bloch vector
+        x_j = 2 * np.real(alpha * np.conj(beta))
+        y_j = 2 * np.imag(alpha * np.conj(beta))
+        z_j = abs(alpha) ** 2 - abs(beta) ** 2
+        # Verify: -y_j/(1-z_j) should equal the decoded value
+        f_from_bloch = -y_j / (1 - z_j)
+
+        if verbose:
+            print(f"    Bloch: X={x_j:.6f}, Y={y_j:.6f}, Z={z_j:.6f}, -Y/(1-Z)={f_from_bloch:.8f}")
 
         errors_by_shots = []
         for N_shots in shot_counts:
             errors_rep = []
             for _ in range(n_repetitions):
-                # Simulate finite measurement:
-                # Each Pauli measurement has variance (1 - <P>^2) / N
-                ex_noisy = ex_exact + np.random.normal(0, np.sqrt((1 - ex_exact**2) / N_shots))
-                ey_noisy = ey_exact + np.random.normal(0, np.sqrt((1 - ey_exact**2) / N_shots))
-                ez_noisy = ez_exact + np.random.normal(0, np.sqrt((1 - ez_exact**2) / N_shots))
+                # Simulate finite measurement of the eigenstate-projected
+                # Pauli expectations. Each has variance (1 - <P>^2) / N.
+                x_noisy = x_j + np.random.normal(0, np.sqrt(max(1 - x_j**2, 0) / N_shots))
+                y_noisy = y_j + np.random.normal(0, np.sqrt(max(1 - y_j**2, 0) / N_shots))
+                z_noisy = z_j + np.random.normal(0, np.sqrt(max(1 - z_j**2, 0) / N_shots))
 
-                denom = 1.0 - ez_noisy
+                denom = 1.0 - z_noisy
                 if abs(denom) < 1e-15:
-                    z_noisy = np.inf
+                    f_noisy = np.inf
                 else:
-                    z_noisy = (ex_noisy + 1j * ey_noisy) / denom
+                    f_noisy = -y_noisy / denom
 
-                errors_rep.append(abs(z_noisy.real - exact_val))
+                errors_rep.append(abs(f_noisy - exact_val))
 
             mean_err = np.mean(errors_rep)
             std_err = np.std(errors_rep)
@@ -691,18 +721,17 @@ def sim4_noise_analysis(n_trials=50, verbose=True):
             "r_val": r_val,
             "exact_val": exact_val,
             "errors_by_shots": np.array(errors_by_shots),
-            "ex_exact": ex_exact,
-            "ey_exact": ey_exact,
-            "ez_exact": ez_exact,
+            "x_proj": x_j,
+            "y_proj": y_j,
+            "z_proj": z_j,
         }
 
     # ---- Part B: Depolarizing noise ----
     print("\n  Part B: Depolarizing gate noise")
     noise_rates = [0.0, 1e-5, 1e-4, 5e-4, 1e-3, 5e-3, 1e-2]
 
-    # For depolarizing noise, we simulate by adding noise after each gate
-    # Using Qulacs noise simulation
     from qulacs.gate import DepolarizingNoise
+    from qulacs import DensityMatrix as QulacsDensityMatrix
 
     depol_results = {}
     for j_eig in [0, 2]:  # Test smallest and largest eigenvalues
@@ -710,22 +739,24 @@ def sim4_noise_analysis(n_trials=50, verbose=True):
         exact_val = 1.0 / r_val
         errors_by_noise = []
 
+        P_perm = standard_to_qulacs_perm(2)
+        eigvec_q = P_perm @ V_diag[:, j_eig]
+
         for p in noise_rates:
             if p == 0.0:
-                # Noiseless reference
+                # Noiseless reference via statevector
                 state = initialize_eigenstate(n_qubits, V_diag, j_eig)
                 circuit.update_quantum_state(state)
-                z_decoded = decode_ancilla_pauli(state, n_qubits)
-                errors_by_noise.append(abs(z_decoded.real - exact_val))
+                sv = state.get_vector()
+                z_dec = decode_ancilla_statevector(sv, n_qubits, V_diag, j_eig)
+                errors_by_noise.append(abs(z_dec.real - exact_val))
             else:
                 # Build noisy circuit
                 noisy_circuit = QuantumCircuit(n_qubits)
                 d_qsp = len(phases) - 1
-                P = standard_to_qulacs_perm(2)
-                V_q = P @ V_diag
+                V_q = P_perm @ V_diag
                 a_vals = eig_shifted / np.sqrt(1.0 + eig_shifted**2)
 
-                # Build gates (same as build_qsp_circuit but with noise)
                 def add_gate_with_noise(circ, gate, qubits, noise_rate):
                     circ.add_gate(gate)
                     for q in qubits:
@@ -781,12 +812,9 @@ def sim4_noise_analysis(n_trials=50, verbose=True):
                 gate_v = DenseMatrix([1, 2], V_q)
                 add_gate_with_noise(noisy_circuit, gate_v, [1, 2], p)
 
-                # Run noisy simulation (density matrix for mixed state)
-                from qulacs import DensityMatrix as QulacsDensityMatrix
-
+                # Run noisy simulation with density matrix
                 dm = QulacsDensityMatrix(n_qubits)
                 init_vec = np.zeros(8, dtype=complex)
-                eigvec_q = P @ V_diag[:, j_eig]
                 for k in range(4):
                     q1v = k % 2
                     q2v = k // 2
@@ -795,16 +823,43 @@ def sim4_noise_analysis(n_trials=50, verbose=True):
                 dm.load(init_vec)
                 noisy_circuit.update_quantum_state(dm)
 
-                # Decode from density matrix
-                ex = obs_x.get_expectation_value(dm)
-                ey = obs_y.get_expectation_value(dm)
-                ez = obs_z.get_expectation_value(dm)
-                denom = 1.0 - ez
+                # Decode from density matrix via eigenstate projection
+                # Get the 8x8 density matrix, project onto eigenstate j
+                rho = dm.get_matrix()
+                alpha_dm = 0.0 + 0.0j
+                beta_dm = 0.0 + 0.0j
+                # Compute Tr_sys[|psi_j><psi_j| rho] projected ancilla state
+                # alpha = sum_k eigvec_q[k]* <k,0|rho|alpha,beta>...
+                # Simpler: compute the ancilla reduced density matrix
+                # conditioned on system eigenstate j
+                rho_anc = np.zeros((2, 2), dtype=complex)
+                for k1 in range(4):
+                    for k2 in range(4):
+                        sys_bits_1 = [(k1 >> b) & 1 for b in range(2)]
+                        sys_bits_2 = [(k2 >> b) & 1 for b in range(2)]
+                        off_1 = sum(sys_bits_1[b] * (2 ** (b + 1)) for b in range(2))
+                        off_2 = sum(sys_bits_2[b] * (2 ** (b + 1)) for b in range(2))
+                        coeff = eigvec_q[k1].conj() * eigvec_q[k2]
+                        for a1 in range(2):
+                            for a2 in range(2):
+                                rho_anc[a1, a2] += coeff * rho[a1 + off_1, a2 + off_2]
+
+                # Normalize
+                tr = np.real(rho_anc[0, 0] + rho_anc[1, 1])
+                if tr > 1e-15:
+                    rho_anc /= tr
+
+                # Extract Bloch components
+                x_dm = 2 * np.real(rho_anc[0, 1])
+                y_dm = 2 * np.imag(rho_anc[0, 1])
+                z_dm = np.real(rho_anc[0, 0] - rho_anc[1, 1])
+
+                denom = 1.0 - z_dm
                 if abs(denom) < 1e-15:
-                    z_noisy = np.inf
+                    f_dm = np.inf
                 else:
-                    z_noisy = (ex + 1j * ey) / denom
-                errors_by_noise.append(abs(z_noisy.real - exact_val))
+                    f_dm = -y_dm / denom
+                errors_by_noise.append(abs(f_dm - exact_val))
 
             if verbose:
                 print(f"    eig{j_eig}, p={p:.1e}: error={errors_by_noise[-1]:.4e}")

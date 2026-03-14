@@ -31,9 +31,10 @@ single-qubit signal operator for eigenvalue $\lambda_j$.
 	Consequently, the degree-$d$ stereographic QSVT product
 	\begin{equation}
 		\mathcal{W}_{\bm{\phi}}
-		= \prod_{k=0}^{d}
+		= \bigl(\exp[i\phi_0\PauliZ] \otimes \Id_s\bigr)
+		\prod_{k=1}^{d}
+		\mathcal{S}\,
 		\bigl(\exp[i\phi_k\PauliZ] \otimes \Id_s\bigr)
-		\cdot \mathcal{S}
 		\label{eq:qsvt-product}
 	\end{equation}
 	decomposes as

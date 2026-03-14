@@ -54,7 +54,7 @@ $V^\dagger H V = \mathrm{diag}(\lambda_1, \lambda_2,
 	\lambda_3, \lambda_4)$.
 
 \emph{Verification.}
-We confirm $VHV^\dagger = D$ by direct computation.
+We confirm $V^\dagger H V = D$ by direct computation.
 In the $\{\ket{01}, \ket{10}\}$ block:
 \begin{align}
 	G^\top H_{01}\,G & = \begin{pmatrix}
@@ -123,7 +123,7 @@ recursive decomposition~\cite{NielsenChuang2010} gives:
 	controlled rotation splits into two uniformly controlled
 	rotations on $n-1$ qubits, separated by a CNOT, giving
 	the recurrence $C(n) = 2\,C(n-1) + 1$.  With $C(1) = 2$,
-	this solves to $C(n) = 2^n$ CNOTs.  The single-qubit
+	this solves to $C(n) = 3\cdot 2^{n-1} - 1 = \mathcal{O}(2^n)$ CNOTs.  The single-qubit
 	count is the same: each leaf of the recursion contributes
 	one rotation.
 \end{proof}

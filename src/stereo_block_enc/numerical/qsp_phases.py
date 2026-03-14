@@ -27,9 +27,10 @@ from concurrent.futures import ProcessPoolExecutor, as_completed
 # Default parallelism: use all available cores, or override with env var
 # ---------------------------------------------------------------------------
 
+
 def _default_workers():
     """Number of parallel workers. Override with STEREO_QSP_WORKERS env var."""
-    env = os.environ.get('STEREO_QSP_WORKERS')
+    env = os.environ.get("STEREO_QSP_WORKERS")
     if env is not None:
         return int(env)
     cpu = os.cpu_count() or 1
@@ -40,6 +41,7 @@ def _default_workers():
 # ---------------------------------------------------------------------------
 # Core QSP product evaluation
 # ---------------------------------------------------------------------------
+
 
 def qsp_product(phis: np.ndarray, a_arr: np.ndarray) -> np.ndarray:
     """
@@ -80,7 +82,7 @@ def qsp_product(phis: np.ndarray, a_arr: np.ndarray) -> np.ndarray:
     Sa[:, 1, 1] = a
 
     for j in range(d):
-        W = np.einsum('nij,njk->nik', W, Sa)
+        W = np.einsum("nij,njk->nik", W, Sa)
         # Apply R(phi_{j+1}): right-multiply by diagonal
         ep = np.exp(1j * phis[j + 1])
         em = np.exp(-1j * phis[j + 1])
@@ -152,11 +154,18 @@ def decoded_function(phis: np.ndarray, r_arr: np.ndarray) -> np.ndarray:
 # Single-trial worker functions (top-level for pickling)
 # ---------------------------------------------------------------------------
 
+
 def _limit_blas_threads():
     """Restrict BLAS/OpenBLAS/MKL to 1 thread inside worker processes."""
-    for var in ('OMP_NUM_THREADS', 'OPENBLAS_NUM_THREADS', 'MKL_NUM_THREADS',
-                'BLAS_NUM_THREADS', 'VECLIB_MAXIMUM_THREADS', 'NUMEXPR_NUM_THREADS'):
-        os.environ[var] = '1'
+    for var in (
+        "OMP_NUM_THREADS",
+        "OPENBLAS_NUM_THREADS",
+        "MKL_NUM_THREADS",
+        "BLAS_NUM_THREADS",
+        "VECLIB_MAXIMUM_THREADS",
+        "NUMEXPR_NUM_THREADS",
+    ):
+        os.environ[var] = "1"
 
 
 def _run_single_trial_standard(args):
@@ -170,30 +179,31 @@ def _run_single_trial_standard(args):
         W = qsp_product(phis, a_samples)
         return np.sum(np.abs(W[:, 0, 0] - P_vals) ** 2)
 
-    res = minimize(cost, phi0, method='L-BFGS-B',
-                   options={'maxiter': 5000, 'ftol': 1e-15})
+    res = minimize(cost, phi0, method="L-BFGS-B", options={"maxiter": 5000, "ftol": 1e-15})
     return res.x, res.fun
 
 
 def _run_single_trial_stereo(args):
     """Run one L-BFGS-B trial for stereographic QSP. Picklable top-level function."""
     _limit_blas_threads()
-    seed, d, r_samples, f_vals, mask = args
+    seed, d, r_samples, f_vals, mask, real_only = args
     rng = np.random.RandomState(seed)
     phi0 = rng.uniform(-np.pi, np.pi, d + 1)
 
     def cost(phis):
         f_computed = decoded_function(phis, r_samples)
+        if real_only:
+            return np.sum((f_computed[mask].real - f_vals[mask].real) ** 2)
         return np.sum(np.abs(f_computed[mask] - f_vals[mask]) ** 2)
 
-    res = minimize(cost, phi0, method='L-BFGS-B',
-                   options={'maxiter': 5000, 'ftol': 1e-15})
+    res = minimize(cost, phi0, method="L-BFGS-B", options={"maxiter": 10000, "ftol": 1e-18})
     return res.x, res.fun
 
 
 # ---------------------------------------------------------------------------
 # Phase-finding (parallelized)
 # ---------------------------------------------------------------------------
+
 
 def find_phases_standard(
     P_target,
@@ -266,8 +276,10 @@ def find_phases_standard(
     else:
         # Parallel execution
         with ProcessPoolExecutor(max_workers=n_workers) as executor:
-            futures = {executor.submit(_run_single_trial_standard, a): idx
-                       for idx, a in enumerate(trial_args)}
+            futures = {
+                executor.submit(_run_single_trial_standard, a): idx
+                for idx, a in enumerate(trial_args)
+            }
             for future in as_completed(futures):
                 phis, cost_val = future.result()
                 idx = futures[future]
@@ -289,6 +301,7 @@ def find_phases_stereo(
     n_trials: int = 50,
     verbose: bool = False,
     n_workers: int = None,
+    real_only: bool = True,
 ) -> tuple:
     """
     Find QSP phases for a target decoded function f(r) on [0, infty).
@@ -312,6 +325,10 @@ def find_phases_stereo(
         Print progress.
     n_workers : int, optional
         Number of parallel workers. Default: auto-detect.
+    real_only : bool
+        If True, only fit the real part of the decoded function.
+        Default: True. This is correct for real-valued target functions
+        since the imaginary part of the ratio is a gauge degree of freedom.
 
     Returns
     -------
@@ -332,7 +349,7 @@ def find_phases_stereo(
     base_seed = np.random.randint(0, 2**31)
     seeds = [base_seed + i for i in range(n_trials)]
 
-    trial_args = [(s, d, r_samples, f_vals, mask) for s in seeds]
+    trial_args = [(s, d, r_samples, f_vals, mask, real_only) for s in seeds]
 
     best_cost = np.inf
     best_phis = None
@@ -349,8 +366,10 @@ def find_phases_stereo(
                 break
     else:
         with ProcessPoolExecutor(max_workers=n_workers) as executor:
-            futures = {executor.submit(_run_single_trial_stereo, a): idx
-                       for idx, a in enumerate(trial_args)}
+            futures = {
+                executor.submit(_run_single_trial_stereo, a): idx
+                for idx, a in enumerate(trial_args)
+            }
             for future in as_completed(futures):
                 phis, cost_val = future.result()
                 idx = futures[future]
@@ -366,6 +385,7 @@ def find_phases_stereo(
 # ---------------------------------------------------------------------------
 # Utility: change of variable
 # ---------------------------------------------------------------------------
+
 
 def r_to_a(r: np.ndarray) -> np.ndarray:
     """Map r in [0, infty) to a = r/sqrt(1+r^2) in [0, 1)."""

@@ -37,9 +37,11 @@ each $(J, h)$ pair as a heatmap.  The circuit--matrix
 discrepancy (quantum circuit vs.\ classical 2$\times$2
 matrix calculation at the same QSP phases) is uniformly
 below $10^{-13}$, confirming that the circuit construction
-is exact to machine precision.  The remaining error is the
-QSP polynomial approximation error for $1/r$, which depends
-on the degree and the eigenvalue range.
+is exact to machine precision.  The remaining approximation
+error (circuit output vs.\ exact $1/\lambda'$) is uniformly
+$\lesssim 2 \times 10^{-5}$ across all 15 parameter sets,
+demonstrating that the QSP phase-finding algorithm achieves
+high accuracy over a wide range of eigenvalue scales.
 
 \begin{figure*}
 	\centering
@@ -131,21 +133,26 @@ paper~\cite{KharaziLeytonOrtega2026a}, build the full
 from the ancilla.
 Figure~\ref{fig:convergence}(a) shows the approximation
 error $|f_{\mathrm{decoded}} - 1/\lambda'|$ versus the
-QSP degree for each of the four eigenstates.  The error
-decreases monotonically with degree, reaching
-$\sim\!10^{-3}$ at degree $d = 28$.
+QSP degree for each of the four eigenstates.  Already at
+the lowest degree $d = 2$, the error is $\sim\!10^{-6}$,
+and it remains in the $10^{-6}$--$10^{-5}$ range across all
+tested degrees.  This reflects the fact that $1/r$ is an
+exact rational function of degree~1 in the stereographic
+framework, so even low-degree QSP approximations capture it
+well.
 Figure~\ref{fig:convergence}(b) shows the maximum error
 across all eigenstates as a function of circuit depth,
-confirming that accuracy improves steadily as depth
-increases.
+confirming consistent accuracy independent of depth.
 
-The convergence rate depends on the eigenvalue range:
-eigenstates with $\lambda' \approx 0.5$ (the smallest
-shifted eigenvalue, where $1/\lambda' = 2$) are hardest
-to approximate because the target function is large and
-steep there, while eigenstates with $\lambda' \approx 5$
-converge more rapidly.  This is consistent with the
-$1/r$ approximation theory from the companion paper.
+The approximation accuracy depends mildly on the eigenvalue
+range: eigenstates with $\lambda' \approx 0.5$ (the smallest
+shifted eigenvalue, where $1/\lambda' = 2$) show slightly larger
+errors than those with $\lambda' \approx 5$, since the
+optimization must accommodate the steep region of $1/r$ near
+the origin.  The uniformly small errors ($\lesssim 10^{-5}$)
+across all degrees confirm that the stereographic phase-finding
+algorithm from the companion paper~\cite{KharaziLeytonOrtega2026a}
+is well suited to this class of rational functions.
 
 \begin{figure*}
 	\centering
@@ -165,14 +172,16 @@ to two noise sources: finite measurement statistics
 (shot noise) and coherent gate noise (depolarizing channel).
 
 \emph{Sampling noise.}
-In stereographic decoding, the rational function
-$f(\lambda) = (\langle X \rangle + i \langle Y \rangle)
-	/ (1 - \langle Z \rangle)$ is reconstructed from three
-Pauli expectation values on the ancilla.  Each expectation
+In stereographic decoding, the target function value is
+reconstructed from Pauli expectations on the ancilla
+qubit projected onto the eigenstate of interest.  The
+decoded real part is $f = -\langle Y \rangle / (1 -
+	\langle Z \rangle)$, where the Bloch components refer to
+the eigenstate-projected ancilla state.  Each expectation
 has variance $(1 - \langle P \rangle^2)/N$ for $N$
 measurement shots.  We simulate this by adding Gaussian
-noise with the appropriate variance to the exact Pauli
-expectations obtained from the statevector.
+noise with the appropriate variance to the exact
+eigenstate-projected Pauli expectations.
 Figure~\ref{fig:noise}(a) shows the mean decoded error
 versus shot count $N$ for each eigenstate.  The statistical
 uncertainty decreases as $1/\sqrt{N}$, as expected.
@@ -180,25 +189,27 @@ uncertainty decreases as $1/\sqrt{N}$, as expected.
 The total shot overhead depends on the stereographic
 parameter $r = \lambda'$ through the Bloch vector
 geometry.  For large $r$, the Bloch vector approaches
-the south pole ($\langle Z \rangle \to -1$, $\langle X
-	\rangle, \langle Y \rangle \to 0$), and the decoding
-formula has a benign denominator $1 - \langle Z \rangle
-	\approx 2$.  For small $r$, the Bloch vector approaches
+the south pole ($\langle Z \rangle \to -1$), and the
+decoding denominator $1 - \langle Z \rangle \approx 2$
+is benign.  For small $r$, the Bloch vector approaches
 the north pole ($\langle Z \rangle \to 1$), and the
-denominator $1 - \langle Z \rangle \ll 1$ amplifies
-noise, giving the $\mathcal{O}(r^6/\epsilon^2)$ scaling
-of Section~\ref{sec:decoding}.
+small denominator amplifies noise, giving the
+$\mathcal{O}(r^6/\epsilon^2)$ scaling of
+Section~\ref{sec:decoding}.
 
 \emph{Gate noise.}
 We add depolarizing noise with rate $p$ after each gate
 in the circuit and simulate the resulting density matrix
-evolution in Qulacs.
+evolution in Qulacs.  The decoded value is extracted via
+eigenstate-resolved projection of the noisy density matrix.
 Figure~\ref{fig:noise}(b) shows the decoded error versus
 depolarizing rate for two representative eigenstates.
-For noise rates below $10^{-3}$, the error is dominated
-by the QSP polynomial approximation; above $10^{-3}$,
-gate noise degrades the decoded output approximately
-linearly in $p$.  The stereographic circuit's reduced
+The noiseless baseline ($p = 0$) shows errors of
+$\sim\!10^{-5}$--$10^{-6}$, consistent with the QSP
+approximation accuracy.  For $p > 10^{-4}$, gate noise
+dominates and degrades the decoded output approximately
+linearly in $p$, as expected from the circuit depth
+($\sim\!30$ gates).  The stereographic circuit's reduced
 depth (compared to standard QSVT with normalization-inflated
 depth) provides a natural advantage in the noisy regime:
 fewer gates means less accumulated noise.
@@ -210,7 +221,7 @@ fewer gates means less accumulated noise.
 		of the Heisenberg model ($J=1$, $h=0.5$, $d=14$).
 		(a)~Mean decoded error vs.\ number of measurement
 		shots, with shaded bands showing $\pm 1\sigma$
-		over 50 repetitions.  The dashed line shows
+		over 200 repetitions.  The dashed line shows
 		$1/\sqrt{N}$ scaling.
 		(b)~Decoded error vs.\ depolarizing noise rate
 		for two eigenstates.  Dashed lines show the
