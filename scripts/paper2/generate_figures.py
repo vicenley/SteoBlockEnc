@@ -398,6 +398,146 @@ def print_gate_count_table():
 
 
 # ================================================================
+#  Figure 4: Total Cost Comparison (Sim 5)
+# ================================================================
+
+
+def figure_total_cost():
+    """
+    Figure: Comparison of stereographic vs standard QSVT for diagonal
+    Hamiltonians.  Three panels:
+      (a) Circuit depth (total gates) vs condition number κ
+      (b) Total cost (gates × shots) vs κ
+      (c) Coherence-limited feasibility: maximum accessible κ vs depth budget
+    """
+    data = load_data("paper2_sim5_total_cost.npz")
+    if data is None:
+        return
+
+    fig, axes = plt.subplots(1, 3, figsize=(TEXTWIDTH, 0.38 * TEXTWIDTH))
+
+    # --- Panel (a): Circuit depth vs κ (Part A data) ---
+    ax = axes[0]
+    kappa_a = data["partA_kappa"]
+    gates_std_a = data["partA_total_gates_std"]
+    gates_ste_a = data["partA_total_gates_ste"]
+
+    ax.loglog(
+        kappa_a,
+        gates_std_a,
+        "s-",
+        color=RED,
+        markersize=5,
+        linewidth=1.2,
+        label="Standard QSVT",
+    )
+    ax.loglog(
+        kappa_a,
+        gates_ste_a,
+        "o-",
+        color=BLUE,
+        markersize=5,
+        linewidth=1.2,
+        label="Stereographic",
+    )
+
+    ax.set_xlabel(r"Condition number $\kappa$")
+    ax.set_ylabel(r"Total gates")
+    ax.set_title(r"(a) Circuit depth")
+    ax.legend(loc="upper left", fontsize=6.5, framealpha=0.9)
+    ax.grid(True, alpha=0.2, which="both")
+
+    # Annotate the depth ratio at largest κ
+    max_idx = np.argmax(kappa_a)
+    ratio = gates_std_a[max_idx] / gates_ste_a[max_idx]
+    ax.annotate(
+        rf"${ratio:.0f}\times$",
+        xy=(kappa_a[max_idx], np.sqrt(gates_std_a[max_idx] * gates_ste_a[max_idx])),
+        fontsize=7,
+        ha="right",
+        color=DARKGRAY,
+    )
+
+    # --- Panel (b): Total cost vs κ ---
+    ax = axes[1]
+    cost_std_a = data["partA_total_cost_std"]
+    cost_ste_a = data["partA_total_cost_ste"]
+
+    ax.loglog(
+        kappa_a,
+        cost_std_a,
+        "s-",
+        color=RED,
+        markersize=5,
+        linewidth=1.2,
+        label="Standard QSVT",
+    )
+    ax.loglog(
+        kappa_a,
+        cost_ste_a,
+        "o-",
+        color=BLUE,
+        markersize=5,
+        linewidth=1.2,
+        label="Stereographic",
+    )
+
+    ax.set_xlabel(r"Condition number $\kappa$")
+    ax.set_ylabel(r"Total cost (gates $\times$ shots)")
+    ax.set_title(r"(b) Total cost")
+    ax.legend(loc="upper left", fontsize=6.5, framealpha=0.9)
+    ax.grid(True, alpha=0.2, which="both")
+
+    # --- Panel (c): Feasibility diagram ---
+    ax = axes[2]
+    budgets = data["partD_depth_budget"]
+    kappa_max_std = data["partD_kappa_max_std"]
+
+    # Stereographic is feasible for any κ when budget ≥ ~66 gates
+    stereo_min_budget = float(data["partD_stereo_total_gates"][0])
+
+    ax.semilogx(
+        budgets,
+        kappa_max_std,
+        "s-",
+        color=RED,
+        markersize=5,
+        linewidth=1.2,
+        label="Standard QSVT",
+    )
+
+    # Stereographic: any κ is feasible above threshold
+    ax.axhline(y=100, color=BLUE, linestyle="-", linewidth=1.2, alpha=0.6)
+    ax.fill_between(
+        budgets,
+        [100 if b >= stereo_min_budget else 0 for b in budgets],
+        alpha=0.12,
+        color=BLUE,
+    )
+    ax.annotate(
+        r"Stereo: any $\kappa$",
+        xy=(200, 85),
+        fontsize=7,
+        color=BLUE,
+        ha="left",
+    )
+
+    ax.set_xlabel("Gate budget")
+    ax.set_ylabel(r"Max accessible $\kappa$")
+    ax.set_title(r"(c) Coherence-limited feasibility")
+    ax.legend(loc="lower right", fontsize=6.5, framealpha=0.9)
+    ax.grid(True, alpha=0.2)
+    ax.set_ylim(bottom=0, top=110)
+
+    plt.tight_layout()
+    os.makedirs(FIGDIR, exist_ok=True)
+    outpath = os.path.join(FIGDIR, "total_cost_comparison.pdf")
+    plt.savefig(outpath)
+    print(f"Saved {outpath}")
+    plt.close()
+
+
+# ================================================================
 #  Main
 # ================================================================
 
@@ -409,6 +549,7 @@ if __name__ == "__main__":
     figure_heisenberg_verification()
     figure_convergence()
     figure_noise()
+    figure_total_cost()
     print_gate_count_table()
 
     print("\nDone. Figures saved to", FIGDIR)

@@ -114,12 +114,21 @@ adders, and the Heisenberg model with a Givens-rotation change of
 basis---providing gate counts, depth analysis, and comparison with
 standard block encoding (Section~\ref{sec:circuits}).  We analyze
 the decoding protocol when the system register is in a superposition
-of eigenspaces, characterizing the post-measurement state and the
-measurement overhead (Section~\ref{sec:decoding}).  Finally, we
-present expanded numerical simulations---Qulacs-verified circuits
-for the Heisenberg model at multiple parameter values, gate-count
-benchmarks, and noise analysis---establishing the practical scope of
-the approach (Section~\ref{sec:numerics}).
+of eigenspaces, characterizing the post-measurement state and
+quantifying the $\mathcal{O}(r^6/\epsilon^2)$ measurement overhead
+that accompanies the depth reduction
+(Section~\ref{sec:decoding}).  Finally, we present numerical
+simulations---Qulacs-verified circuits for the Heisenberg model at
+multiple parameter values, gate-count benchmarks, noise analysis,
+and a head-to-head total-cost comparison with standard QSVT using
+\texttt{pyqsp}~\cite{Martyn2024} for polynomial degree
+computation---establishing that the depth advantage exceeds
+$10^4\times$ at condition number~$\kappa = 100$, at the cost of
+increased measurement overhead
+(Section~\ref{sec:numerics}).  The comparison makes explicit the
+depth-versus-shots tradeoff: stereographic encoding is most
+advantageous on coherence-limited hardware where circuit depth, not
+shot count, is the binding constraint.
 
 % ---------------------------------------------------------------
 %  PARAGRAPH 5: Paper organization

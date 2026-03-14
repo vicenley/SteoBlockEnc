@@ -85,34 +85,44 @@ For the Heisenberg model, the stereographic circuit depth
 is constant ($\sim\!23$ for $d = 10$) regardless of the
 coupling strength $J$ or field $h$, because the Givens
 rotation diagonalization has $\mathcal{O}(1)$ gate complexity.
-The standard LCU approach requires depth proportional to
-$\alpha = 3J + h$, which grows with the Hamiltonian norm.
+The standard LCU depth estimate uses the fact that the
+4-term Pauli decomposition ($XX+YY+ZZ+ZI$) requires
+$\sim\!20$ gates per query, with $d$ queries each inflated
+by the normalization $\alpha = 3J + h$.
 
 \begin{table*}
-	\caption{Gate count comparison for stereographic
-		vs.\ standard block encoding at QSP degree $d = 10$.
+	\caption{Per-query gate counts for stereographic vs.\ standard
+		block encoding.
 		CNOT and single-qubit (1Q) gate counts are shown
 		alongside ancilla qubit requirements and normalization
 		factor $\alpha$.  For the Heisenberg model, circuit
-		depth is reported instead of individual gate counts.}
+		depth is reported instead of individual gate counts.
+		Stereographic counts are from explicit Qulacs circuits;
+		standard counts are analytical estimates based on LCU
+		decomposition (see text).  The total QSVT circuit depth
+		is the per-query cost multiplied by the polynomial
+		degree $d$; for standard QSVT, $d$ itself scales with
+		$\alpha$, while for stereographic encoding $d$ is
+		independent of $\alpha$
+		(see Section~\ref{subsec:total-cost}).}
 	\label{tab:gate-counts}
 	\begin{ruledtabular}
 		\begin{tabular}{llcccccccc}
-			           &                 & \multicolumn{4}{c}{Stereographic} & \multicolumn{4}{c}{Standard}                                                                           \\
+			           &                 & \multicolumn{4}{c}{Stereographic} & \multicolumn{4}{c}{Standard (est.)}                                                                           \\
 			\hline
-			Class      & Params          & CNOT                              & 1Q                           & Anc.\  & $\alpha$                      & CNOT & 1Q  & Anc.\  & $\alpha$ \\
+			Class      & Params          & CNOT                              & 1Q                                  & Anc.\  & $\alpha$                      & CNOT & 1Q  & Anc.\  & $\alpha$ \\
 			\hline
-			Diagonal   & $n=2$           & 4                                 & 4                            & 1      & ---                           & 8    & 8   & 2      & 6.9      \\
-			Diagonal   & $n=3$           & 8                                 & 8                            & 1      & ---                           & 16   & 16  & 3      & 9.9      \\
-			Diagonal   & $n=4$           & 16                                & 16                           & 1      & ---                           & 32   & 32  & 4      & 17.7     \\
-			Diagonal   & $n=5$           & 32                                & 32                           & 1      & ---                           & 64   & 64  & 5      & 43.8     \\
-			$Z$-sum    & $m=2$           & 6                                 & 4                            & 1      & ---                           & 8    & 8   & 1      & 2        \\
-			$Z$-sum    & $m=4$           & 12                                & 8                            & 1      & ---                           & 16   & 16  & 2      & 4        \\
-			$Z$-sum    & $m=8$           & 24                                & 16                           & 1      & ---                           & 32   & 32  & 3      & 8        \\
-			$Z$-sum    & $m=16$          & 48                                & 32                           & 1      & ---                           & 64   & 64  & 4      & 16       \\
-			Heisenberg & $J{=}1,h{=}0$   & \multicolumn{2}{c}{depth 23}      & 1                            & ---    & \multicolumn{2}{c}{$\sim$200} & 2    & 3.0                     \\
-			Heisenberg & $J{=}1,h{=}0.5$ & \multicolumn{2}{c}{depth 23}      & 1                            & ---    & \multicolumn{2}{c}{$\sim$200} & 2    & 3.5                     \\
-			Heisenberg & $J{=}2,h{=}0.5$ & \multicolumn{2}{c}{depth 23}      & 1                            & ---    & \multicolumn{2}{c}{$\sim$200} & 2    & 6.5                     \\
+			Diagonal   & $n=2$           & 4                                 & 4                                   & 1      & ---                           & 8    & 8   & 2      & 6.9      \\
+			Diagonal   & $n=3$           & 8                                 & 8                                   & 1      & ---                           & 16   & 16  & 3      & 9.9      \\
+			Diagonal   & $n=4$           & 16                                & 16                                  & 1      & ---                           & 32   & 32  & 4      & 17.7     \\
+			Diagonal   & $n=5$           & 32                                & 32                                  & 1      & ---                           & 64   & 64  & 5      & 43.8     \\
+			$Z$-sum    & $m=2$           & 6                                 & 4                                   & 1      & ---                           & 8    & 8   & 1      & 2        \\
+			$Z$-sum    & $m=4$           & 12                                & 8                                   & 1      & ---                           & 16   & 16  & 2      & 4        \\
+			$Z$-sum    & $m=8$           & 24                                & 16                                  & 1      & ---                           & 32   & 32  & 3      & 8        \\
+			$Z$-sum    & $m=16$          & 48                                & 32                                  & 1      & ---                           & 64   & 64  & 4      & 16       \\
+			Heisenberg & $J{=}1,h{=}0$   & \multicolumn{2}{c}{depth 23}      & 1                                   & ---    & \multicolumn{2}{c}{$\sim$200} & 2    & 3.0                     \\
+			Heisenberg & $J{=}1,h{=}0.5$ & \multicolumn{2}{c}{depth 23}      & 1                                   & ---    & \multicolumn{2}{c}{$\sim$200} & 2    & 3.5                     \\
+			Heisenberg & $J{=}2,h{=}0.5$ & \multicolumn{2}{c}{depth 23}      & 1                                   & ---    & \multicolumn{2}{c}{$\sim$200} & 2    & 6.5                     \\
 		\end{tabular}
 	\end{ruledtabular}
 \end{table*}
@@ -227,4 +237,69 @@ fewer gates means less accumulated noise.
 		for two eigenstates.  Dashed lines show the
 		noiseless baseline.}
 	\label{fig:noise}
+\end{figure*}
+
+\subsection{Total Cost Comparison}
+\label{subsec:total-cost}
+
+To contextualize the depth advantage quantitatively, we compare
+stereographic and standard QSVT for eigenvalue inversion
+$f(\lambda) = 1/\lambda$ of 16-dimensional diagonal
+Hamiltonians with eigenvalues uniformly spaced in
+$[1, \lambda_{\max}]$, giving condition number
+$\kappa = \lambda_{\max}$.  Standard QSVT polynomial
+degrees are computed using \texttt{pyqsp}~\cite{Martyn2024},
+which implements the optimal Chebyshev-based approximation
+of $1/x$ on $[1/\kappa, 1]$.
+
+Figure~\ref{fig:total-cost}(a) shows the total gate count
+for both approaches as a function of~$\kappa$.  (Since all
+circuits considered are serial---no parallel gates---the
+gate count equals the circuit depth.)
+The stereographic circuit requires only
+$66$ gates regardless of~$\kappa$ (two QSP steps, each
+consisting of a $16$-element uniformly controlled rotation
+plus a phase gate), while the standard QSVT circuit
+grows from $\sim\!4 \times 10^3$ gates at $\kappa = 2$ to
+$\sim\!1.3 \times 10^6$ gates at $\kappa = 100$.  The gate
+count ratio exceeds $20{,}000\times$ at $\kappa = 100$.
+
+However, the total cost must also account for
+measurement overhead.  Figure~\ref{fig:total-cost}(b)
+shows the product of gate count and required measurement
+shots.  Standard QSVT needs $\mathcal{O}(1/\epsilon^2)$
+shots, while stereographic decoding requires
+$\mathcal{O}(r_{\max}^6/\epsilon^2)$ shots
+(Section~\ref{sec:decoding}).  For $\kappa \gtrsim 5$,
+the stereographic measurement overhead dominates: the total
+cost exceeds that of standard QSVT by orders of magnitude.
+This makes explicit the depth-versus-shots tradeoff
+inherent in stereographic encoding.
+
+The operationally relevant metric depends on the hardware
+regime.  On coherence-limited devices---where the maximum
+executable circuit depth is fixed by decoherence and
+additional shots are comparatively inexpensive---the
+circuit depth is the binding constraint.
+Figure~\ref{fig:total-cost}(c) illustrates this: given a
+gate budget of $10^4$, standard QSVT can access
+$\kappa \lesssim 11$, while stereographic encoding
+handles \emph{any} condition number within the same budget.
+For early fault-tolerant processors with limited circuit
+depth but high repetition rates, this tradeoff is favorable.
+
+\begin{figure*}
+	\centering
+	\includegraphics[width=\textwidth]{figures/total_cost_comparison.pdf}
+	\caption{Comparison of stereographic and standard QSVT for
+		$f(\lambda) = 1/\lambda$ on 16-dimensional diagonal
+		Hamiltonians with $\kappa = \lambda_{\max}/\lambda_{\min}$.
+		(a)~Circuit depth (total gates) vs.\ condition number.
+		(b)~Total cost (gates $\times$ measurement shots at
+		precision $\epsilon = 10^{-3}$).  (c)~Maximum
+		accessible $\kappa$ for a given gate budget;
+		stereographic encoding handles any $\kappa$ within
+		$\sim\!66$ gates.  Standard QSVT polynomial
+		degrees computed via \texttt{pyqsp}.}
+	\label{fig:total-cost}
 \end{figure*}

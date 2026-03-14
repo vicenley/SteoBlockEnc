@@ -97,11 +97,15 @@
 	Pauli-$Z$ sums, and the Heisenberg model, analyzing gate counts
 	and comparing with standard block encoding.  We characterize
 	the decoding protocol when the system register is in a
-	superposition of eigenspaces, quantify the measurement overhead,
-	and present numerical simulations on two-qubit systems
-	verifying the theoretical predictions.  The results establish
-	the practical scope of stereographic QSP: depth-limited devices
-	processing structured operators with moderate eigenvalues.
+	superposition of eigenspaces, quantify the
+	$\mathcal{O}(r^6/\epsilon^2)$ measurement overhead, and present
+	a head-to-head comparison with standard quantum singular value
+	transformation (QSVT): circuit depth is reduced by up to
+	$10^4\times$ at condition number $\kappa = 100$, while the
+	total cost (depth $\times$ shots) favors standard QSVT due to
+	measurement overhead.  The results establish a
+	depth-versus-shots tradeoff that is favorable on
+	coherence-limited hardware processing structured operators.
 \end{abstract}
 
 \maketitle

@@ -14,10 +14,11 @@ encoding---cover a range of physically relevant systems.
 Diagonal operators arise naturally in quantum chemistry
 (diagonal Coulomb integrals), combinatorial optimization
 (QUBO/Ising cost functions), and classical simulation.  For
-these, stereographic block encoding provides a concrete advantage:
+these, stereographic block encoding is particularly natural:
 the encoding depends only on individual eigenvalues, not on the
-global norm, and the single-ancilla construction is simpler than
-standard block encoding.
+global norm, and the single-ancilla construction requires no
+diagonalization circuit since the Hamiltonian is already diagonal
+in the computational basis.
 
 Hamiltonians with known diagonalization include integrable spin
 chains solvable by the Bethe ansatz~\cite{Bethe1931}, free-fermion
@@ -204,8 +205,8 @@ block encodings where geometry updates are absorbed by re-dialed
 single-qubit rotations.
 Kane et al.~\cite{KaneEtAl2025} use QSVT and
 QETU for block encoding lattice boson Hamiltonians, introducing
-the LOVE-LCU approach that outperforms asymptotically superior
-methods for systems up to $\sim 11$ qubits.  Tang and
+the LOVE-LCU approach that outperforms asymptotically faster
+methods at system sizes up to $\sim 11$ qubits.  Tang and
 Lai~\cite{TangLai2026} extend block encoding to structured
 dense matrices via hierarchical low-rank compression.
 Concrete resource estimates for block-encoding-based simulation
@@ -260,6 +261,66 @@ approaches~\cite{MahasingheEtAl2025,
 requirement for other constraints.  These approaches target
 different points on the information--overhead tradeoff and
 are complementary rather than competing.
+
+\subsection{The Depth-Versus-Shots Tradeoff}
+\label{subsec:tradeoff}
+
+The numerical comparison of Section~\ref{subsec:total-cost}
+makes explicit a fundamental tradeoff in stereographic
+encoding: circuit depth is dramatically reduced at the cost
+of increased measurement overhead.  Specifically, for
+eigenvalue inversion of a diagonal Hamiltonian with condition
+number~$\kappa$, the total gate count is reduced by a factor
+of $\mathcal{O}(\kappa \cdot \log(\kappa/\epsilon))$ relative
+to standard QSVT, while the measurement budget increases by
+$\mathcal{O}(r_{\max}^6)$.  The total cost
+(gates~$\times$~shots) therefore favors standard QSVT when
+$r_{\max}^6 > \kappa \cdot \log(\kappa/\epsilon)$, which
+occurs at moderate condition numbers ($\kappa \gtrsim 5$
+for eigenvalues in $[1,\kappa]$).
+
+This tradeoff is operationally relevant because the cost
+of circuit depth and the cost of additional shots are not
+equivalent on real hardware.  On near-term and early
+fault-tolerant processors, circuit depth is constrained by
+decoherence: a circuit exceeding the coherence budget cannot
+run at all, regardless of how many shots are available.
+Conversely, additional measurement shots require only
+classical repetition time, which scales linearly and is
+comparatively inexpensive.  In the coherence-limited regime,
+stereographic encoding converts an \emph{infeasible} problem
+(circuit too deep for the device) into a feasible one at
+the cost of more shots---a qualitatively different situation
+than a mere constant-factor improvement.
+
+For example, eigenvalue inversion at $\kappa = 100$
+requires $\sim\!1.8 \times 10^4$ polynomial degree in
+standard QSVT (computed via
+\texttt{pyqsp}~\cite{Martyn2024}), while stereographic
+encoding requires degree~2.  On a device with a gate budget
+of $10^4$, the standard approach is infeasible while
+stereographic encoding fits comfortably within 66~gates,
+requiring $\sim\!10^{18}$ shots at precision
+$\epsilon = 10^{-3}$.  This shot count is large but
+physically meaningful: at a repetition rate of 1~MHz, it
+corresponds to $\sim\!10^{12}$ seconds, which is clearly
+impractical for a single eigenvalue.  However, three
+observations moderate this assessment.  First, the
+$r^6$ scaling is a worst-case bound for absolute precision;
+relative precision scales as $r^4$, and adaptive measurement
+strategies can further reduce the exponent
+(Section~\ref{subsec:overhead}).  Second, for the many
+applications where only \emph{moderate} eigenvalue ranges
+are relevant ($r_{\max} \lesssim 10$), the multiplicative
+overhead factor $r_{\max}^6$ is $\lesssim 10^6$, reducing
+the total shot count to $\sim\!10^{12}$ at
+$\epsilon = 10^{-3}$---still large, but within reach of
+high-repetition-rate processors.
+Third, the emerging regime of early fault-tolerant
+quantum computing, with circuit depths of
+$10^3$--$10^4$ but high repetition rates, is precisely
+the regime where the depth-for-shots trade is most
+favorable.
 
 \subsection{Open Problems}
 \label{subsec:open}
