@@ -64,17 +64,18 @@ through importance sampling, and Kang and Su~\cite{KangSu2025}
 introduce Hamiltonian block encoding using at most two ancilla qubits
 without explicit normalization.  These advances enrich the QSP toolkit
 in expressiveness, classical preprocessing cost, and circuit depth,
-yet all retain a common limitation: the output remains a bounded
-function, $|P| \leq 1$.  No existing QSP variant produces unbounded
-output.
+yet all retain a common limitation: the output polynomial
+remains bounded, $|P| \leq 1$, and reads out a single amplitude
+rather than a ratio of amplitudes.
 
 % ---------------------------------------------------------------
 %  PARAGRAPH 4: APPROACH — What this paper does
 % ---------------------------------------------------------------
 
-In this work we ask whether the boundedness constraint can be lifted
-without modifying the quantum algorithm itself.  We show that it can,
-through a change of the classical encoding and decoding interface.
+In this work we ask whether the boundedness constraint on the
+\emph{decoded output} can be circumvented without modifying the
+quantum algorithm itself.  We show that it can, through a change
+of the classical encoding and decoding interface.
 The key idea is to compose QSP with \emph{stereographic encoding}---the
 conformal bijection between the extended complex plane
 $\hat{\C} = \C \cup \{\infty\}$ and the Bloch
@@ -120,12 +121,9 @@ We quantify the cost tradeoff: the coherent normalization overhead of
 standard QSP is replaced by a polynomial sampling cost, with
 absolute precision $\epsilon$ requiring
 $\mathcal{O}(r^6/\epsilon^2)$ shots
-(Section~\ref{sec:cost-analysis}).  Finally, we sketch how the
-construction extends to multi-qubit eigenvalue transformations via
-stereographic block encoding, illustrating the approach on the
-Heisenberg model and identifying the regime---depth-limited devices,
-moderate eigenvalues, known eigenbasis---where stereographic encoding
-offers a practical advantage (Section~\ref{sec:block-encoding}).
+(Section~\ref{sec:cost-analysis}).  The extension to multi-qubit
+eigenvalue transformations via stereographic block encoding is
+developed in a companion paper~\cite{KharaziLeytonOrtega2026b}.
 
 % ---------------------------------------------------------------
 %  PARAGRAPH 6: PAPER ORGANIZATION
@@ -143,9 +141,10 @@ function class, and the basis-change reduction to standard QSP.
 Section~\ref{sec:cost-analysis} quantifies the depth-versus-sampling
 tradeoff, compares with standard and generalized QSP, and presents
 numerical results for four target functions.
-Section~\ref{sec:block-encoding} sketches the extension to
-multi-qubit eigenvalue transformations via stereographic block
-encoding, illustrated on the Heisenberg model.
+Section~\ref{sec:applications} develops an application to quantum
+state preparation, showing how stereographic QSP extends recent
+QSVT-based methods~\cite{McArdleGilyenBerta2025} to unbounded and
+rational target functions.
 Section~\ref{sec:discussion} discusses connections to prior work
 and open problems.  The overall framework is illustrated
 schematically in Fig.~\ref{fig:schematic}.

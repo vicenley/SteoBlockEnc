@@ -131,28 +131,37 @@ from the signal unitary, is also sufficient.
 	\begin{enumerate}
 		\item $|P(a)| \leq 1$ for all $a \in [-1,1]$,
 		\item $P$ has definite parity: $P(-a) = \pm P(a)$,
+		\item there exists a polynomial $Q$ of degree at
+		      most $d-1$ and opposite parity such that
+		      $|P(a)|^2 + (1-a^2)|Q(a)|^2 = 1$ for all
+		      $a \in \R$,
 	\end{enumerate}
 	there exist phase angles $\bm{\phi}$ such that
 	$\bra{0}U_{\bm{\phi}}(a)\ket{0} = P(a)$.
 \end{theorem}
 
+The polynomial identity in condition~(3) is called the
+\emph{complementary polynomial condition}.  Evaluating it
+at $a = \pm 1$ forces $|P(\pm 1)| = 1$, since the
+$(1-a^2)$ factor vanishes.  This is a necessary condition:
+the signal unitary satisfies $W(\pm 1) = \pm I$, so the QSP
+product at $a = \pm 1$ collapses to a product of phase gates,
+whose diagonal entries have unit modulus.
+
 Theorem~\ref{thm:standard-qsp} is a completeness
-result: every bounded polynomial of definite parity is
+result: every polynomial satisfying~(1)--(3) is
 achievable, and efficient algorithms exist for
 computing the required
 phases~\cite{DongMengWhaleyEtAl2021,Haah2019}.
-It also determines the full output state.  Because
-$U_{\bm{\phi}}$ is unitary, its action on $\ket{0}$
-must produce a normalized two-component state:
+The output state of the QSP circuit is
 \begin{equation}
 	U_{\bm{\phi}}(a)\ket{0}
 	= P(a)\ket{0} + Q(a)\sqrt{1-a^2}\,\ket{1},
 	\label{eq:qsp-output-state}
 \end{equation}
-where $Q(a)$ is a complementary polynomial of degree
-at most~$d-1$ and opposite parity, constrained by
-$|P(a)|^2 + (1-a^2)|Q(a)|^2 = 1$.  Both components
-are therefore bounded by~$1$ in absolute value.
+where $Q$ is the complementary polynomial from
+condition~(3).  Both components are bounded by~$1$
+in absolute value.
 
 Chebyshev polynomials enter for the same reason they
 appear in Grover's algorithm.  Writing

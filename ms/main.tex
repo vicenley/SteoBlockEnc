@@ -72,7 +72,7 @@
 \affiliation{Department of Chemistry, University of California, Berkeley, California 94720, USA}
 
 \author{Vicente Leyton-Ortega}
-\email{leytonorteva@ornl.gov}
+\email{leytonortegav@ornl.gov}
 \affiliation{Quantum Computational Science Group, Quantum Information Science Section, Computational Sciences and Engineering Division, Oak Ridge National Laboratory, Oak Ridge, Tennessee 37831, USA}
 
 \date{\today}
@@ -82,7 +82,7 @@
 	transformations of a quantum operator's eigenvalues, but the
 	signal and its output are fundamentally constrained to lie in
 	the interval $[-1,1]$.  We show that this boundedness
-	constraint can be lifted without modifying the quantum
+	constraint can be circumvented without modifying the quantum
 	algorithm, by changing only the classical encoding and decoding
 	interface.  Stereographic projection compresses an unbounded
 	real parameter onto the Bloch sphere, placing it within the QSP
@@ -98,9 +98,9 @@
 	theory on unbounded domains.  We characterize the cost
 	tradeoff: the coherent normalization overhead of standard QSP
 	is replaced by a polynomial sampling cost that grows with the
-	signal magnitude, and we sketch how the construction extends to
-	multi-qubit eigenvalue transformations via stereographic block
-	encoding.
+	signal magnitude.  The extension to multi-qubit eigenvalue
+	transformations via stereographic block encoding is developed
+	in a companion paper.
 \end{abstract}
 
 \maketitle
@@ -120,8 +120,8 @@
 % Sec 5: Cost analysis and applications
 \input{sections/qsp_06_cost_analysis}
 
-% Sec 6: Outlook --- extension to multi-qubit systems
-\input{sections/qsp_05_block_encoding}
+% Sec 6: Application to quantum state preparation
+\input{sections/qsp_05_applications_v2}
 
 % Sec 7: Discussion
 \input{sections/qsp_07_discussion}

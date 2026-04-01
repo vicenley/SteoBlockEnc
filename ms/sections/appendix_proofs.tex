@@ -33,11 +33,9 @@ to make the arguments self-contained.
 	\end{align}
 	where $T_k$ is the Chebyshev polynomial of the first kind
 	and $U_{k-1}$ is the Chebyshev polynomial of the second kind.
-	The identity~(A3b) follows from writing
-	$\sin(k\phi) = U_{k-1}(\cos\phi)\sin\phi$, which is the
-	standard relation between Chebyshev polynomials and
-	trigonometric functions (see, e.g.,
-	Ref.~\cite{BenentiCasatiStrini2004}).
+	The identity~(A3b) is the standard relation between
+	Chebyshev polynomials of the second kind and trigonometric
+	functions (see, e.g., Ref.~\cite{BenentiCasatiStrini2004}).
 
 	Substituting $\cos\phi = \rtilde$ into~(A3a) gives the
 	$\ket{0}$-component directly:
@@ -58,7 +56,7 @@ to make the arguments self-contained.
 	which is the claimed result.  One can verify the
 	normalization: $|T_k(\rtilde)|^2 +
 		|U_{k-1}(\rtilde)|^2/(1+r^2) = \cos^2(k\phi) +
-		\sin^2(k\phi) = 1$, confirming unitarity.
+		\sin^2(k\phi) = 1$, confirming normalization.
 \end{proof}
 
 \subsection*{Proof of Corollary~\ref{cor:existence} (Existence of Phases)}
@@ -96,13 +94,14 @@ to make the arguments self-contained.
 	$\bra{0}V^{-1} = \bra{0}$ (the matrix $V$ acts trivially
 	on the first basis vector), the $(0,0)$ matrix element is
 	preserved:
-	\begin{equation}
-		\bra{0}W_{\bm{\phi}}^{(\mathrm{stereo})}(r)\ket{0}
-		= \bra{0}V^{-1}\,U_{\bm{\phi}}^{(\mathrm{std})}(\rtilde)\,V\ket{0}
+	\begin{align}
+		&\bra{0}W_{\bm{\phi}}^{(\mathrm{stereo})}(r)\ket{0}
+		\nonumber\\
+		&\quad= \bra{0}V^{-1}\,U_{\bm{\phi}}^{(\mathrm{std})}(\rtilde)\,V\ket{0}
 		= \bra{0}U_{\bm{\phi}}^{(\mathrm{std})}(\rtilde)\ket{0}
 		= P(\rtilde).
 		\tag{A7}
-	\end{equation}
+	\end{align}
 	Therefore the \emph{same phases} $\bm{\phi}$ that
 	realize $P$ in the standard protocol also realize $P$
 	in the stereographic protocol.  The complementary
@@ -232,14 +231,15 @@ to make the arguments self-contained.
 	The unnormalized signal operator is
 	$O_r = \bigl(\begin{smallmatrix} r & -1 \\ 1 & r
 			\end{smallmatrix}\bigr)$, so
-	\begin{equation}
-		O_r\,M_{d-1} =
-		\begin{pmatrix} r & -1 \\ 1 & r \end{pmatrix}
+	\begin{align}
+		O_r\,M_{d-1}
+		&= \begin{pmatrix} r & -1 \\ 1 & r \end{pmatrix}
 		\begin{pmatrix} P & -Q^* \\ Q & P^* \end{pmatrix}
-		= \begin{pmatrix} rP - Q & -(rQ^* + P^*) \\
+		\nonumber\\
+		&= \begin{pmatrix} rP - Q & -(rQ^* + P^*) \\
                 P + rQ & rP^* - Q^*\end{pmatrix}.
 		\tag{A12}
-	\end{equation}
+	\end{align}
 	Identifying the new polynomials as
 	$\hat{P} = rP - Q$ and $\hat{Q} = P + rQ$, we verify
 	the $\SU$-like structure:
@@ -405,4 +405,244 @@ to make the arguments self-contained.
 	reflecting the fundamental geometric fact that the
 	stereographic projection compresses the real line near
 	infinity into a vanishing arc of the Bloch sphere.
+\end{proof}
+
+
+\subsection*{Proof of Theorem~\ref{thm:gqsp-stereo} (Generalized QSP in Stereo)}
+
+\begin{proof}
+	Let $z \in \C\mathbb{P}^1$ and define the unnormalized
+	signal unitary
+	\begin{equation}
+		O_z = \begin{pmatrix} z & -1 \\ 1 & z^* \end{pmatrix},
+		\quad \det O_z = 1 + |z|^2,
+		\tag{A21}
+	\end{equation}
+	with $\SU(2)$ control unitaries
+	$G_j = \bigl(\begin{smallmatrix} a_j & -b_j^* \\
+				b_j & a_j^* \end{smallmatrix}\bigr)$,
+	$|a_j|^2 + |b_j|^2 = 1$.
+	We prove that there exist $G_0, \ldots, G_d \in \SU(2)$
+	such that
+	\begin{equation}
+		G_d \prod_{j=1}^{d} O_z\,G_j
+		= \begin{pmatrix} P(z, z^*) & -Q^*(z, z^*) \\
+			Q(z, z^*) & P^*(z, z^*) \end{pmatrix}
+		\tag{A22}
+	\end{equation}
+	if and only if the polynomials $P$ and $Q$ in $z$ and
+	$z^*$ satisfy:
+	\begin{enumerate}
+		\item For all monomials $z^j (z^*)^k$ appearing in
+		      $P$ and $Q$, the bi-degree satisfies $j + k \leq d$.
+		\item $P(z, z^*)(P(z, z^*))^* + Q(z, z^*)(Q(z, z^*))^*
+			      = (1 + |z|^2)^d$.
+	\end{enumerate}
+	The proof proceeds by induction on the polynomial degree.
+
+	\medskip
+	\noindent\textbf{Forward direction.}\quad
+	Define the product matrix
+	$M_d(z, z^*) = G_d\,O_z\,G_{d-1}\,O_z \cdots G_1\,O_z\,G_0$.
+	The base case $M_0 = G_0$ is immediate: $P = a_0$,
+	$Q = b_0$, the bi-degree condition holds vacuously,
+	and $|a_0|^2 + |b_0|^2 = 1 = (1+|z|^2)^0$.
+
+	For the inductive step, suppose $M_{d-1}$ has the
+	claimed form with polynomials $P, Q$ of bi-degree
+	$\leq d-1$ satisfying
+	$|P|^2 + |Q|^2 = (1+|z|^2)^{d-1}$.  Multiplying by
+	$O_z$ from the left:
+	\begin{align}
+		O_z\,M_{d-1}
+		&= \begin{pmatrix} z & -1 \\ 1 & z^* \end{pmatrix}
+		\begin{pmatrix} P & -Q^* \\ Q & P^* \end{pmatrix}
+		\nonumber\\
+		&= \begin{pmatrix} zP - Q & -P^* - zQ^* \\
+			P + z^*Q & z^*P^* - Q^* \end{pmatrix}.
+		\tag{A23}
+	\end{align}
+	Applying $G_d$ from the left:
+	\begin{align}
+		G_d\,O_z\,M_{d-1}
+		 & = \begin{pmatrix} a_d & -b_d^* \\
+			     b_d & a_d^* \end{pmatrix}
+		\begin{pmatrix} zP - Q & -P^* - zQ^* \\
+			P + z^*Q & z^*P^* - Q^* \end{pmatrix}
+		\nonumber                                                    \\
+		 & \equiv \begin{pmatrix} \widetilde{P} & -\widetilde{Q}^* \\
+			           \widetilde{Q} & \widetilde{P}^* \end{pmatrix},
+		\tag{A24}
+	\end{align}
+	where
+	$\widetilde{P} = a_d(zP - Q) - b_d^*(P + z^*Q)$ and
+	$\widetilde{Q} = a_d^*(P + z^*Q) + b_d(zP - Q)$.
+	Since $P$ and $Q$ have bi-degree $\leq d-1$,
+	the polynomials $\widetilde{P}$ and $\widetilde{Q}$
+	have bi-degree $\leq d$.
+
+	To verify the norm condition:
+	\begin{align}
+		|\widetilde{P}|^2 + |\widetilde{Q}|^2
+		 & = (|a_d|^2 + |b_d|^2)\bigl(|zP - Q|^2 + |P + z^*Q|^2\bigr)
+		\nonumber                                                        \\
+		 & = |zP - Q|^2 + |P + z^*Q|^2.
+		\tag{A25}
+	\end{align}
+	Expanding and using the cancellation of cross terms
+	(cf.\ the orthogonality of the columns of~$O_z$):
+	\begin{align}
+		|zP - Q|^2 + |P + z^*Q|^2
+		 & = |z|^2|P|^2 + |Q|^2 + |P|^2 + |z|^2|Q|^2
+		\nonumber                                       \\
+		 & = (1 + |z|^2)(|P|^2 + |Q|^2)
+		\nonumber                                       \\
+		 & = (1 + |z|^2)^d.
+		\tag{A26}
+	\end{align}
+	This completes the forward direction.
+
+	\medskip
+	\noindent\textbf{Backward direction.}\quad
+	Assume the unitary $U$ has the form~(A22) with
+	polynomials $P, Q$ of bi-degree $\leq d$ satisfying
+	conditions~1 and~2.  We must exhibit $\SU(2)$ controls
+	$G_0, \ldots, G_d$ that produce this factorization.
+	We proceed by ``peeling off'' one layer at a time.
+
+	Applying $O_z^{-1}\,G_d^{-1}$ to $U$, we obtain
+	\begin{equation}
+		O_z^{-1}\,G_d^{-1}\,U
+		= \begin{pmatrix}
+			z^*\widetilde{P} + \widetilde{Q}   &
+			-z^*\widetilde{Q}^* + \widetilde{P}^*   \\
+			-\widetilde{P} + z\widetilde{Q}     &
+			z\widetilde{P}^* + \widetilde{Q}^*
+		\end{pmatrix},
+		\tag{A27}
+	\end{equation}
+	where $\widetilde{P}$ and $\widetilde{Q}$ denote the
+	entries of $G_d^{-1}\,U$.
+	For this to define a valid reduced problem of degree
+	$d - 1$, the polynomials
+	\begin{equation}
+		P'(z,z^*) = \frac{z^*\widetilde{P} + \widetilde{Q}}{1+zz^*},
+		\qquad
+		Q'(z,z^*) = \frac{z\widetilde{Q} - \widetilde{P}}{1+zz^*}
+		\tag{A28}
+	\end{equation}
+	must be well-defined elements of $\C[z, z^*]$, i.e.,
+	$(1+zz^*)$ must divide the numerators.  This
+	divisibility is equivalent to requiring that the
+	numerators vanish at $z^* = -1/z$, i.e.,
+	$P'(z, -1/z) = Q'(z, -1/z) = 0$.
+
+	Enforcing these conditions determines the parameters
+	$(a_d, b_d)$ of $G_d$.  Define the Laurent polynomials
+	$\hat{p}(z) = P(z, -1/z)$ and
+	$\hat{q}(z) = Q(z, -1/z)$.  The normalization
+	condition~2 becomes
+	\begin{equation}
+		\hat{p}(z)\,\hat{p}^*(z) = -\hat{q}(z)\,\hat{q}^*(z).
+		\tag{A29}
+	\end{equation}
+	Since $\C[z, z^{-1}]$ is a unique factorization domain,
+	$\hat{p}$ and $\hat{q}$ have a greatest common divisor.
+	Let $A = \gcd(\hat{p}, \hat{q})$ and write
+	$\hat{p} = AB$, $\hat{q} = AC$ with
+	$\gcd(B, C) = 1$.  Then~(A29) becomes
+	\begin{equation}
+		BB^* = -CC^*.
+		\tag{A30}
+	\end{equation}
+	Since $\gcd(B, C) = 1$, we must have $B \mid C^*$ and
+	$C \mid B^*$, which forces $\deg(B) = \deg(C)$.
+
+	\textit{Lemma.}
+		If $D \in \C[z, z^{-1}]$ satisfies $DD^* = -1$,
+		then $D = cz^k$ with $|c| = 1$ and $k$ odd.
+
+	\begin{proof}[Proof of Lemma]
+		Write $D = \sum_n d_n z^n$.  Since $DD^* = -1$,
+		the coefficient of $z^0$ in $DD^*$ must satisfy
+		$\sum_n |d_n|^2(-1)^n = -1$.  For any power
+		$m \neq 0$, the coefficient of $z^m$ is
+		$\sum_n d_n d_{n-m}^* (-1)^{n-m} = 0$.
+		If two coefficients $d_j, d_k$ with $j \neq k$ are
+		nonzero, the coefficient for the $z^{j-k}$ term gives
+		$d_j d_k^*(-1)^k = 0$, a contradiction.
+		So $D$ has exactly one nonzero term: $D = cz^k$.
+		Since $DD^* = |c|^2(-1)^k = -1$, we must have $k$
+		odd and $|c| = 1$.
+	\end{proof}
+
+	Writing $C^* = BD$ for some $D$, the relation
+	$BB^* = -CC^*$ gives $DD^* = -1$, so by Lemma~1,
+	$D = cz^k$ with $|c| = 1$ and $k$ odd.  This yields
+	two cases.
+
+	\textit{Case 1: $B$ and $C$ are units.}
+	Then $\hat{p}/\hat{q} = B/C = cz^k$ for some
+	$|c| = 1$ and $k$ odd, and
+	$(B/C)(B/C)^* = -1$.  The constraint that $k$ is odd
+	forces $k = \pm 1$.  We seek $a, b$ with
+	$|a|^2 + |b|^2 = 1$ such that
+	$R(z) := (bz + a^*)\hat{p}(z) - (az - b^*)\hat{q}(z)
+		\equiv 0$,
+	ensuring that $(1 + zz^*)$ divides the numerators
+	in~(A28).
+	For $k = 1$: the condition $R(z) \equiv 0$ reduces to
+	$b = 0$ and $a/a^* = c$, which is satisfiable.
+	For $k = -1$: similarly $a = 0$ and
+	$-b^*/b = c$, also satisfiable since $|c| = 1$.
+
+	\textit{Case 2: $B$ and $C$ have degree 1.}
+	Write $C = (a^* + bz)/\gamma$ and
+	$B = (az - b^*)/\delta$ for some $\gamma, \delta$.
+	The divisibility condition
+	$(bz + a^*)\hat{p}(z) = (az - b^*)\hat{q}(z)$
+	requires $\gamma = \delta$, and $B/C = (az-b^*)/(bz+a^*)$.
+	Then $R = (bz+a^*)B - (az-b^*)C = 0$.
+
+	In both cases, the $\SU(2)$ parameters are determined:
+	$(a, b) \propto (p_d, q_d)$ where $p_d, q_d$ are the
+	leading coefficients of $\hat{p}$ and $\hat{q}$,
+	normalized so that $|a|^2 + |b|^2 = 1$.  The consistency
+	of the $z^{-(d+1)}$ coefficient follows from the
+	$z^{2d}$ coefficient of
+	$\hat{p}\hat{p}^* + \hat{q}\hat{q}^* = 0$, which gives
+	$p_d p_{-d}^* + q_d q_{-d}^* = 0$.
+
+	With $G_d$ so determined, the reduced polynomials
+	\begin{align}
+		P_r(z, z^*) &= \frac{z^*\widetilde{P} + \widetilde{Q}}{1 + zz^*},
+		\nonumber\\
+		Q_r(z, z^*) &= \frac{z\widetilde{Q} - \widetilde{P}}{1 + zz^*}
+		\tag{A31}
+	\end{align}
+	are well-defined elements of $\C[z, z^*]$.  It remains
+	to verify that the reduced problem satisfies the two
+	conditions at degree $d - 1$.  For condition~2:
+	\begin{align}
+		&|P_r|^2 + |Q_r|^2
+		\nonumber\\
+		&\quad = \frac{|z^*\widetilde{P} + \widetilde{Q}|^2
+		+ |z\widetilde{Q} - \widetilde{P}|^2}{(1+zz^*)^2}
+		\nonumber                                          \\
+		&\quad = \frac{(1+zz^*)(|\widetilde{P}|^2
+		+ |\widetilde{Q}|^2)}{(1+zz^*)^2}
+		= (1+|z|^2)^{d-1}.
+		\tag{A32}
+	\end{align}
+	For condition~1, the highest total-degree monomial in
+	$(1+|z|^2)^{d-1}$ is $(zz^*)^{d-1}$, which has
+	$j + k = 2(d-1)$.  On the left, the highest total
+	degree of any monomial $z^j(z^*)^k$ in $P_r$ is
+	$2\max\{j+k\}$; for the identity to hold, we need
+	$\max(j+k) \leq d-1$.
+
+	Since we can continue peeling in this manner until
+	$\deg(P) = 0$ and $\deg(Q) = 0$ (at which point
+	$G_0$ is determined directly), this closes the
+	induction.
 \end{proof}

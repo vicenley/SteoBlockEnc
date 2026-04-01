@@ -33,7 +33,7 @@ framework is illustrated in Fig.~\ref{fig:schematic}.
 \begin{figure*}[t]
 	\centering
 	\includegraphics[width=\textwidth]{figures/schematic.pdf}
-	\caption{Schematic of the stereographic QSP framework, showing the three stages that lift the boundedness constraint. \textit{Left (Encoding):} An unbounded parameter $r \in [0,\infty)$ is compressed into the bounded QSP domain $\rtilde = r/\sqrt{1+r^2} \in [0,1)$ via stereographic projection~(SP), producing the single-qubit state $\ket{r}$ on the Bloch sphere. \textit{Center (QSP Circuit):} The standard QSP sequence of alternating phase gates $\exp[i\phi_k\PauliZ]$ and stereographic signal operators $S_z$ acts on $\ket{0}$, producing the output state $P(\rtilde)\ket{0} + Q(\rtilde)\ket{1}$ with $|P|^2+|Q|^2=1$. The stereographic and standard signal operators are related by $S_z = V^{-1}W(\rtilde)V$ with $V = \mathrm{diag}(1,i)$, so all existing QSP machinery applies directly. The lower inset shows the block-encoding context for multi-qubit operators. \textit{Right (Decoding):} Pauli measurements on the output state yield the ratio $f(r) = P(\rtilde)/Q(\rtilde)$, which diverges wherever $Q(\rtilde) = 0$. The inset plot illustrates the central mechanism: the internal polynomial $|P(\rtilde)|$ (blue) remains bounded within $[-1,1]$, but the decoded ratio $P/Q$ (orange) is an unbounded rational function with poles. The unitarity constraint does not imply bounded output.}
+	\caption{Schematic of the stereographic QSP framework, showing the three stages that lift the boundedness constraint. \textit{Left (Encoding):} An unbounded parameter $r \in [0,\infty)$ is compressed into the bounded QSP domain $\rtilde = r/\sqrt{1+r^2} \in [0,1)$ via stereographic projection~(SP), producing the single-qubit state $\ket{r}$ on the Bloch sphere. \textit{Center (QSP Circuit):} The standard QSP sequence of alternating phase gates $\exp[i\phi_k\PauliZ]$ and stereographic signal operators $S_z$ acts on $\ket{0}$, producing the output state $P(\rtilde)\ket{0} + Q(\rtilde)\ket{1}$ with $|P|^2+|Q|^2=1$. The stereographic and standard signal operators are related by $S_z = V^{-1}W(\rtilde)V$ with $V = \mathrm{diag}(1,i)$, so all existing QSP machinery applies directly. The lower inset previews the multi-qubit extension developed in a companion paper~\cite{KharaziLeytonOrtega2026b}: a diagonalization $V$ maps the system into the eigenbasis, enabling eigenspace-conditioned stereographic encoding on a single ancilla. \textit{Right (Decoding):} Pauli measurements on the output state yield the ratio $f(r) = P(\rtilde)/Q(\rtilde)$, which diverges wherever $Q(\rtilde) = 0$. The inset plot illustrates the central mechanism: the internal polynomial $|P(\rtilde)|$ (blue) remains bounded within $[-1,1]$, but the decoded ratio $P/Q$ (orange) is an unbounded rational function with poles. The unitarity constraint does not imply bounded output.}
 	\label{fig:schematic}
 \end{figure*}
 
@@ -382,14 +382,17 @@ phases~\cite{DongMengWhaleyEtAl2021,Haah2019} can be applied
 directly to the target polynomial expressed in the compressed
 variable $a = \rtilde = r/\sqrt{1+r^2}$; the resulting
 phases then implement the desired rational transformation
-through the stereographic protocol.  The off-diagonal matrix
-elements pick up factors of~$\pm i$ from the basis change
-($[W^{(\mathrm{stereo})}]_{10} = -i\,[U^{(\mathrm{std})}]_{10}$),
-so the decoded function is
-$f(r) = iP(\rtilde)/Q_{\mathrm{std}}(\rtilde)$, which is
-real-valued when $P$ is real and $Q_{\mathrm{std}}$ is purely
-imaginary---precisely the standard QSP case with real
-polynomial targets.
+through the stereographic protocol.  The basis change does
+affect the off-diagonal matrix elements: writing the standard
+QSP output state as
+$P(\rtilde)\ket{0} + iQ(\rtilde)\sqrt{1-\rtilde^2}\,\ket{1}$
+(with the standard convention that $Q$ is real for real
+targets), the stereographic output state is
+$P(\rtilde)\ket{0} + Q(\rtilde)/\sqrt{1+r^2}\,\ket{1}$,
+where the factor of~$i$ has been absorbed into the
+$\ket{1}$-component by the basis change~$V$.  The decoded
+function $f(r) = P(\rtilde)\sqrt{1+r^2}/Q(\rtilde)$ is the
+same ratio regardless of which convention is used.
 
 
 
@@ -413,8 +416,8 @@ structure also motivates a reformulation---working with
 unnormalized polynomials in~$r$ rather than bounded polynomials
 in~$\rtilde$---that makes the polynomial arithmetic transparent
 and provides the natural language for extending stereographic
-QSP to multi-qubit systems
-(Section~\ref{sec:block-encoding}).
+QSP to multi-qubit
+systems~\cite{KharaziLeytonOrtega2026b}.
 
 Consider the base-case functions
 $z_k(r) = \cot(k\arctan(1/r))$.  The cotangent vanishes when
@@ -631,14 +634,18 @@ and for the ratio of populations,
 	\frac{1+\langle\PauliZ\rangle}{1-\langle\PauliZ\rangle} = \frac{|P(a_u)|^2}{|Q(a_u)|^2}(1+u^2).
 	\label{eq:population-ratio}
 \end{equation}
-These expressions show that even standard QSP, when viewed
-through the stereographic lens, produces unbounded rational
-functions of the real-line parameter~$u$.  The factor
-$\sqrt{1+u^2}$ arises from the Jacobian of the stereographic
-map and amplifies the polynomial ratio into an unbounded
-function.  This provides a dual perspective on our main
-construction: stereographic QSP lifts boundedness by
-\emph{encoding} via the stereographic map before QSP, while
+These expressions show that even standard QSP, when decoded
+via stereographic projection rather than projective
+measurement, produces unbounded rational functions of the
+real-line parameter~$u$.  The unboundedness is therefore not
+unique to the stereographic protocol; it is a property of the
+\emph{decoding interface}, available in principle to any QSP
+circuit.  What the stereographic framework provides is a
+systematic encoding--decoding pair that makes this mechanism
+explicit and connects it to rational Chebyshev approximation
+theory.  This provides a dual perspective on our main
+construction: stereographic QSP encodes via the stereographic
+map before QSP, while
 Eqs.~\eqref{eq:stereo-decoding-standard}--\eqref{eq:population-ratio}
 show that \emph{decoding} standard QSP via stereographic
 projection achieves a similar effect.
@@ -673,3 +680,103 @@ angles and the rational Chebyshev expansion coefficients, and
 explains why increasing the QSP degree~$d$ systematically
 improves the approximation: each additional degree adds one
 more basis function to the expansion.
+
+\subsection{Generalized QSP in the Stereographic Picture}
+\label{subsec:generalized-qsp}
+
+The unnormalized formulation
+(Theorem~\ref{thm:unnormalized}) restricts the controls to
+$\PauliZ$-rotations, which enforces the same parity constraint
+as in standard QSP: the polynomials $\tilde{P}$ and
+$\tilde{Q}$ have definite parity, and even- and odd-degree
+terms cannot be mixed freely.  In the spirit of generalized
+QSP~\cite{MotlaghWiebe2023}, this constraint can be lifted by
+replacing the $\PauliZ$-rotation controls with arbitrary
+$\SU(2)$ matrices.  The stereographic picture makes this
+extension particularly transparent, because the signal and the
+controls are parameterized by the same geometric object---a
+point on $\C\mathbb{P}^1$.  The following theorem, whose proof
+by induction on the polynomial degree is given in
+Appendix~\ref{app:proofs}, characterizes the achievable
+function class in full generality.
+
+\begin{theorem}[Generalized QSP in Stereo]
+	\label{thm:gqsp-stereo}
+	Let $z \in \C\mathbb{P}^1$ and define the unnormalized signal
+	operator
+	\begin{equation}
+		O_z = \begin{pmatrix} z & -1 \\ 1 & z^* \end{pmatrix},
+		\quad \det O_z = 1 + |z|^2,
+		\label{eq:gqsp-signal}
+	\end{equation}
+	together with $\SU(2)$ control unitaries
+	$G_j = \bigl(\begin{smallmatrix}
+	a_j & -b_j^* \\ b_j & a_j^* \end{smallmatrix}\bigr)$,
+	$j = 0, \ldots, d$.  Then there exist
+	$G_0, \ldots, G_d \in \SU(2)$ such that
+	\begin{equation}
+		G_d \prod_{j=1}^{d} O_z\, G_{j-1}
+		= \begin{pmatrix} P(z,z^*) & -Q^*(z,z^*) \\
+		Q(z,z^*) & P^*(z,z^*) \end{pmatrix}
+		\label{eq:gqsp-product}
+	\end{equation}
+	if and only if the polynomials $P, Q \in \C[z,z^*]$ satisfy:
+	\begin{enumerate}
+		\item For all monomials $z^j(z^*)^k$ appearing in $P$ or
+		      $Q$, $j + k \leq d$.
+		\item $|P(z,z^*)|^2 + |Q(z,z^*)|^2 = (1+|z|^2)^d$ for
+		      all $z \in \C$.
+	\end{enumerate}
+\end{theorem}
+
+The theorem is a genuine extension of both the real
+stereographic QSP of Theorem~\ref{thm:unnormalized} and the
+generalized QSP of Ref.~\cite{MotlaghWiebe2023}: it permits
+polynomials over any $z \in \C\mathbb{P}^1$, not just
+$x \in [-1,1]$ or $e^{i\theta} \in \mathbb{T}$, and the
+parity constraint is absent.  The normalization condition
+$|P|^2 + |Q|^2 = (1+|z|^2)^d$ reduces to the standard QSP
+normalization $|P|^2 + |Q|^2 = 1$ on the unit circle
+$|z| = 1$ (after rescaling by $2^{-d/2}$), confirming
+compatibility with the standard framework.
+
+\textit{Connection to the nonlinear Fourier transform.}
+The backward direction of
+Theorem~\ref{thm:gqsp-stereo}---given a polynomial pair
+$(P,Q)$ satisfying the two conditions, extract the $\SU(2)$
+controls $G_j$---is the \emph{layer stripping algorithm}, the
+standard method for inverting the $\SU(2)$ nonlinear Fourier
+transform (NLFT)~\cite{AlexisBeckerEtAl2026}.  The connection
+is direct: the NLFT transfer matrix for a sequence
+$(\gamma_0, \ldots, \gamma_{d-1}) \in \C^d$ is the ordered
+product
+$\hat{\gamma}(z) = \prod_{k=0}^{d-1} (1+|\gamma_k|^2)^{-1/2}
+\bigl(\begin{smallmatrix} 1 & \gamma_k z^k \\
+-\gamma_k^* z^{-k} & 1 \end{smallmatrix}\bigr)$
+for $z \in \mathbb{T}$.  The unnormalized factor
+$\bigl(\begin{smallmatrix} 1 & \gamma \\
+-\gamma^* & 1 \end{smallmatrix}\bigr)$ is related to the
+stereographic signal operator $O_\gamma$ by a fixed $\SU(2)$
+element:
+\begin{equation}
+	\begin{pmatrix} 1 & \gamma \\ -\gamma^* & 1
+	\end{pmatrix}
+	= O_\gamma \cdot (i\PauliY),
+	\label{eq:nlft-identity}
+\end{equation}
+so the NLFT transfer matrix and the stereographic signal
+operator are instances of the same
+$\C\mathbb{P}^1$-parameterized family, differing only by
+right-multiplication by a fixed $\SU(2)$ element.  When these
+matrices are interleaved with varying $\SU(2)$ controls, the
+fixed factor $i\PauliY$ can be absorbed into the controls,
+making the two product structures equivalent.  The Schur
+parameters $\gamma_k$ of the NLFT correspond to the
+stereographic controls $G_k$, and the $\C\mathbb{P}^1$
+coordinate provides a geometric interpretation: the
+Fubini--Study norm $\sqrt{1+|\gamma|^2}$ is the natural
+normalization on $\C\mathbb{P}^1$, explaining why this factor
+appears in both the NLFT and the stereographic framework.  We
+refer the reader to Ref.~\cite{AlexisBeckerEtAl2026} for a
+comprehensive treatment of the $\SU(2)$ NLFT and its
+higher-dimensional extensions.

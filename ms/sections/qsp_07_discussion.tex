@@ -18,20 +18,31 @@ protocol, when decoded via stereographic projection, produces
 unbounded rational functions of the real-line parameter
 (Section~\ref{subsec:further-consequences}).
 
+As discussed in Section~\ref{sec:applications}, the stereographic
+variable substitution also provides a complementary approach to
+QSVT-based quantum state
+preparation~\cite{McArdleGilyenBerta2025}, replacing the arcsine
+encoding with the stereographic map and connecting the
+approximation theory to Boyd's rational Chebyshev
+basis~\cite{Boyd1990,Boyd1987}.  While state preparation
+amplitudes remain bounded---one cannot encode an unbounded function
+directly into a quantum state---the stereographic basis is
+particularly well suited to functions defined on unbounded domains
+or with naturally rational structure.
+
 At the same time, the construction has clear limitations.
 The measurement overhead grows as
 $\mathcal{O}(r^6/\epsilon^2)$ for large eigenvalues
 (Eq.~\eqref{eq:shot-count}), making the approach impractical
-when $r \gg 1$.  As sketched in
-Section~\ref{sec:block-encoding}, lifting the single-qubit
-theory to a multi-qubit eigenvalue transformation is
-straightforward when the eigenbasis of the Hamiltonian is known,
-but this is a strong assumption that restricts applicability to
-structured operators.  The practical advantage window is
-depth-limited devices processing operators with moderate
-eigenvalues and known eigenbasis structure; a full development
-of the multi-qubit framework will be presented in a companion
-paper.
+when $r \gg 1$.  Lifting the single-qubit theory to a
+multi-qubit eigenvalue transformation is straightforward when
+the eigenbasis of the Hamiltonian is known, but this is a
+strong assumption that restricts applicability to structured
+operators.  The practical advantage window is depth-limited
+devices processing operators with moderate eigenvalues and
+known eigenbasis structure; a full development of the
+multi-qubit framework is presented in a companion
+paper~\cite{KharaziLeytonOrtega2026b}.
 
 Our construction rests on the QSP/QSVT framework established
 by Low and Chuang~\cite{LowChuang2017,LowChuang2019} and
@@ -81,18 +92,17 @@ large-$r$ errors where stereographic compression is most
 severe.
 
 On the multi-qubit side, the key open question is whether
-the eigenbasis requirement of the stereographic block encoding
-(Section~\ref{sec:block-encoding}) can be relaxed---perhaps
-by combining stereographic encoding with quantum phase
-estimation, or by constructing a stereographic analogue of the
-QSVT product for block-encoded matrices.  Extending the class
-of tractable Hamiltonians to sparse models with known
-eigenbasis structure, integrable models, or tensor-network
-states would establish the practical scope; we pursue these
-directions in a companion paper.  At a more fundamental level,
+the eigenbasis requirement of stereographic block
+encoding~\cite{KharaziLeytonOrtega2026b} can be
+relaxed---perhaps by combining stereographic encoding with
+quantum phase estimation, or by constructing a stereographic
+analogue of the QSVT product for block-encoded matrices.
+Extending the class of tractable Hamiltonians to sparse models
+with known eigenbasis structure, integrable models, or
+tensor-network states would establish the practical scope.  At a more fundamental level,
 replacing the phase rotations $\exp[i\phi\PauliZ]$ with general
 signal-type operators $O_\alpha$ parameterized by
-$\alpha \in \hat{\C}$ yields a generalized normalization
+$\alpha \in \C\mathbb{P}^1$ yields a generalized normalization
 condition
 \begin{equation}
 	|P|^2 + |Q|^2 = (1{+}r^2)^d \textstyle\prod_j(1{+}|\alpha_j|^2),
