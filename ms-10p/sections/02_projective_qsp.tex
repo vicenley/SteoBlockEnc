@@ -82,9 +82,10 @@ projection $x=\cot\theta$ and are orthogonal on $\R$ with the
 Cauchy weight $1/(1+x^2)$~\cite{Boyd1990,Boyd1987}.  Throughout we
 fix the branch $\mathrm{arccot}\colon\R\to(0,\pi)$, so $\sin\theta>0$
 and $\sqrt{1+x^2}=1/\sin\theta$ carries no sign ambiguity.  Conjugating
-by $V=\mathrm{diag}(1,i)$ as in Remark~\ref{rem:basis-change} turns the
-normalized $k$th power into the standard QSP signal form, with
-$+i\sin k\theta$ in \emph{both} off-diagonal entries.  Boyd writes
+the normalized $k$th power by $V=\mathrm{diag}(1,i)$, that is forming
+$V\,[(1+x^2)^{-k/2}O_x^{\,k}]\,V^{-1}$, gives the standard QSP signal
+$W(\tilde x)^k$ of Remark~\ref{rem:basis-change}, with $+i\sin k\theta$
+in \emph{both} off-diagonal entries.  Boyd writes
 $\TB_k$ as $T_k$ composed with the compression
 $x\mapsto x/\sqrt{1+x^2}$, since $T_k(\cos\theta)=\cos k\theta$;
 Eq.~\eqref{eq:rat-cheb} is the same family.
@@ -93,8 +94,12 @@ Eq.~\eqref{eq:rat-cheb} is the same family.
 \label{subsec:completeness}
 
 The signal operator $O_x$ and the phase gates generate a
-QSP sequence whose achievable functions we now characterize.  We
-give the real-signal case first.
+QSP sequence whose achievable functions we now characterize.
+Throughout, $P^*$ denotes the polynomial
+$P^*(x)=\overline{P(\bar x)}$ obtained by conjugating the
+coefficients of $P$, so that $P^*$ coincides with the complex
+conjugate $\bar P$ on real arguments.  We give the real-signal case
+first.
 
 \begin{theorem}[Real stereographic QSP]
 	\label{thm:real-qsp}
@@ -120,8 +125,7 @@ give the real-signal case first.
 The forward direction is an induction on $d$: each factor
 $O_x\,e^{i\phi\PauliZ}$ raises the degree by one and multiplies the
 normalization by $\det O_x=1+x^2$, which reproduces (i)--(iii).
-The backward direction is the substantive half.  Writing
-$P^*(x)=\overline{P(\bar x)}$, condition (i) forces
+The backward direction is the substantive half.  Condition (i) forces
 $|P(i)|^2=|Q(i)|^2$ by evaluation at $x=i$; choosing the phase
 $e^{2i\phi}=-iP(i)/Q^*(i)$ makes the reduced polynomials
 $\widetilde P,\widetilde Q$ vanish at $x=i$, and, by parity, at
@@ -144,8 +148,9 @@ polynomials in $z$ and $\bar z$.
 \begin{theorem}[Generalized stereographic QSP]
 	\label{thm:gen-qsp}
 	Let $O_z$ be as in Eq.~\eqref{eq:Oz} and let
-	$G_0,\dots,G_d\in\SU(2)$.  A pair $P,Q\in\C[z,\bar z]$ is
-	realizable as
+	$G_0,\dots,G_d\in\SU(2)$.  A pair $P,Q\in\C[z,\bar z]$, where
+	now $P^*(z,\bar z)=\overline{P(\bar z,z)}$ conjugates coefficients
+	and swaps $z\leftrightarrow\bar z$, is realizable as
 	\begin{equation}
 		G_d\,O_z\,G_{d-1}\,O_z\cdots O_z\,G_0
 		=\begin{pmatrix} P(z,\bar z) & -Q^*(z,\bar z)\\
@@ -199,7 +204,8 @@ constraint $|P|^2+|Q|^2=1$ on the unit circle.
 	\begin{equation}
 		(1+x^2)^{-1/2}O_x=V^{-1}W(\tilde x)V,
 	\end{equation}
-	and $V$ commutes with every phase gate.  A stereographic QSP
+	equivalently $W(\tilde x)=V\,[(1+x^2)^{-1/2}O_x]\,V^{-1}$, and $V$
+	commutes with every phase gate.  A stereographic QSP
 	circuit is therefore a standard QSP circuit conjugated by a
 	gate that depends on neither the signal nor the phases.  Two
 	consequences follow.  The diagonal matrix element is unchanged,
