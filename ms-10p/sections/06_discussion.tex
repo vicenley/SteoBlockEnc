@@ -1,0 +1,37 @@
+% 06_discussion.tex
+\section{Discussion}
+\label{sec:discussion}
+
+The stereographic chart organizes quantum signal processing as
+geometry on the projective line.  Its two completeness theorems
+characterize the achievable pairs by a Fubini--Study normalization,
+its backward direction is NLFT layer stripping with the Schur
+parameters read as points of $\CP$, and its no-go shows that a
+chart change alone leaves the approximation rate a conformal
+invariant.  The one algorithmic gain comes from pairing the chart
+with a matching grid and signal operator: the state-preparation
+algorithm prepares Boyd-class functions on the whole real line in
+$\mathcal{O}(n)$ gates for Lorentzians and
+$\mathcal{O}(n\log^2(1/\varepsilon))$ for hyperbolic secants and
+Gaussians, with two ancilla qubits and no truncation radius, its
+cost governed only by the shape of the target after pullback to the
+circle.
+
+Several limitations bound these results.  The prepared state lives
+on the cotangent grid, and a task requiring a uniform grid must pay
+a regridding cost we have not analyzed.  The filling fraction is a
+positive constant only when the target is not too concentrated
+after pullback; a sharply peaked shifted Lorentzian pays through
+$\mathcal{F}$.  The algorithm assumes a Fourier-type signal on the
+cotangent grid, and extending it to a general block-encoded
+Hamiltonian in an unknown eigenbasis is open; the case of a known
+eigenbasis is treated in a companion
+paper~\cite{KharaziLeytonOrtega2026b}.  Two directions follow from
+the geometry.  The Riccati picture places phase finding inside
+inverse scattering, which invites a scattering-transform view of
+phase-factor computation.  The second is a design pattern: a chart, a grid adapted to it, and a
+signal operator with matching eigenphases.  It asks which other
+encodings of $\CP$ evade the conformal obstruction and which merely
+rename it.  A chart buys nothing by
+itself; it buys something exactly when the grid and the signal
+operator are chosen to match it.

@@ -1,0 +1,109 @@
+% 03_nlft_geometry.tex
+\section{Nonlinear Fourier geometry of phase finding}
+\label{sec:nlft}
+
+The equivalence of generalized QSP with the $\SU(2)$ nonlinear
+Fourier transform was established
+in~\cite{AlexisMnatsakanyanThiele2024,AlexisBeckerEtAl2026,Laneve2025},
+and the layer-stripping inverse was made
+algorithmic in~\cite{NiSarkarYingLin2025}.  What the stereographic
+chart adds is a geometric reading: the transfer matrix and the
+signal operator $O_z$ are the same object on $\CP$, and the
+backward direction of Theorem~\ref{thm:gen-qsp} is layer stripping
+with the Schur parameters read as points of $\CP$.
+
+\subsection{The transfer matrix is the signal operator}
+\label{subsec:transfer}
+
+The $\SU(2)$ NLFT of a sequence $(\gamma_0,\dots,\gamma_{d-1})$ is
+the ordered product
+\begin{equation}
+	\widehat\gamma(z)=\prod_{k=0}^{d-1}
+	\frac{1}{\sqrt{1+|\gamma_k|^2}}
+	\begin{pmatrix} 1 & \gamma_k z^k\\ -\bar\gamma_k z^{-k} & 1
+	\end{pmatrix},\qquad z\in\T,
+	\label{eq:nlft}
+\end{equation}
+whose $z$-powers absorb into a diagonal signal so that the product
+telescopes into a QSP sequence with $z$-independent
+factors~\cite{Laneve2025}.  Each factor is the stereographic signal
+operator up to a fixed rotation:
+\begin{equation}
+	\boxed{\ \begin{pmatrix} 1 & \gamma\\ -\bar\gamma & 1
+	\end{pmatrix}=O_\gamma\,(i\PauliY),\qquad
+	i\PauliY=\begin{pmatrix}0&1\\-1&0\end{pmatrix}\in\SU(2).\ }
+	\label{eq:transfer-identity}
+\end{equation}
+Both sides have determinant $1+|\gamma|^2$, and both encode the
+point $\gamma\in\CP$ in a matrix whose determinant is the squared
+Fubini--Study norm of $(\gamma:1)$.  The normalization
+$\sqrt{1+|\gamma|^2}$ common to the NLFT and to stereographic QSP
+is this norm, which is why it appears in both.  Interleaved with
+$\SU(2)$ controls, the fixed factor $i\PauliY$ absorbs into the
+controls at each step, so the two product structures coincide.
+
+\subsection{Layer stripping and the Schur parameter}
+\label{subsec:stripping}
+
+\begin{proposition}[Backward direction is layer stripping]
+	\label{prop:stripping}
+	The backward direction of Theorem~\ref{thm:gen-qsp} is the
+	inverse-NLFT layer-stripping algorithm
+	of~\cite{NiSarkarYingLin2025,AlexisBeckerEtAl2026} expressed in
+	the stereographic coordinate.  The control $G_d$ extracted at
+	the outer layer satisfies $(a_d,b_d)\propto(p_d,q_d)$, where
+	$p_d,q_d$ are the leading coefficients of the reduced pair; the
+	divisibility $1+z\bar z\mid P'$ that lowers the bidegree is the
+	stereographic form of the NLFT condition that the residual datum
+	be divisible by $z$; and after stripping,
+	$|P|^2+|Q|^2=(1+|z|^2)^{d-1}$, which on $\T$ is the standard
+	NLFT normalization up to the scale $2^{-(d-1)/2}$.
+\end{proposition}
+
+The Schur parameter at each layer is the homogeneous coordinate
+$[p_d:q_d]\in\CP$.  Its $\SU(2)$ lift is the Hopf map
+\begin{equation}
+	(a_d,b_d)=\frac{(p_d,q_d)}{\sqrt{|p_d|^2+|q_d|^2}},
+	\label{eq:hopf}
+\end{equation}
+so the inhomogeneous coordinate $\gamma_d=q_d/p_d$ is the classical
+Schur parameter.  Working with the homogeneous pair keeps the case
+$p_d=0$ regular: the point $[0:q_d]$ is an ordinary point of $\CP$,
+whereas the classical NLFT excludes it by requiring $a^*(0)>0$.
+The stereographic picture treats all Schur parameters uniformly as
+points of $\CP$, and this is the only structural difference from
+the standard layer-stripping recursion.  The proof of
+Proposition~\ref{prop:stripping} is the backward direction of
+Theorem~\ref{thm:gen-qsp}, read against the NLFT dictionary; we
+give the correspondence in Appendix~\ref{app:thm-gen}.
+
+\subsection{The Riccati flow}
+\label{subsec:riccati}
+
+\begin{remark}[QSP as a discrete Riccati flow]
+	\label{rem:riccati}
+	The M\"obius action of Sec.~\ref{subsec:encoding} makes each
+	layer a fractional-linear step on $\CP$.  Tracking the encoded
+	coordinate through the product of Theorem~\ref{thm:gen-qsp}
+	gives the discrete Riccati iteration
+	$\zeta_k=G_k\cdot O_z\cdot\zeta_{k-1}$, which for real signal
+	and $\PauliZ$-phase controls reads
+	$\zeta_k=e^{2i\phi_k}(x\zeta_{k-1}-1)/(\zeta_{k-1}+x)$.  Its
+	continuum limit is the scalar Riccati equation
+	$i\dot\zeta=\nu(1-\zeta^2)-2\phi(t)\zeta$ obtained by projecting
+	the Zakharov--Shabat system
+	$i\dot\psi=(\nu\PauliX+\phi(t)\PauliZ)\psi$ to
+	$\zeta=\psi_2/\psi_1$, the Ablowitz--Kaup--Newell--Segur
+	scattering problem~\cite{AblowitzKaupNewellSegur1974,FaddeevTakhtajan1987}
+	with $\phi$ the potential and $\nu$ the spectral parameter.  The
+	Schur parameters are the Verblunsky coefficients of the
+	orthogonal polynomials on the unit circle associated with the
+	iteration~\cite{Simon2005OPUC}, and the reflectionless case
+	connects to the canonical systems of
+	Ref.~\cite{BessonovLukicYuditskii2024}.  This correspondence is
+	a \emph{description} of the QSP iteration, not an alternative
+	algorithm: it situates phase finding within inverse scattering
+	and explains why the layer-stripping and NLFT machinery apply,
+	but the protocol itself remains the discrete
+	iteration~\cite{TaoThieleTsai,NiSarkarYingLin2025}.
+\end{remark}

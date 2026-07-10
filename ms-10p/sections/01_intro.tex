@@ -1,0 +1,156 @@
+% 01_intro.tex
+\section{Introduction}
+\label{sec:intro}
+
+The transformations achievable by quantum signal processing (QSP)
+are polynomials of a single variable, bounded by one on the
+interval $[-1,1]$.  This boundedness and this interval belong to a
+description, not to the object being described.  The single-qubit
+rotations that generate a QSP sequence act on the Bloch sphere,
+and the sphere carries no distinguished interval; choosing how to
+coordinatize it is choosing how to read the polynomial that a QSP
+sequence computes.  The standard formulations of QSP differ
+precisely in this choice of coordinate.  It is therefore natural
+to ask what is intrinsic to a QSP sequence and what is an artifact
+of the chart used to describe it, and, in particular, whether a
+change of chart can turn a hard target into an easy one.
+
+Three charts are already in use.  The Fourier formulation of Low
+and Chuang~\cite{LowChuang2017} parameterizes the signal by the
+eigenphase $\theta$ and produces trigonometric polynomials; the
+Chebyshev formulation of Gily\'en, Su, Low, and
+Wiebe~\cite{GSLW2019} sets $x=\cos\theta\in[-1,1]$ and produces
+ordinary polynomials, the setting of quantum singular value
+transformation and of the block encoding of a Hermitian operator;
+the generalized QSP of Motlagh and Wiebe~\cite{MotlaghWiebe2023}
+sets $z=e^{i\theta}$ on the unit circle, lifts the controls to
+arbitrary $\SU(2)$ rotations, and produces Laurent polynomials.
+Recent work recognizes these as coordinate systems on one
+$\SU(2)$-valued product and identifies that product with the
+$\SU(2)$ nonlinear Fourier transform (NLFT): the equivalence was
+established by Alexis, Mnatsakanyan, and
+Thiele~\cite{AlexisMnatsakanyanThiele2024,AlexisBeckerEtAl2026}
+and by Laneve~\cite{Laneve2025}, and the layer-stripping inverse
+of Ni, Sarkar, Ying, and Lin~\cite{NiSarkarYingLin2025} recovers
+the controls from a target polynomial pair.  A fourth chart
+completes the picture and is the subject of this work: the
+stereographic chart, in which the signal is the point
+$\alpha=\cot\theta$ of the extended real line and the natural basis
+is Boyd's family of rational Chebyshev
+functions~\cite{Boyd1990,Boyd1987}.
+
+This paper is a geometric account of QSP organized around that
+chart, together with one algorithmic application.  We make four
+contributions.  First, we place a single qubit at a point of the
+projective line $\CP$ and derive two completeness theorems in the
+stereographic coordinate: one for real-signal QSP and one for the
+generalized, complex-signal case, each characterizing the
+achievable polynomial pair by a Fubini--Study normalization
+$|P|^2+|Q|^2=(1+|z|^2)^d$.  Second, we show that the backward
+direction of the generalized theorem is the layer-stripping
+algorithm that inverts the NLFT, with the Schur parameters read as
+points of $\CP$; the projective coordinate removes the exceptional
+case that the classical construction must treat separately, and it
+exposes the discrete Riccati flow whose continuum limit is the
+Ablowitz--Kaup--Newell--Segur scattering
+problem~\cite{AblowitzKaupNewellSegur1974}.  Third, we prove that
+within the block-encoding model the approximation rate is a
+conformal invariant: no reparameterization of the eigenvalue
+variable, the stereographic one included, changes the polynomial
+degree required to reach a target.  A chart change alone buys
+nothing.  Fourth, we show what does buy something.  Pairing the
+stereographic chart with a matching grid and a matching signal
+operator yields a state-preparation algorithm for functions on the
+whole real line whose cost is governed only by the shape of the
+target after pullback to the circle, with no truncation radius for
+the user to choose.
+
+Figure~\ref{fig:charts} records the four charts and the changes of
+variable relating them.  The square commutes: the eigenphase
+$\theta$ reaches the stereographic coordinate $\alpha=\cot\theta$
+either through $x=\cos\theta$ and $\alpha=x/\sqrt{1-x^2}$, or
+through $z=e^{2i\theta}$ and the Cayley transform
+$\alpha=i(z+1)/(z-1)$.  The doubling $z=e^{2i\theta}$ on the
+Fourier--Laurent edge is what makes the two routes agree, and it is
+the geometric origin of the parity constraint that distinguishes
+standard QSP from its generalized form.
+
+\begin{figure*}[t]
+	\centering
+	\begin{tikzpicture}[
+		>=Stealth,
+		every node/.style={font=\small},
+		picnode/.style={
+			rectangle, rounded corners=2pt, draw=black!60,
+			thick, align=center, inner sep=5pt, minimum width=3.1cm
+		},
+		fourier/.style    ={picnode, fill=violet!10},
+		chebyshev/.style  ={picnode, fill=blue!10},
+		gqsp/.style       ={picnode, fill=orange!10},
+		ratcheb/.style    ={picnode, fill=teal!10},
+		edgelab/.style    ={font=\footnotesize, midway, sloped},
+	]
+	\node[fourier]   (F)  at (-4.0,  1.8) {%
+		\textbf{Fourier} \\[1pt]
+		$\theta \in (-\pi,\pi)$ \\
+		$\cos k\theta,\ \sin k\theta$};
+	\node[chebyshev] (C)  at ( 4.0,  1.8) {%
+		\textbf{Chebyshev} \\[1pt]
+		$x \in (-1,1)$ \\
+		$T_k(x),\ U_k(x)\sqrt{1-x^2}$};
+	\node[gqsp]      (G)  at (-4.0, -1.8) {%
+		\textbf{GQSP / Laurent} \\[1pt]
+		$z \in \T$ \\
+		$z^k+z^{-k},\ z^k-z^{-k}$};
+	\node[ratcheb]   (R)  at ( 4.0, -1.8) {%
+		\textbf{Rational Chebyshev} \\[1pt]
+		$\alpha \in \R$ \\
+		$\TB_k(\alpha),\ \SB_k(\alpha)$};
+
+	\draw[<->, thick] (F) -- (C)
+	node[edgelab, above] {$x = \cos\theta$}
+	node[edgelab, below] {$\theta = \arccos x$};
+
+	\draw[<->, thick] (F) -- (G)
+	node[edgelab, above] {$z = e^{2i\theta}$ (doubling)}
+	node[edgelab, below] {$\theta = \tfrac12\arg z$};
+
+	\draw[<->, thick] (C) -- (R)
+	node[edgelab, above] {$\alpha = x/\sqrt{1-x^2}$}
+	node[edgelab, below] {$x = \alpha/\sqrt{1+\alpha^2}$};
+
+	\draw[<->, thick] (G) -- (R)
+	node[edgelab, above] {$\alpha = i(z+1)/(z-1)$}
+	node[edgelab, below] {$z = (\alpha+i)/(\alpha-i)$};
+
+	\draw[<->, dashed, thick, gray] (F) -- (R)
+	node[edgelab, above, gray] {$\alpha = \cot\theta$};
+	\end{tikzpicture}
+	\caption{The four charts of QSP as coordinate systems on one
+		$\SU(2)$-valued product, with the changes of variable on
+		the edges.  The square commutes: from the eigenphase
+		$\theta$, the stereographic coordinate is reached both as
+		$\alpha=\cos\theta/\sqrt{1-\cos^2\theta}=\cot\theta$
+		(top route) and as
+		$\alpha=i(e^{2i\theta}+1)/(e^{2i\theta}-1)=\cot\theta$
+		(bottom route).  The two routes agree only because the
+		Fourier--Laurent edge carries the doubling $z=e^{2i\theta}$
+		rather than $z=e^{i\theta}$; the Chebyshev chart's
+		two-to-one projection $x=\cos\theta$ is the geometric
+		origin of the parity constraint (Sec.~\ref{sec:limits}),
+		which the one-to-one stereographic projection removes.  The
+		rational Chebyshev basis $\{\TB_k,\SB_k\}$ is the image of
+		$\{\cos k\theta,\sin k\theta\}$ and is orthogonal on $\R$
+		with the Cauchy weight $1/(1+\alpha^2)$~\cite{Boyd1990}.}
+	\label{fig:charts}
+\end{figure*}
+
+The remainder of the paper follows the four contributions.
+Section~\ref{sec:projective} places the qubit on $\CP$ and proves
+the two completeness theorems.  Section~\ref{sec:nlft} identifies
+the backward direction with NLFT layer stripping and records the
+Riccati picture.  Section~\ref{sec:limits} proves the
+conformal-invariance no-go.  Section~\ref{sec:stateprep} develops
+the state-preparation algorithm and compares it with existing
+methods.  Section~\ref{sec:discussion} states the limitations and
+what remains open.

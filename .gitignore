@@ -108,6 +108,28 @@ ms2/figures/indent.log
 ms2/figures/*.aux
 ms2/figures/*.log
 
+# Manuscript (Paper 2, 10-page version)
+ms-10p/*.pdf
+ms-10p/*.dvi
+ms-10p/*.aux
+ms-10p/*.log
+ms-10p/*.out
+ms-10p/*.bbl
+ms-10p/*.blg
+ms-10p/*.toc
+ms-10p/*.lof
+ms-10p/*.lot
+ms-10p/*.synctex.gz
+ms-10p/*.fdb_latexmk
+ms-10p/*.fls
+ms-10p/*.bak*
+ms-10p/sections/*.bak*
+ms-10p/sections/indent.log
+ms-10p/figures/*.png
+ms-10p/figures/indent.log
+ms-10p/figures/*.aux
+ms-10p/figures/*.log
+
 # Logs
 logs/
 

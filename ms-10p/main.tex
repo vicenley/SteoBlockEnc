@@ -1,0 +1,126 @@
+\documentclass[
+    reprint,
+    amsmath,amssymb,
+    aps,
+    pra,
+    superscriptaddress,
+    floatfix
+]{revtex4-2}
+
+\usepackage{graphicx}
+\usepackage{dcolumn}
+\usepackage{bm}
+\usepackage{mathtools}
+\usepackage{braket}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,calc,decorations.pathmorphing}
+\usepackage{quantikz}
+\usepackage{hyperref}
+\usepackage{amsthm}
+
+% APS-style theorem formatting
+\newtheoremstyle{aps}%
+  {}{}%
+  {}%
+  {\parindent}%
+  {\itshape}%
+  {.}%
+  { }%
+  {}%
+
+\theoremstyle{aps}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{example}[theorem]{Example}
+\newtheorem{remark}[theorem]{Remark}
+
+% Custom commands
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\T}{\mathbb{T}}
+\newcommand{\Sphere}{\mathbb{S}^2}
+\newcommand{\CP}{\mathbb{C}\mathrm{P}^1}
+\newcommand{\SU}{\mathrm{SU}}
+\newcommand{\SO}{\mathrm{SO}}
+\newcommand{\U}{\mathrm{U}}
+\newcommand{\Tr}{\mathrm{Tr}}
+\newcommand{\re}{\mathrm{Re}}
+\newcommand{\im}{\mathrm{Im}}
+
+\newcommand{\PauliI}{\sigma_0}
+\newcommand{\PauliX}{\sigma_x}
+\newcommand{\PauliY}{\sigma_y}
+\newcommand{\PauliZ}{\sigma_z}
+
+\newcommand{\rtilde}{\tilde{r}}
+\newcommand{\TB}{\mathrm{TB}}
+\newcommand{\SB}{\mathrm{SB}}
+
+\begin{document}
+
+\title{The projective geometry of quantum signal processing}
+
+\thanks{This manuscript has been authored by UT-Battelle, LLC, under Contract No.\ DE-AC05-00OR22725 with the U.S.\ Department of Energy (DOE). The United States Government retains and the publisher, by accepting the article for publication, acknowledges that the United States Government retains a non-exclusive, paid-up, irrevocable, world-wide license to publish or reproduce the published form of this manuscript, or allow others to do so, for United States Government purposes. The Department of Energy will provide public access to these results of federally sponsored research in accordance with the DOE Public Access Plan.}
+
+\author{Tyler Kharazi}
+\affiliation{Department of Chemistry, University of California, Berkeley, California 94720, USA}
+
+\author{Vicente Leyton-Ortega}
+\email{leytonortegav@ornl.gov}
+\affiliation{Quantum Computational Science Group, Quantum Information Science Section, Computational Sciences and Engineering Division, Oak Ridge National Laboratory, Oak Ridge, Tennessee 37831, USA}
+
+\date{\today}
+
+\begin{abstract}
+	Quantum signal processing, its generalized form, and the
+	nonlinear Fourier transform on the sphere are the same
+	alternating product of a signal rotation with tunable gates,
+	written in different coordinates.  We develop the chart in which
+	a qubit is a point of the complex projective line and the signal
+	ranges over the whole real line, and we use it to give a unified
+	account of the method.  We prove two completeness theorems in
+	this chart, one for real signals and one for the generalized
+	construction with arbitrary controls, each characterizing the
+	achievable pair of polynomials by a single Fubini--Study
+	normalization.  We show that the inverse problem of finding the
+	phases is the layer-stripping algorithm of the nonlinear Fourier
+	transform, with the Schur parameters read as points of the
+	projective line, and that the underlying iteration is a discrete
+	Riccati flow whose continuum limit is the scattering problem of
+	inverse-scattering theory.  We prove that no change of chart can
+	accelerate a block-encoded matrix function, because the rate of
+	polynomial approximation is a conformal invariant of the target.
+	The advantage of the projective picture appears instead in state
+	preparation: pairing the chart with a matching grid and signal
+	operator prepares a quantum state encoding a function on the
+	whole real line, at a cost set only by the shape of the function
+	and with no truncation radius to choose.  For Lorentzian profiles
+	the preparation is linear in the number of qubits.
+\end{abstract}
+
+\maketitle
+
+\input{sections/01_intro}
+\input{sections/02_projective_qsp}
+\input{sections/03_nlft_geometry}
+\input{sections/04_limits}
+\input{sections/05_state_prep}
+\input{sections/06_discussion}
+
+\begin{acknowledgments}
+	This material is based upon work supported by the U.S.\
+	Department of Energy, Office of Science, Accelerated Research
+	in Quantum Computing, Fundamental Algorithmic Research toward
+	Quantum Utility (FAR-Qu).
+\end{acknowledgments}
+
+\input{sections/appendix}
+
+\bibliography{references,references_extra}
+
+\end{document}

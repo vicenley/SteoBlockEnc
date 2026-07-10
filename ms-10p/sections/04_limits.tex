@@ -1,0 +1,106 @@
+% 04_limits.tex
+\section{Limits of chart change}
+\label{sec:limits}
+
+The stereographic chart sends $[-1,1]$ to the whole real line and
+replaces the Chebyshev basis by the rational Chebyshev basis.  A
+natural hope is that this buys an algorithmic advantage: that some
+target hard to approximate by degree-$d$ polynomials on $[-1,1]$
+becomes easy in the new coordinate.  It does not.  Within the
+block-encoding model the achievable class and its convergence rate
+are the same in every chart, and the reason is that the rate is a
+conformal invariant of the target.  We state this obstruction
+before showing, in Sec.~\ref{sec:stateprep}, what escapes it.
+
+\subsection{The achievable class is fixed by the query count}
+\label{subsec:achievable}
+
+\begin{proposition}[Block-encoding model]
+	\label{prop:nogo}
+	Let $U$ be a block encoding of $A/\lambda$ with eigenvalues
+	$a_j=\lambda_j/\lambda\in[-1,1]$, and let $W$ be the associated
+	walk operator with eigenvalues $e^{\pm i\arccos a_j}$.  Any
+	protocol using $d$ queries to $U,U^\dagger,W,W^\dagger$,
+	interleaved with arbitrary ancilla unitaries, implements on each
+	eigenspace a transformation contained in
+	$\mathcal{P}_d=\{P\in\C[a]:\deg P\le d\}$, and this class is
+	unchanged by any reparameterization of $a_j$.
+\end{proposition}
+
+This is the QSVT theorem~\cite{GSLW2019,MartynRossiTanChuang2021}
+read for its chart content.  The walk operator has eigenvalues
+$e^{\pm i\theta}$ with $\theta=\arccos a$; each query contributes
+one power of $e^{\pm i\theta}$, so after $d$ queries the transformation
+is a Laurent polynomial of degree $d$ in $z=e^{i\theta}$, and
+$z^k+z^{-k}=2T_k(a)$ makes it a degree-$d$ polynomial in $a$.  The
+class is set by the number of queries, not by the coordinate used
+to describe it.
+
+\begin{corollary}[Basis independence]
+	\label{cor:basis-indep}
+	Let $\alpha=a/\sqrt{1-a^2}$ be the stereographic variable and
+	$z=e^{i\arccos a}$.  For every $P\in\mathcal{P}_d$,
+	\begin{equation}
+		P(a)=\sum_{k=0}^d c_k T_k(a)
+		=\sum_{k=0}^d c_k\,\TB_k(\alpha)
+		=\sum_{k=0}^d c_k\,\tfrac{z^k+z^{-k}}{2},
+	\end{equation}
+	with the \emph{same} coefficients $c_k$, because
+	$\TB_k(\alpha)=T_k(a)$.  The minimax error
+	$\|f-P\|_{L^\infty[-1,1]}$ over $P\in\mathcal{P}_d$ is therefore
+	identical in the Chebyshev, rational Chebyshev, and Laurent
+	bases.
+\end{corollary}
+
+\subsection{The convergence rate is a conformal invariant}
+\label{subsec:conformal}
+
+Proposition~\ref{prop:nogo} and Corollary~\ref{cor:basis-indep} are
+algebraic: the same space gives the same minimax error at fixed
+$d$.  The rate at which that error falls with $d$ is invariant for
+a deeper reason.
+
+\begin{theorem}[Conformal invariance of the rate]
+	\label{thm:conformal}
+	Let $f\colon[-1,1]\to\C$ extend analytically to a neighborhood
+	of $[-1,1]$, with nearest singularity $z_0$.  Then
+	$E_d(f):=\min_{P\in\mathcal{P}_d}\|f-P\|_{L^\infty}$ obeys
+	\begin{equation}
+		E_d(f)\le\frac{2M(\rho)}{\rho^d(\rho-1)},\qquad
+		\rho=e^{G(z_0)},
+	\end{equation}
+	where $G(z)=\log|z+\sqrt{z^2-1}|$ is the Green's function of
+	$\C\setminus[-1,1]$ with pole at infinity and $M(\rho)$ is the
+	maximum modulus of $f$ on the Bernstein ellipse
+	$\mathcal{E}_\rho=\{G=\log\rho\}$.  The rate $\rho$ is a
+	conformal invariant: for any conformal $\varphi$ with
+	$[-1,1]\subset\Omega$,
+	$G_{\Omega'\setminus\varphi([-1,1])}(\varphi(z_0))
+	=G_{\Omega\setminus[-1,1]}(z_0)$, so $E_d(f)\sim\rho^{-d}$ is
+	unchanged by conformal reparameterization of the eigenvalue.
+\end{theorem}
+
+The bound is Bernstein's theorem, in the ellipse formulation
+of~\cite[Ch.~8]{Trefethen2013}, and the
+invariance is the conformal invariance of the Green's function,
+which is characterized by being harmonic, vanishing on $[-1,1]$,
+and having a logarithmic pole at infinity.  Each of these properties
+is preserved by conformal maps in two dimensions.  Under $\alpha=a/\sqrt{1-a^2}$
+the Bernstein ellipses map to Boyd's bipolar coordinate surfaces,
+and Boyd's convergence exponent $|\delta|=e^{|t_{\mathrm{im}}|}$
+equals $\rho$ with $|t_{\mathrm{im}}|=G(z_0)=\log\rho$, so the
+rational Chebyshev rate equals the Chebyshev rate exactly, not
+approximately~\cite{Boyd1990}.  Appendix~\ref{app:conformal} gives
+the identification.  The obstruction here is weaker than the
+target-specific lower bounds of Sherstov~\cite{Sherstov2013} and
+the adversary bound of Laneve~\cite{Laneve2025}; its role is
+uniformity across the four charts, which is exactly what the
+question of chart change requires.
+
+An advantage must therefore come from outside this model.  The
+block encoding forces the signal to carry the eigenvalue $a$
+through the walk operator's eigenphase $\arccos a$; a signal
+operator whose eigenphases are prescribed independently is not a
+block encoding, and the no-go does not reach it.
+Section~\ref{sec:stateprep} builds exactly such a signal operator
+and pairs it with a matching grid.
