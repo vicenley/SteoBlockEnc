@@ -10,7 +10,8 @@ State of the repo: commits `20b1760` (restructure), `f4819bd` (prose pass) and `
 1. **Do the like-for-like comparison (item 4)?** A downstream task, most naturally the weighted
    quadrature of Sec. IV F, where the cotangent-grid state is used directly and its total cost
    is compared with the uniform-grid route. This is new analysis, not editing, and it decides
-   whether the paper is submittable as more than a note.
+   whether the paper is submittable as more than a note. Scoped in Part C, which ends with
+   three decisions.
 2. **Cite the companion read-out paper?** `NguemtoLeytonOrtega2026` and `BarriosHita2026` dropped
    out when Remark 2 was rewritten for a single qubit. Re-adding one needs a sentence that fits.
 3. **Keep the title?** "Stereographic quantum signal processing and state preparation on the real line".
@@ -160,3 +161,97 @@ text now adds that our cost stays below this estimate as long as (|a|/b)^{3/2} �
 
 Linter after the fixes: 5 HARD (all TikZ `--` false positives in Fig. 1), inversions 0.3 per
 1000 words, closers 7/78.
+
+---
+
+## Part C. Scope of the like-for-like quadrature comparison
+
+Analysis of what the manuscript already contains; no new numerics were run for this scope.
+Summary: the comparison can be made exact with modest work, and its result is predictable.
+The advantage survives only for heavy-tailed targets, and only against the QSVT pipeline.
+
+### C1. The idea that makes it like-for-like
+
+The quadrature-weighted state of Sec. IV F has amplitudes f(y_j)/sin θ_j. The map
+f(y) → √L · f(L cot θ)/sin θ is a unitary from square-integrable functions on the real line
+to square-integrable functions on (0, π). So the weighted cotangent-grid state is the ordinary
+uniform-grid discretization of the same normalized function, written in the θ coordinate.
+
+That gives a common yardstick: both methods approximate the same continuum state, and the
+error is the L² distance to it. For a uniform grid the error is the truncated tail plus
+discretization. For the cotangent grid it is the Fourier truncation in θ plus discretization,
+with no tail term.
+
+The weighted state would have to become the paper's primary object. The unweighted state,
+currently the headline, is the one with no fair comparison.
+
+### C2. Work items
+
+**1. Analysis (pen and paper, plus Sage checks)**
+
+- State and prove the unitary map and the error metric (short).
+- Redo the cost theorem for the weighted target g(θ)/sin θ:
+  - It needs f to decay at least as 1/|y|, otherwise the amplitude is unbounded.
+  - It contains odd harmonics instead of even ones, so the "bounded on the full circle" step
+    needs rechecking.
+  - The filling fraction changes; for the Lorentzian the amplitude is sin θ and the fraction
+    is 1/√2.
+- Quadrature error on the cotangent grid: the midpoint rule on a smooth periodic integrand,
+  which is the subject of the Boyd 1987 paper already cited. This fixes how many qubits are
+  needed.
+- Re-derive all four rows of Table I under the common metric, for both grids.
+
+**2. Numerics (to be run by VLO)**
+
+- Build both states by statevector for n up to about 16–20 and measure the L² error to the
+  continuum function, and the error on a few test integrals.
+- Confirm the predicted degree and filling-fraction scalings with ε.
+- Regenerate Fig. 2 for the weighted targets. `scripts/convergence_comparison.py` and
+  `scripts/qulacs_state_prep_sim.py` are the starting points; the Gaussian label in
+  `scripts/check_sech_class.py` needs fixing at the same time.
+
+**3. Manuscript**
+
+- Sec. IV reorganized around the weighted state; Theorem 4, Table I, the comparison text, the
+  abstract and the discussion updated; the table appendix rewritten.
+
+Items 1 and 3 are a few days of work; item 2 depends on how far n is pushed.
+
+### C3. Expected outcome
+
+| Target | Against QSVT pipeline | Against the linear-depth circuits (GC, SH) |
+|---|---|---|
+| Centered Lorentzian and other algebraic tails | Polynomial saving in 1/ε, now on equal footing | Tie: their window costs only extra qubits, not gates |
+| sech | A log^{1/2} factor against our own estimate of their cost | Not applicable |
+| Gaussian | We lose by log^{1/4} | We lose |
+| Shifted Lorentzian | We win only while (\|a\|/b)^{3/2} ≲ 1/ε | Tie or lose |
+
+The defensible claim becomes: for targets with algebraic tails, the cotangent grid removes the
+truncation cost that the QSVT pipeline pays, and matches specialized circuits with one general
+algorithm. The paper's significance would stay modest, but the central claim would no longer
+rest on comparing different states.
+
+### C4. Limits that remain after the comparison
+
+- **What the state can be used for.** Position-type observables V(y) and overlaps with states
+  prepared the same way carry over exactly. Anything needing a uniform grid, such as a kinetic
+  term applied through the quantum Fourier transform, does not.
+- **The Lorentzian stays trivial.** In the θ coordinate the square root of a Cauchy density is
+  the uniform superposition. That is a clean illustration, but a referee will still call it
+  easy.
+
+### C5. Optional larger step
+
+A concrete application would raise the significance more than the comparison does: for
+example, amplitude estimation of an expectation value under a heavy-tailed (Cauchy or
+Student-t) distribution, where truncation is the known obstacle. It needs the payoff function
+applied coherently in the θ coordinate and is closer to a separate paper than a revision.
+
+### C6. Decisions
+
+1. Make the weighted state the primary object? The comparison does not work otherwise.
+2. Accept the narrowed claim (heavy tails, versus QSVT only) as the paper's result?
+3. Keep the application out of this paper? Recommended: yes.
+
+If 1 and 2 are agreed, the next step is work item 1, ending with a re-derived Table I before
+any manuscript edit.
