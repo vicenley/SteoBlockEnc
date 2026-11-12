@@ -1,16 +1,16 @@
 % 05_state_prep.tex
-\section{State preparation on unbounded domains}
+\section{State preparation on the real line}
 \label{sec:stateprep}
 
-The no-go of Sec.~\ref{sec:limits} closes the door on chart change
-within block encoding.  We now open a different one.  Pairing the
-stereographic chart with a cotangent grid and a diagonal
-Fourier-type signal operator prepares a quantum state encoding a
-function $f\colon\R\to\C$ on the whole real line, at a cost set only
-by the shape of $f$ after pullback to the circle.  The signal
-operator is a walk with prescribed eigenphases, not a block
-encoding of a Hermitian operator, so Proposition~\ref{prop:nogo}
-does not apply.
+We now use the freedom identified in Sec.~\ref{subsec:exit}.  The
+task is to prepare an $n$-qubit state whose amplitudes are samples
+of a function $f\colon\R\to\C$.  We choose the sample points
+$y_j=L\cot\theta_j$ with $\theta_j$ uniformly spaced.  In the angle
+variable the target becomes $g(\theta)=f(L\cot\theta)$, sampled on
+a uniform grid, and a standard Fourier-type QSP circuit loads it.
+The circuit is not new; what the stereographic coordinate supplies
+is the choice of grid and, through Boyd's theory, the cost of the
+resulting expansion.
 
 \subsection{The cotangent grid}
 \label{subsec:grid}
@@ -27,7 +27,9 @@ on the \emph{cotangent grid}
 	\qquad j=0,\dots,N-1,
 	\label{eq:cot-grid}
 \end{equation}
-the image under $y=L\cot\theta$ of a uniform angular grid.  The
+the image under $y=L\cot\theta$ of a uniform angular grid, as in
+Boyd's collocation grid for rational Chebyshev
+functions~\cite[Sec.~17.7]{Boyd2001}.  The
 half-integer shift keeps every point interior to $(0,\pi)$.  The
 map parameter $L>0$ sets the density of points near $y=0$; the grid
 clusters at the origin and thins in the tails, the reverse of the
@@ -68,10 +70,20 @@ $d_\delta=\mathcal{O}(\log(1/\delta))$.  When $f$ has an essential
 singularity at infinity the pullback has an essential singularity
 at the endpoint $\theta=0$, the analyticity strip collapses, and
 the rate is \emph{subgeometric}, $\sigma<1$, with
-$d_\delta=\mathcal{O}((\log(1/\delta))^{1/\sigma})$.  Two targets
-of interest are subgeometric with $\sigma=1/2$: the Gaussian, whose
-essential singularity at infinity is standard, and the hyperbolic
-secant.  For $\mathrm{sech}(L\cot\theta)$ the poles of $\mathrm{sech}$
+$d_\delta=\mathcal{O}((\log(1/\delta))^{1/\sigma})$.  The exponent
+is set by the form of the singularity: near $\theta=0$ a pullback
+behaving as $\exp(-q/\theta^{\,p})$ has Fourier coefficients
+decaying as $\exp(-c\,k^{p/(p+1)})$, by steepest
+descent~\cite[Ch.~2]{Boyd2001}.  The Gaussian $e^{-y^2/2}$ pulls
+back to $\exp(-L^2\cot^2\theta/2)\approx\exp(-L^2/2\theta^2)$, so
+$p=2$ and $\sigma=2/3$; this is Boyd's example
+$\exp(-\cot^2\theta)$, whose coefficients decay as
+$\exp(-1.5\,k^{2/3})$~\cite[Eq.~(2.11)]{Boyd2001}.  The hyperbolic
+secant pulls back to $\approx 2e^{-L/\theta}$, so $p=1$ and
+$\sigma=1/2$.  Letting $L$ grow with the degree would raise the
+effective exponent~\cite[Sec.~17.9]{Boyd2001}, but here $L$ also
+defines the grid, and hence the state being prepared, so we keep
+it fixed.  For $\mathrm{sech}(L\cot\theta)$ the poles of $\mathrm{sech}$
 pull back to points $\theta_m$ with $|\im\theta_m|\to 0$ as
 $m\to\infty$, accumulating on the real axis, so no strip exists and
 the coefficients decay as $\exp(-c\sqrt{k})$
@@ -85,7 +97,7 @@ at infinity.
 \label{subsec:filling}
 
 The success probability of the preparation is governed by the
-filling fraction
+filling fraction of Ref.~\cite{McArdleGilyenBerta2025},
 \begin{equation}
 	\mathcal{F}_g^{[N]}=\frac{1}{\sqrt{N}}\cdot
 	\frac{\bigl(\sum_{j=0}^{N-1}|g(\theta_j)|^2\bigr)^{1/2}}{|g|_{\max}},
@@ -95,8 +107,8 @@ filling fraction
 
 \begin{lemma}[Continuous limit]
 	\label{lem:filling}
-	If $g\in C^2(0,\pi)$ with $|g|_{\max}<\infty$ attained at an
-	interior point, then
+	If $|g|^2$ extends to a $\pi$-periodic $C^2$ function on $\R$
+	and $|g|_{\max}<\infty$ is attained at an interior point, then
 	\begin{equation}
 		\mathcal{F}_g^{[N]}=\mathcal{F}_g^{[\infty]}+\mathcal{O}(N^{-2}),
 		\qquad
@@ -112,9 +124,10 @@ $\mathcal{O}(N^{-2})$ for $g\in C^2$; the square root and the
 $\mathcal{O}(N^{-2})$ agreement of the discrete and continuous
 maxima preserve the rate (Appendix~\ref{app:filling}).  The
 continuous limit depends only on the shape of $g$ and on no
-truncation parameter.  For the targets below, $g$ is $C^\infty$
-with bounded derivatives, so the discrete and continuous filling
-fractions agree to $1+\mathcal{O}(2^{-n})$.
+truncation parameter.  For the targets below, $|g|^2$ extends to a
+smooth periodic function, so the discrete and continuous filling
+fractions agree to relative accuracy $\mathcal{O}(N^{-2})=
+\mathcal{O}(4^{-n})$.
 
 \subsection{Algorithm and main result}
 \label{subsec:algorithm}
@@ -129,33 +142,36 @@ all of $\T$ and is restored to $|\tilde g|\le 1$ by rescaling with
 $1/(1+\delta)$.  The QSP phases follow from any standard
 solver~\cite{DongMengWhaleyEtAl2021,BerntsonSunderhauf2024,NiSarkarYingLin2025}
 at cost negligible against the circuit for the targets here.
-\emph{The Fourier-QET circuit} uses the diagonal signal operator
+\emph{The QSP circuit} is the construction of
+Ref.~\cite{McArdleGilyenBerta2025}, a QSP sequence whose signal is a
+diagonal operator on the register, with the Fourier basis in place
+of the Chebyshev basis.  Its signal operator is
 \begin{equation}
 	e^{iA}=\sum_{j=0}^{N-1}e^{i\theta_j}\ket{j}\!\bra{j},\qquad
 	\theta_j=\frac{\pi(2j+1)}{2N},
 	\label{eq:qet-signal}
 \end{equation}
 whose phase $\theta_j=\pi/(2N)+\sum_{k}j_k\pi 2^k/N$ decomposes over
-the bits of $j$, so $e^{iA}$ costs $\mathcal{O}(n)$ elementary
-gates: $n$ single-qubit $R_z$ rotations, one on each qubit $k$ with
-angle $\pi 2^k/N$, and one global phase.  With
+the bits of $j$, so $e^{iA}$, controlled on the signal ancilla,
+costs $\mathcal{O}(n)$ elementary gates: $n$ controlled $R_z$
+rotations, one on each qubit $k$ with angle $\pi 2^k/N$, and one
+phase on the ancilla.  With
 $d_\delta$ applications of $e^{\pm iA}$ and $\mathcal{O}(d_\delta)$
 ancilla rotations, the circuit block-encodes the diagonal
 $D_{\tilde g}=\sum_j\tilde g(\theta_j)\ket{j}\!\bra{j}$.
 \emph{Amplitude amplification} boosts the flagged block to unity in
-$\mathcal{O}(1/\mathcal{F}_{\tilde g}^{[N]})$ rounds with one extra
+$\mathcal{O}(1/\mathcal{F}_g^{[N]})$ rounds with one extra
 ancilla.
 
 \begin{theorem}[Stereographic state preparation]
 	\label{thm:stateprep}
 	Let $f\in\mathcal{B}(L)$ and let a degree-$d_\delta$
 	trigonometric polynomial approximate $\hat g$ to $L^\infty$-error
-	$\delta=\tfrac12\varepsilon\cdot
-	\min(\mathcal{F}_g^{[N]},\mathcal{F}_{\tilde g}^{[N]})$ on the
+	$\delta=\tfrac{\varepsilon}{4}\,\mathcal{F}_g^{[N]}$ on the
 	circle.  The algorithm prepares a state $\varepsilon$-close in
 	trace distance to $\ket{\Psi_f}$ using
 	\begin{equation}
-		\mathcal{O}\!\left(\frac{n\,d_\delta}{\mathcal{F}_{\tilde g}^{[N]}}\right)
+		\mathcal{O}\!\left(\frac{n\,d_\delta}{\mathcal{F}_g^{[N]}}\right)
 		\text{ gates}
 		\label{eq:stateprep-cost}
 	\end{equation}
@@ -171,9 +187,10 @@ The proof (Appendix~\ref{app:stateprep}) applies the QSP
 completeness theorem on the full circle, evaluates the resulting
 diagonal on $\ket{+}^{\otimes n}$, and converts the $L^\infty$
 approximation error to trace distance through the filling fraction;
-the choice $\delta=\tfrac12\varepsilon\min(\mathcal{F}_g^{[N]},
-\mathcal{F}_{\tilde g}^{[N]})$ controls both filling fractions
-without assuming an order between them.  A degree-$d_\delta$
+the tolerance $\delta=\tfrac{\varepsilon}{4}\mathcal{F}_g^{[N]}$ is
+defined from the target alone, and the amplitude of the approximant
+is then automatically within a factor two of $\mathcal{F}_g^{[N]}$, so
+no circularity enters.  A degree-$d_\delta$
 trigonometric polynomial has $2d_\delta+1\le N$ degrees of freedom
 on the $N$ grid points, so no aliasing enters while
 $d_\delta=\mathcal{O}((\log(1/\varepsilon))^{1/\sigma})$ stays below
@@ -192,21 +209,35 @@ error, $\delta=0$.  The filling fraction is
 $\mathcal{F}_g^{[\infty]}=\sqrt{3/8}\approx 0.612$, one round of
 amplitude amplification suffices, and the cost is $\mathcal{O}(n)$.
 More generally $1/(1+y^2)^s$ for integer $s$ pulls back to
-$\sin^{2s}\theta$, a trigonometric polynomial of degree $2s$, so the
-whole family has cost independent of the represented range.
+$\sin^{2s}\theta$, a trigonometric polynomial of degree $2s$.  We
+stress that this family is easy \emph{because} of the grid: on the
+cotangent grid its amplitudes are the samples of a low-degree
+trigonometric polynomial.  It illustrates the mechanism; it is not
+evidence that arbitrary targets become easy.
 
 For the hyperbolic secant, $\sigma=1/2$ (Sec.~\ref{subsec:boyd}),
 so $d_\delta=\mathcal{O}(\log^2(1/\varepsilon))$ and the cost is
 $\mathcal{O}(n\log^2(1/\varepsilon))$.  For the Gaussian
 $e^{-\beta y^2/2}$ with $L=1/\sqrt{\beta}$, the pullback
-$e^{-\cot^2\theta/2}$ is subgeometric with $\sigma=1/2$, giving
-$\mathcal{O}(n\log^2(1/\varepsilon))$.  For the shifted Lorentzian
-$1/((y-a)^2+b^2)$ the pullback is meromorphic in $e^{i\theta}$ with
-poles at distance $\mathcal{O}(\min(b,L)/L)$ from the real axis,
-giving geometric convergence at rate
-$d_\delta=\mathcal{O}((L/b)\log(1/\varepsilon))$; centered and at
-natural width ($a=0$, $b=L$) this reduces to
-$\mathcal{O}(\log(1/\varepsilon))$.
+$e^{-\cot^2\theta/2}$ has $\sigma=2/3$, giving
+$d_\delta=\mathcal{O}(\log^{3/2}(1/\varepsilon))$ and cost
+$\mathcal{O}(n\log^{3/2}(1/\varepsilon))$.  For the shifted
+Lorentzian $1/((y-a)^2+b^2)$ the pullback is a rational function of
+$e^{2i\theta}$ with poles at $|e^{2i\theta}|=\rho^{\pm1}$, where
+\begin{equation}
+	\rho^2=\frac{a^2+(L+b)^2}{a^2+(L-b)^2},\qquad
+	d_\delta\simeq\frac{2\log(1/\delta)}{\log\rho}
+	\label{eq:shifted-rate}
+\end{equation}
+(Appendix~\ref{app:table}).  The rate depends on the shift $a$ as
+well as on the width $b$.  It is best at $L=\sqrt{a^2+b^2}$, where
+$\log\rho=\mathrm{artanh}(b/\sqrt{a^2+b^2})$; for $|a|\gg b$ this
+gives $d_\delta\simeq 2(|a|/b)\log(1/\delta)$, and the peak, of
+width $\simeq b/2|a|$ in $\theta$, lowers the filling fraction to
+$\mathcal{F}\simeq\tfrac12(b/|a|)^{1/2}$.  The cost is then
+$\mathcal{O}(n(|a|/b)^{3/2}\log(1/\varepsilon))$.  For $a=0$ and
+$L=b$, $\rho=\infty$ and the pullback is the exact degree-two
+polynomial of the centered case.
 
 \subsection{Quadrature-weighted preparation}
 \label{subsec:quadrature}
@@ -223,9 +254,9 @@ in:
 	\label{eq:quadrature}
 \end{equation}
 For the Lorentzian with $L=1$ the weighted amplitude is
-$f(y_j)/\sin\theta_j=\sin\theta_j$, again a degree-one trigonometric
-polynomial, so the quadrature-weighted preparation also costs
-$\mathcal{O}(n)$.  More generally, the weighted variant has the same
+$f(y_j)/\sin\theta_j=\sin\theta_j$, a degree-one trigonometric
+polynomial bounded by one on the whole circle, so the
+quadrature-weighted preparation also costs $\mathcal{O}(n)$.  More generally, the weighted variant has the same
 asymptotic cost as the unweighted one whenever $g(\theta)/\sin^2\theta$
 remains in a class with convergent Fourier expansion, which holds for
 $f(y)=\mathcal{O}(y^{-2})$ at infinity.
@@ -233,7 +264,13 @@ $f(y)=\mathcal{O}(y^{-2})$ at infinity.
 \subsection{Comparison}
 \label{subsec:comparison}
 
-Three families of methods are directly comparable.  The QSVT
+Three families of methods prepare the same profiles, but not the
+same states.  They sample $f$ on a uniform grid over a finite
+window, whereas our state samples $f$ on the cotangent grid of
+Eq.~\eqref{eq:cot-grid}, which is dense near the origin and sparse
+in the tails.  Equal trace distance therefore does not mean equal
+usefulness, and the gate counts below compare the cost of each
+method's own output, not of interchangeable outputs.  The QSVT
 pipeline of McArdle, Gily\'en, and
 Berta~\cite{McArdleGilyenBerta2025} approximates $f$ on a truncated
 interval $[-L_{\mathrm{trunc}},L_{\mathrm{trunc}}]$ through
@@ -258,9 +295,16 @@ gate count $=n\times$ (polynomial degree) $\times\,1/\mathcal{F}$.
 		root of the discarded $L^2$-mass.  The linear-depth Lorentzian
 		preparations of Refs.~\cite{GonzalezCondeEtAl2020}~(GC)
 		and~\cite{SanoHamamura2025}~(SH) are listed where they apply.
-		The stereographic method carries no truncation radius; its
-		cost is set by the shape-only filling fraction.  Derivations
-		are in Appendix~\ref{app:table}.}
+		The first three columns sample $f$ on a uniform grid over
+		a finite window; the stereographic column samples $f$ on
+		the cotangent grid, so the states differ
+		(Sec.~\ref{subsec:comparison}).  The stereographic method
+		has no truncation radius; its cost is set by the
+		shape-only filling fraction.  The shifted-Lorentzian entry
+		assumes $|a|\gg b$ and $L=\sqrt{a^2+b^2}$.  The last
+		row lists each method's ancilla budget; the linear-depth
+		circuits of GC and SH act on the data qubits alone.
+		Derivations are in Appendix~\ref{app:table}.}
 	\label{tab:comparison}
 	\begin{ruledtabular}
 		\begin{tabular}{lllll}
@@ -278,60 +322,91 @@ gate count $=n\times$ (polynomial degree) $\times\,1/\mathcal{F}$.
 			$e^{-\beta y^2/2}$
 			& $\tilde{\mathcal{O}}(n\log^{5/4}\tfrac1\varepsilon)$
 			& $\mathcal{O}(n)$ & $\mathcal{O}(n)$
-			& $\mathcal{O}(n\log^{2}\tfrac1\varepsilon)$\\[2pt]
+			& $\mathcal{O}(n\log^{3/2}\tfrac1\varepsilon)$\\[2pt]
 			$1/((y-a)^2+b^2)$
 			& $\mathcal{O}(\tfrac{n}{b}\varepsilon^{-1}\log\tfrac1\varepsilon)$
 			& $\mathcal{O}(n)$ & n.a.
-			& $\mathcal{O}(\tfrac{nL}{b}\log\tfrac1\varepsilon)$
+			& $\mathcal{O}(n(\tfrac{|a|}{b})^{3/2}\log\tfrac1\varepsilon)$\\
+			\hline
+			Ancilla qubits
+			& $4$ ($3$ under parity)
+			& $0$ & $0$ & $2$
 		\end{tabular}
 	\end{ruledtabular}
 \end{table*}
 
-For the centered Lorentzian the stereographic method gains a factor
-$\varepsilon^{-1}\log(1/\varepsilon)$ over the QSVT pipeline, a
-polynomial-in-$\varepsilon$ advantage that comes from the exact
-degree-two pullback and the absence of a truncation radius; it ties
-the linear-depth preparations of
-Refs.~\cite{GonzalezCondeEtAl2020,SanoHamamura2025} at
-$\mathcal{O}(n)$, where the stereographic gain is instead
-qualitative: one algorithm covers Boyd's class without the
-per-target redesign those constructions require, and it removes the
-truncation radius.  For the hyperbolic secant it improves on the
-QSVT pipeline by $\log^{1/2}(1/\varepsilon)$.  For Gaussians it is
-slower than every baseline, by $\log^{3/4}(1/\varepsilon)$ against
-the QSVT pipeline and by a logarithmic factor against the
-linear-depth methods.  The two-ancilla budget is one to two qubits
-below the QSVT pipeline, which uses four in the general case and
-three under parity, because the diagonal signal $e^{iA}$ needs no
-separate block-encoding ancilla.  Reciprocally, the linear-depth
-methods prepare truncated Lorentzians exactly and extend to targets
-outside Boyd's class; we claim a complementary route, not a
-dominating one.  The output lives on the cotangent grid;
-applications requiring a different grid need a regridding step we do
-not analyze.  Convergence data for these targets appear in
+With this caveat, the table reads as follows.  For the centered
+Lorentzian the cotangent-grid state costs $\mathcal{O}(n)$, while
+the uniform-grid state of the QSVT pipeline costs
+$\mathcal{O}(n\varepsilon^{-1}\log(1/\varepsilon))$, because the
+QSVT pipeline must truncate the slowly decaying tail.  The
+linear-depth preparations of
+Refs.~\cite{GonzalezCondeEtAl2020,SanoHamamura2025} also reach
+$\mathcal{O}(n)$ for a truncated Lorentzian.  Our method differs
+from them in scope rather than in cost: one algorithm covers Boyd's
+class without per-target redesign.  For the hyperbolic secant the
+stereographic cost is lower than the QSVT bound by
+$\log^{1/2}(1/\varepsilon)$.  For the Gaussian it is higher than
+every baseline, by $\log^{1/4}(1/\varepsilon)$ against the QSVT
+pipeline and by more against the linear-depth methods.  For the
+shifted Lorentzian the cost grows with the shift as
+$(|a|/b)^{3/2}$, because the cotangent grid is centered at the
+origin.  The two-ancilla budget (last row of
+Table~\ref{tab:comparison}) is one to two qubits below the QSVT
+pipeline, which uses four in the general case and three under
+parity, because the diagonal signal $e^{iA}$ needs no separate
+block-encoding ancilla; the linear-depth circuits use none.
+The linear-depth methods, in turn, prepare truncated Lorentzians
+exactly and extend to targets outside Boyd's class.  We therefore
+claim a complementary route, not a dominating one.  Applications
+that need the uniform-grid state require a regridding step, which
+we do not analyze.  Convergence data for these targets appear in
 Fig.~\ref{fig:convergence}.
 
 \begin{figure*}[t]
 	\centering
 	\includegraphics[width=\textwidth]{figures/convergence_comparison.pdf}
-	\caption{$L^\infty$ approximation error versus polynomial degree
-		$d$ for the four targets, comparing the rational Chebyshev
-		expansion on $\R$ (this work) with truncated Chebyshev
-		expansions on $[-L,L]$ at several $L$.  For the Lorentzian
-		and shifted Lorentzian the rational basis converges at a
-		rate independent of the represented range, while the
-		truncated expansions degrade as $L$ grows; for the
-		hyperbolic secant and Gaussian the subgeometric rate
-		$\exp(-c\sqrt d)$ is visible as the characteristic downward
-		curvature, matching the classification of
-		Sec.~\ref{subsec:boyd}.}
+	\caption{$L^\infty$ approximation error versus degree $d$ for the
+		four targets.  \emph{Blue (this work):} expansion of $f$ in
+		the rational Chebyshev basis $\{\TB_k,\SB_k\}$ of
+		Boyd~\cite{Boyd1990} on $\R$, with map parameter $L=1$ for
+		panels (a)--(c) and $L=2$ for panel (d).  The coefficients are
+		computed from the pullback $g(\theta)=f(L\cot\theta)$ on the
+		midpoint grid of Eq.~\eqref{eq:cot-grid}: an orthogonal cosine
+		projection for the even targets (a)--(c), and a least-squares
+		fit in the even harmonics $\{1,\cos 2k\theta,\sin 2k\theta\}$,
+		$2k\le d$, for the shifted Lorentzian (d)---the only harmonics
+		the $\pi$-periodic pullback contains
+		(Sec.~\ref{subsec:boyd}), and the basis the preprocessing
+		stage of Sec.~\ref{subsec:algorithm} prescribes.  The reported error is
+		$\sup_{\theta\in(0,\pi)}|g-\tilde g|$, which equals
+		$\sup_{y\in\R}|f-\tilde f|$ exactly, since $y=L\cot\theta$ is a
+		bijection.  \emph{Dashed:} Chebyshev projections of $f$ on the
+		truncated intervals $[-L_{\mathrm{tr}},L_{\mathrm{tr}}]$ for
+		$L_{\mathrm{tr}}\in\{10,50,200\}$, with error measured as
+		$\sup_{|y|\le L_{\mathrm{tr}}}|f-\tilde f|$ on that interval.
+		Their near-flat behavior is not a truncation tail but the slow
+		Chebyshev rate: the nearest singularity of $f$ lies at distance
+		$\mathcal{O}(1/L_{\mathrm{tr}})$ from the rescaled interval,
+		giving a Bernstein rate $\rho=1+\mathcal{O}(1/L_{\mathrm{tr}})$,
+		so the degree needed to resolve a fixed-width feature grows in
+		proportion to $L_{\mathrm{tr}}$.  All suprema are estimated on
+		the $4096$-point evaluation grids.  In panel~(a) the pullback
+		is the exact degree-two polynomial $\sin^2\theta$, so the error
+		falls to machine precision at $d=2$; that floor is double
+		precision, not a convergence rate.  In panels (b) and (c) the
+		downward curvature is the subgeometric rate
+		$\exp(-c\,d^{\,\sigma})$ of Sec.~\ref{subsec:boyd}, with
+		$\sigma=1/2$ for the hyperbolic secant and $\sigma=2/3$ for
+		the Gaussian.  Panel (d) uses $a=2$, $b=1$, for which the
+		geometric rate of Eq.~\eqref{eq:shifted-rate} predicts the
+		observed straight line.
+		The figure is reproduced by the reference
+		implementation (see Data availability).}
 	\label{fig:convergence}
 \end{figure*}
 
-The Lorentzian speedup does not contradict the no-go of
-Sec.~\ref{sec:limits}.  That obstruction constrains polynomials of
-a block-encoded eigenvalue; here the signal is a walk with
-prescribed cotangent-spaced eigenphases and the basis is the
-rational Chebyshev family on $\R$.  The chart change alone buys
-nothing; the chart paired with the matching grid and signal
-operator is what buys the gate savings.
+These costs are consistent with Sec.~\ref{sec:limits}.
+Proposition~\ref{prop:nogo} constrains polynomials evaluated at
+given eigenvalues.  Here the evaluation points $\theta_j$ are
+chosen, and the low costs come from that choice.

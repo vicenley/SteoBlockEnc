@@ -1,7 +1,11 @@
 \appendix
 
-\section{Proof of Theorem~\ref{thm:real-qsp}}
+\section{Direct proof of Theorem~\ref{thm:real-qsp}}
 \label{app:thm-real}
+
+The proof in Sec.~\ref{subsec:signal} reduces the theorem to the
+standard one.  Here we prove it directly in the variable $x$, by
+induction on $d$.
 
 \emph{Forward direction.}  We induct on $d$.  For $d=0$,
 $e^{i\phi_0\PauliZ}=\mathrm{diag}(e^{i\phi_0},e^{-i\phi_0})$ has
@@ -22,27 +26,72 @@ $x$ multiplies $P$ on the diagonal and $Q$ on the off-diagonal,
 $\deg\widetilde P\le d$ and $\deg\widetilde Q=\deg\widetilde P-1\le
 d-1$, and the parities shift by one as required.
 
-\emph{Backward direction.}  Let $P,Q$ satisfy (i)--(iii).  As a
-polynomial identity, (i) reads $P(x)P^*(x)+Q(x)Q^*(x)=(1+x^2)^d$
-with $P^*(x)=\overline{P(\bar x)}$.  Evaluating at $x=i$, where the
-right side vanishes, and using the parities (ii) to relate values
-at $i$ and $-i$, gives $|P(i)|^2=|Q(i)|^2$.  If $Q^*(i)\neq 0$,
+\emph{Backward direction.}  Let $P,Q$ satisfy (i)--(iii).  For
+real $x$, $|P(x)|^2=P(x)P^*(x)$ with $P^*(x)=\overline{P(\bar x)}$,
+so (i) states that the polynomial $PP^*+QQ^*-(1+x^2)^d$ vanishes on
+$\R$.  A polynomial that vanishes on $\R$ is identically zero, so
+$P(x)P^*(x)+Q(x)Q^*(x)=(1+x^2)^d$ holds for all complex $x$, and in
+particular at $x=i$, where the right side vanishes.  There
+$P^*(i)=\overline{P(-i)}=(-1)^d\overline{P(i)}$ and
+$Q^*(i)=(-1)^{d-1}\overline{Q(i)}$ by the parities (ii), so the
+identity at $x=i$ reads $(-1)^d\bigl(|P(i)|^2-|Q(i)|^2\bigr)=0$,
+that is, $|P(i)|^2=|Q(i)|^2$.  If $Q^*(i)\neq 0$,
 choose $\phi$ with $e^{2i\phi}=-iP(i)/Q^*(i)$, which has unit
 modulus by $|P(i)|=|Q(i)|$; stripping one factor via
 $e^{-i\phi\PauliZ}O_x^{-1}$ produces a reduced pair
 $\widetilde P,\widetilde Q$ with $\widetilde P(i)=iP(i)+e^{2i\phi}
 Q^*(i)=0$, and $\widetilde Q(i)=0$ follows from $|P(i)|=|Q(i)|$ and
 (ii).  By parity both vanish also at $x=-i$, so $1+x^2$ divides
-$\widetilde P$ and $\widetilde Q^*$; the quotients $\widehat
+$\widetilde P$ and $\widetilde Q$; the quotients $\widehat
 P=\widetilde P/(1+x^2)$, $\widehat Q=\widetilde Q/(1+x^2)$ satisfy
 $|\widehat P|^2+|\widehat Q|^2=(1+x^2)^{d-1}$ with degrees $d-1$ and
 $d-2$.  If instead $Q^*(i)=0$, then $P(i)=0$ as well, $1+x^2$
 already divides both, and any $\phi$ works.  Recursing to $d=0$
 yields the phases $\bm\phi$.\hfill$\square$
 
-\section{Proof of Theorem~\ref{thm:gen-qsp} and
-Proposition~\ref{prop:stripping}}
+\section{Complex signals and the nonlinear Fourier transform}
 \label{app:thm-gen}
+
+Allowing a complex signal $z\in\C$ and arbitrary $\SU(2)$ rotations
+$G_0,\dots,G_d$ in place of the phase rotations gives the
+stereographic form of generalized QSP~\cite{MotlaghWiebe2023}.  The
+signal operator is
+\begin{equation}
+	O_z=\begin{pmatrix} z & -1 \\ 1 & \bar z\end{pmatrix},
+	\qquad \det O_z=1+|z|^2,
+	\label{eq:Oz}
+\end{equation}
+which reduces to $O_x$ of Eq.~\eqref{eq:Ox} for real $z$.  The
+entries of a product of such factors are polynomials in $z$ and
+$\bar z$.  For such a polynomial, $P^*(z,\bar z)=
+\overline{P(\bar z,z)}$ conjugates the coefficients and exchanges
+$z$ and $\bar z$, so that $P^*=\overline{P}$ for every $z\in\C$.
+
+\begin{theorem}[Generalized stereographic QSP]
+	\label{thm:gen-qsp}
+	Polynomials $P,Q$ in $z$ and $\bar z$ satisfy
+	\begin{equation}
+		G_d\,O_z\,G_{d-1}\,O_z\cdots O_z\,G_0
+		=\begin{pmatrix} P & -Q^*\\ Q & P^*\end{pmatrix}
+		\quad\text{for all }z\in\C
+		\label{eq:gen-qsp-form}
+	\end{equation}
+	for some $G_0,\dots,G_d\in\SU(2)$ if and only if (i) every
+	monomial $z^j\bar z^k$ of $P$ and $Q$ has $j+k\le d$, and (ii)
+	$|P|^2+|Q|^2=(1+|z|^2)^d$ for all $z\in\C$.
+\end{theorem}
+
+By the argument at the start of the backward direction below,
+condition (ii) for all $z\in\C$ is equivalent to the polynomial
+identity $PP^*+QQ^*=(1+z\bar z)^d$ in independent variables $z$
+and $\bar z$.  The proof uses one algebraic fact about Laurent
+polynomials, with $D^*(z)=\overline{D(-1/\bar z)}$:
+
+\begin{lemma}
+	\label{lem:DDstar}
+	If $D\in\C[z,z^{-1}]$ satisfies $D D^*=-1$, then $D=c\,z^k$ with
+	$|c|=1$ and $k$ odd.
+\end{lemma}
 
 \emph{Forward direction.}  Induct on the number of factors.  Write
 $M_d=G_d O_z G_{d-1}O_z\cdots O_z G_0$.  With $M_{d-1}=
@@ -92,15 +141,22 @@ and $C$ have equal support width $\deg-\mathrm{ord}$, and $DD^*=-1$
 for $D=B/C^*$ up to units.  Lemma~\ref{lem:DDstar} forces $D=cz^k$
 with $k$ odd.
 
-Matching leading data in~\eqref{eq:B-divis} extracts the control as a
-single point of $\CP$.  When $p_d,q_d\neq 0$ the top-degree comparison
+Coefficient-matching in~\eqref{eq:B-divis} at each power of $z$ is a
+homogeneous linear condition on $(a,b)$, and a priori the conditions
+from different powers could be mutually inconsistent.
+Lemma~\ref{lem:DDstar} is precisely what makes them consistent: the
+normalization forces $B/C^*=cz^k$, collapsing the linear system to
+rank one, so a single ratio $[a:b]$, a point of the projective line $\CP=\C\cup\{\infty\}$, satisfies~\eqref{eq:B-divis} at
+\emph{every} power of $z$ simultaneously, not only at top degree.
+Matching leading data then identifies that point.  When
+$p_d,q_d\neq 0$ the top-degree comparison
 forces equal top degrees and $b\,p_d=a\,q_d$, fixing
 $[a:b]=[p_d:q_d]$ up to a global phase.  When $q_d=0$ (or $p_d=0$) the
 two sides of~\eqref{eq:B-divis} differ in top degree by one and the
 solution is the point $[1:0]$ (resp.\ $[0:1]$).  This is precisely the
 case the classical layer-stripping recursion excludes by its positivity
 normalization and the stereographic $\CP$ coordinate treats as an
-ordinary point (Sec.~\ref{subsec:stripping}).  In every branch $G_d$
+ordinary point (see below).  In every branch $G_d$
 is one well-defined point of $\CP$.  The quotient
 $(P',Q')/(1+z\bar z)$ then has bidegree $\le d-1$ and satisfies (ii)
 with $d\to d-1$; recursion completes the extraction.
@@ -120,35 +176,42 @@ other pair to cancel it, contradicting $DD^*=-1$.  Hence $D$ has a
 single term $D=cz^k$, and $DD^*=|c|^2(-1)^k=-1$ forces $|c|=1$ and
 $k$ odd.\hfill$\square$
 
-\emph{Proposition~\ref{prop:stripping}.}  The extraction above is
-the inverse-NLFT layer stripping of
-Refs.~\cite{NiSarkarYingLin2025,AlexisBeckerEtAl2026}: the control
-$G_d$ carries the Schur parameter $[p_d:q_d]\in\CP$, the
-divisibility $1+z\bar z\mid P'$ is the stereographic image of the
-NLFT condition $z\mid\tilde b$, and the normalization drops from
-$(1+|z|^2)^d$ to $(1+|z|^2)^{d-1}$ at each layer.
+\emph{Relation to the nonlinear Fourier transform.}  The $\SU(2)$
+nonlinear Fourier transform (NLFT) of a sequence
+$(\gamma_0,\dots,\gamma_{d-1})$ is the ordered product
+\begin{equation}
+	\widehat\gamma(w)=\prod_{k=0}^{d-1}
+	\frac{1}{\sqrt{1+|\gamma_k|^2}}
+	\begin{pmatrix} 1 & \gamma_k w^k\\ -\bar\gamma_k w^{-k} & 1
+	\end{pmatrix},\qquad |w|=1,
+	\label{eq:nlft}
+\end{equation}
+which is equivalent to generalized
+QSP~\cite{AlexisMnatsakanyanThiele2024,AlexisBeckerEtAl2026,Laneve2025}.
+Each unnormalized factor at $w=1$ is
+$\bigl(\begin{smallmatrix}1&\gamma\\-\bar\gamma&1\end{smallmatrix}\bigr)
+=O_\gamma\,(i\PauliY)$ with $i\PauliY=\bigl(\begin{smallmatrix}0&1\\
+-1&0\end{smallmatrix}\bigr)$, which explains why the same
+normalization $\sqrt{1+|\gamma|^2}$ appears in both constructions.
+We note that this identity says only that both matrices are
+positive multiples of $\SU(2)$ matrices of the same shape, and that
+$\gamma$ plays the role of a coefficient in the NLFT but of the
+signal in $O_\gamma$.  The substantive correspondence is between the
+two inverse problems.  The extraction above is the layer-stripping
+inverse of the NLFT~\cite{NiSarkarYingLin2025,AlexisBeckerEtAl2026}
+written in the stereographic variable.  The control $G_d$ removed
+at each layer is fixed by the ratio $[p_d:q_d]$ of the leading
+coefficients, which is the Schur parameter of the NLFT; the
+divisibility $1+z\bar z\mid P'$ corresponds to the NLFT condition
+that the residual datum be divisible by $w$; and the normalization
+drops from $(1+|z|^2)^d$ to $(1+|z|^2)^{d-1}$ at each layer.  The
+one difference is the case $p_d=0$.  The classical recursion
+excludes it by the normalization $a^*(0)>0$, whereas here it is the
+ordinary solution $[a:b]=[0:1]$, because the pair $(p_d,q_d)$ is
+treated as a ratio rather than through the quotient
+$\gamma_d=q_d/p_d$.
 
-\section{Conformal invariance and Boyd's exponent}
-\label{app:conformal}
-
-The bound in Theorem~\ref{thm:conformal} is
-Bernstein's~\cite[Ch.~8]{Trefethen2013}: the Bernstein ellipse
-$\mathcal{E}_\rho$ is the image of $|w|=\rho$ under the Joukowski
-map $z=(w+w^{-1})/2$, and the Green's function $G$ of
-$\C\setminus[-1,1]$ has $\mathcal{E}_\rho=\{G=\log\rho\}$.  The
-function $G$ is the unique function harmonic on
-$\C\setminus[-1,1]$, vanishing on $[-1,1]$, with a logarithmic pole
-at infinity; each of these properties is preserved by a conformal
-map, so $G_{\Omega'\setminus\varphi([-1,1])}(\varphi(z))
-=G_{\Omega\setminus[-1,1]}(z)$.  Under $\alpha=a/\sqrt{1-a^2}$ the
-level sets of $G$ map to Boyd's bipolar coordinate
-surfaces~\cite{Boyd1990}, and Boyd's convergence exponent
-$|\delta|=e^{|t_{\mathrm{im}}|}$ has $|t_{\mathrm{im}}|$ equal to
-the value of the bipolar harmonic coordinate at the nearest
-singularity, which is $G(z_0)=\log\rho$.  Hence the rational
-Chebyshev rate equals the Chebyshev rate, exactly.
-
-\section{The hyperbolic secant is subgeometric}
+\section{Subgeometric pullbacks: hyperbolic secant and Gaussian}
 \label{app:sech}
 
 The pullback $g(\theta)=\mathrm{sech}(L\cot\theta)$ inherits the
@@ -170,11 +233,20 @@ $\theta=0$, so $g$ admits no analyticity strip and its Fourier
 coefficients cannot decay geometrically.  Steepest descent on
 $\int e^{-L/\theta}\cos(k\theta)\,d\theta$, the endpoint form of $g$
 near $\theta=0$ where $g\sim 2e^{-L/\theta}$, gives
-$|a_k|\sim\exp(-c\sqrt{k})$, i.e.\ $\sigma=1/2$.  This is the same
-mechanism that places the Gaussian in the subgeometric class.  The
-numerical coefficient decay, confirming $\sigma=1/2$ for
-$L\in\{0.5,1,2\}$ against a Gaussian control, is generated by the
-reference implementation accompanying this work.
+$|a_k|\sim\exp(-c\sqrt{k})$, i.e.\ $\sigma=1/2$.
+
+The Gaussian has the same mechanism with a stronger singularity.
+Its pullback behaves as $\exp(-L^2/2\theta^2)$ near $\theta=0$.
+For $\int e^{-q/\theta^2+ik\theta}d\theta$ the saddle point is at
+$\theta_\star^3=2iq/k$, where the exponent equals
+$-3q/\theta_\star^2$, whose real part is
+$-\tfrac32 q^{1/3}(k/2)^{2/3}$.  The coefficients therefore decay
+as $\exp(-c\,k^{2/3})$, i.e.\ $\sigma=2/3$.  For $q=1$ and $k=2m$
+this reproduces Boyd's result $\exp(-1.5\,m^{2/3})
+\cos(2.60\,m^{2/3}+\pi/4)$ for $\exp(-\cot^2\theta)$, including the
+oscillation frequency $1.5\sqrt3\approx 2.60$~\cite[Eq.~(2.11)]{Boyd2001}.
+The numerical coefficient decay for both targets is generated by
+the reference implementation (see Data availability).
 
 \section{Filling fraction and state-preparation proof}
 \label{app:filling}
@@ -206,25 +278,34 @@ $D_{\tilde g}=\sum_j\tilde g(\theta_j)\ket{j}\!\bra{j}$.  A
 degree-$d_\delta$ trigonometric polynomial has $2d_\delta+1\le N$
 degrees of freedom on the $N$ grid points, so it is unaliased while
 $d_\delta\le N/2$, which holds since
-$d_\delta=\mathcal{O}((\log 1/\varepsilon)^{1/\sigma})$.  Applying
-$D_{\tilde g}$ to $\ket{+}^{\otimes n}\otimes\ket{0}_a$ yields
-amplitude $\mathcal{F}_{\tilde g}^{[N]}$ in the flagged block;
-$\lceil(\pi/4)/\arcsin\mathcal{F}_{\tilde g}^{[N]}\rceil=
-\mathcal{O}(1/\mathcal{F}_{\tilde g}^{[N]})$ rounds of exact
-amplitude amplification~\cite{BrassardHoyerMoscaTapp2002,McArdleGilyenBerta2025}
-prepare the normalized state.  For the error, the pointwise bound
-$|\tilde g(\theta_j)-\hat g(\theta_j)|\le\delta$ gives
-$\|\tilde g-\hat g\|_{\ell^2([N])}\le\sqrt N\,\delta$, while
-$\|\hat g\|_{\ell^2}=\sqrt N\,\mathcal{F}_g^{[N]}$, so the relative
-deviation is $\le\delta/\mathcal{F}_g^{[N]}$.  The normalized-vector
+$d_\delta=\mathcal{O}((\log 1/\varepsilon)^{1/\sigma})$.  Set $\delta=\tfrac{\varepsilon}{4}\mathcal{F}_g^{[N]}$, which depends
+only on the target and is computable in the classical preprocessing
+stage, since $g$ and the grid are known.  Let
+$a_{\tilde g}=N^{-1/2}\|\tilde g\|_{\ell^2([N])}$ denote the amplitude
+of the flagged block produced by applying $D_{\tilde g}$ to
+$\ket{+}^{\otimes n}\otimes\ket{0}_a$; the same expression with
+$\hat g$ in place of $\tilde g$ equals $\mathcal{F}_g^{[N]}$.  The
+pointwise bound $|\tilde g(\theta_j)-\hat g(\theta_j)|\le\delta$ gives
+$\|\tilde g-\hat g\|_{\ell^2([N])}\le\sqrt N\,\delta$, so by the
+triangle inequality
+\begin{equation}
+	a_{\tilde g}\ge\mathcal{F}_g^{[N]}-\delta
+	=\Bigl(1-\tfrac{\varepsilon}{4}\Bigr)\mathcal{F}_g^{[N]}
+	\ge\tfrac12\mathcal{F}_g^{[N]},
+\end{equation}
+using $\varepsilon\le 2$.  Hence
+$\lceil(\pi/4)/\arcsin a_{\tilde g}\rceil=
+\mathcal{O}(1/\mathcal{F}_g^{[N]})$ rounds of exact amplitude
+amplification~\cite{BrassardHoyerMoscaTapp2002,McArdleGilyenBerta2025}
+prepare the normalized state.  For the error, the relative $\ell^2$
+deviation of $\tilde g$ from $\hat g$ is at most
+$\delta/\mathcal{F}_g^{[N]}=\varepsilon/4$; the normalized-vector
 bound~\cite[Lem.~III.1]{McArdleGilyenBerta2025} and
-$D_{\mathrm{tr}}\le\|\cdot\|$ for pure states give trace distance
-$\le 2\delta/\mathcal{F}_g^{[N]}$, and
-$\delta=\tfrac12\varepsilon\min(\mathcal{F}_g^{[N]},\mathcal{F}_{\tilde
-g}^{[N]})$ makes it $\le\varepsilon$.  Each $e^{iA}$ costs
-$\mathcal{O}(n)$ gates, there are $d_\delta$ of them per block-encoding
-call and $\mathcal{O}(1/\mathcal{F}_{\tilde g}^{[N]})$ calls, giving
-Eq.~\eqref{eq:stateprep-cost}.  The ancilla budget is one qubit for
+$D_{\mathrm{tr}}\le\|\cdot\|$ for pure states give trace distance at
+most $2\delta/\mathcal{F}_g^{[N]}=\varepsilon/2\le\varepsilon$.  Each
+$e^{iA}$ costs $\mathcal{O}(n)$ gates, there are $d_\delta$ of them
+per block-encoding call and $\mathcal{O}(1/\mathcal{F}_g^{[N]})$
+calls, giving Eq.~\eqref{eq:stateprep-cost}.  The ancilla budget is one qubit for
 the signal and one for amplification.\hfill$\square$
 
 \section{Derivation of Table~\ref{tab:comparison}}
@@ -269,18 +350,49 @@ $\mathcal{O}(n\log^2(1/\varepsilon))$.
 \emph{Gaussian.}  The QSVT entry
 $\tilde{\mathcal{O}}(n\log^{5/4}(1/\varepsilon))$ is the result of
 Ref.~\cite[Thm.~3]{McArdleGilyenBerta2025}.  Stereographically the
-Gaussian is subgeometric with $\sigma=1/2$, giving
-$\mathcal{O}(n\log^2(1/\varepsilon))$, slower by
-$\log^{3/4}(1/\varepsilon)$.
+Gaussian is subgeometric with $\sigma=2/3$
+(Appendix~\ref{app:sech}), giving
+$\mathcal{O}(n\log^{3/2}(1/\varepsilon))$, slower by
+$\log^{1/4}(1/\varepsilon)$.
 
-\emph{Shifted Lorentzian.}  For $1/((y-a)^2+b^2)$ the stereographic
-pullback has poles at distance $\mathcal{O}(\min(b,L)/L)$, giving
-$d_\delta=\mathcal{O}((L/b)\log(1/\varepsilon))$ and, with
-$\mathcal{F}=\mathcal{O}(1)$ at natural width, cost
-$\mathcal{O}((nL/b)\log(1/\varepsilon))$.  The QSVT bound at the
+\emph{Shifted Lorentzian.}  The pullback of $1/((y-a)^2+b^2)$ is
+singular where $\cot\theta=(a\pm ib)/L$.  With $u=e^{2i\theta}$ and
+$\cot\theta=i(u+1)/(u-1)$ these points are
+$u=(\omega+i)/(\omega-i)$, $\omega=(a\pm ib)/L$, and
+\begin{equation}
+	\begin{split}
+		|u|^{\pm2}&=\frac{a^2+(L+b)^2}{a^2+(L-b)^2}=\rho^2
+		=\frac{1+s}{1-s},\\
+		s&=\frac{2Lb}{a^2+b^2+L^2}.
+	\end{split}
+\end{equation}
+The pullback is analytic in the annulus $\rho^{-1}<|u|<\rho$, so its
+coefficient of $u^k$ decays as $\rho^{-k}$, and the degree in
+$e^{i\theta}$ needed for error $\delta$ is
+$d_\delta\simeq 2\log(1/\delta)/\log\rho$, which is
+Eq.~\eqref{eq:shifted-rate}.  The parameter $s$, and with it $\rho$,
+is maximal at $L=\sqrt{a^2+b^2}$, where
+$s=b/\sqrt{a^2+b^2}$ and $\log\rho=\mathrm{artanh}\,s$.  For
+$|a|\gg b$ this gives $d_\delta\simeq 2(|a|/b)\log(1/\delta)$.  The
+peak of the pullback sits at $\cot\theta=a/L$ with width
+$\Delta\theta\simeq bL/(L^2+a^2)\simeq b/2|a|$, so
+$\mathcal{F}\simeq(\Delta\theta)^{1/2}/\sqrt2\simeq
+\tfrac12(b/|a|)^{1/2}$; numerically, $\mathcal{F}=0.25$, $0.18$,
+$0.13$ at $|a|/b=4$, $8$, $16$.  The cost is
+$\mathcal{O}(n(|a|/b)^{3/2}\log(1/\varepsilon))$.  The QSVT bound at the
 optimal truncation is $\mathcal{O}((n/b)\varepsilon^{-1}
 \log(1/\varepsilon))$ by the Lorentzian derivation with the width
 $b$ carried through.
+
+\emph{Ancilla row.}  The QSVT pipeline uses four ancillas in the
+general case and three under parity~\cite{McArdleGilyenBerta2025}.
+The linear-depth circuits of Refs.~\cite{GonzalezCondeEtAl2020}
+and~\cite{SanoHamamura2025} compile the target's sequential Schmidt
+decomposition (a matrix-product state) into one- and two-qubit
+gates acting on the data qubits alone, so their ancilla count is
+zero.  The stereographic
+budget is the two qubits of Theorem~\ref{thm:stateprep}, one for
+the signal and one for amplitude amplification.
 
 \section{Read-out cost}
 \label{app:readout}

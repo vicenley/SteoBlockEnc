@@ -2,34 +2,39 @@
 \section{Discussion}
 \label{sec:discussion}
 
-The stereographic chart organizes quantum signal processing as
-geometry on the projective line.  Its two completeness theorems
-characterize the achievable pairs by a Fubini--Study normalization,
-its backward direction is NLFT layer stripping with the Schur
-parameters read as points of $\CP$, and its no-go shows that a
-chart change alone leaves the approximation rate a conformal
-invariant.  The one algorithmic gain comes from pairing the chart
-with a matching grid and signal operator: the state-preparation
-algorithm prepares Boyd-class functions on the whole real line in
-$\mathcal{O}(n)$ gates for Lorentzians and
-$\mathcal{O}(n\log^2(1/\varepsilon))$ for hyperbolic secants and
-Gaussians, with two ancilla qubits and no truncation radius, its
-cost governed only by the shape of the target after pullback to the
-circle.
+We asked whether rewriting QSP in a coordinate that covers the
+whole real line makes targets on the real line cheaper.  In the
+stereographic coordinate $x=\cot\theta$, a QSP sequence is the
+standard sequence conjugated by a fixed gate.  Its achievable
+polynomials and its phases therefore follow from the standard
+theory, and its unbounded output is the ratio of two bounded
+amplitudes, formed after measurement at a shot cost that grows as
+the fourth power of the value read out.  For functions of a
+block-encoded matrix the change of variable is only a relabeling:
+the expansion coefficients, the approximation error at every
+degree, and its rate of decay coincide in every coordinate.  What
+the coordinate does provide is a choice of sample points for state
+preparation.  On the cotangent grid a function on $\R$ becomes a
+periodic function on a uniform angular grid, which a standard
+Fourier-type QSP circuit loads.  The cost is $\mathcal{O}(n)$ gates
+for Lorentzians, $\mathcal{O}(n\log^2(1/\varepsilon))$ for the
+hyperbolic secant, and $\mathcal{O}(n\log^{3/2}(1/\varepsilon))$ for
+the Gaussian, with two ancilla qubits and a represented range that
+grows exponentially with $n$.
 
-Several limitations bound these results.  The prepared state lives
-on the cotangent grid, and a task requiring a uniform grid must pay
-a regridding cost we have not analyzed.  The filling fraction is a
-positive constant only when the target is not too concentrated
-after pullback; a sharply peaked shifted Lorentzian pays through
-$\mathcal{F}$.  The algorithm assumes a Fourier-type signal on the
-cotangent grid; extending it to a general block-encoded
-Hamiltonian, in either a known or unknown eigenbasis, is open.  Two directions follow from
-the geometry.  The Riccati picture places phase finding inside
-inverse scattering, which invites a scattering-transform view of
-phase-factor computation.  The second is a design pattern: a chart, a grid adapted to it, and a
-signal operator with matching eigenphases.  It asks which other
-encodings of $\CP$ evade the conformal obstruction and which merely
-rename it.  A chart buys nothing by
-itself; it buys something exactly when the grid and the signal
-operator are chosen to match it.
+These results have three limitations.  First, the prepared state
+lives on the cotangent grid.  It is a different state from the
+uniform-grid states of existing methods, and a task that needs the
+uniform grid must pay for regridding, which we have not analyzed.
+Second, the cost depends on where the target sits relative to the
+grid: a Lorentzian of width $b$ shifted by $|a|\gg b$ costs a
+factor $(|a|/b)^{3/2}$ more than the centered one, and the Gaussian
+is slower than every existing method we compared.  Third, the
+construction requires a signal operator whose eigenphases we
+choose; it does not extend to a block-encoded Hamiltonian with
+given eigenvalues, for which Sec.~\ref{sec:limits} shows that no
+change of variable helps.  A natural next step is to identify
+which downstream tasks, such as quadrature with the weighted states
+of Sec.~\ref{subsec:quadrature}, can use the cotangent-grid state
+directly, since for those tasks the comparison with uniform-grid
+methods becomes a comparison of equal outputs.

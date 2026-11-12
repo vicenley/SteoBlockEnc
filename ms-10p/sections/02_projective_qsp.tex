@@ -1,257 +1,211 @@
 % 02_projective_qsp.tex
-\section{Quantum signal processing on the projective line}
+\section{Quantum signal processing in the stereographic coordinate}
 \label{sec:projective}
 
-\subsection{The qubit as a point of $\CP$}
-\label{subsec:encoding}
+\subsection{Standard QSP}
+\label{subsec:standard}
 
-A single-qubit pure state, taken up to global phase, is a point of
-the complex projective line $\CP=\C\cup\{\infty\}$.  We fix the
-identification by stereographic projection from the north pole of
-the Bloch sphere,
+We first fix the standard setting~\cite{GSLW2019}.  The
+\emph{signal} is a number $\tilde x\in[-1,1]$; in applications it
+is an eigenvalue or singular value of a block-encoded matrix.  The
+\emph{signal operator} is the single-qubit rotation
 \begin{equation}
-	\mathcal{S}\colon\ket{\psi}\ \longmapsto\
-	\frac{\bra{\psi}\PauliX\ket{\psi}-i\bra{\psi}\PauliY\ket{\psi}}
-	{1-\bra{\psi}\PauliZ\ket{\psi}}\ \in\ \CP,
-	\label{eq:decode}
+	W(\tilde x)=\begin{pmatrix}\tilde x & i\sqrt{1-\tilde x^2}\\
+		i\sqrt{1-\tilde x^2} & \tilde x\end{pmatrix}
+	=e^{i\theta\PauliX},\qquad \tilde x=\cos\theta,
+	\label{eq:W}
 \end{equation}
-with inverse
+a rotation about the $x$ axis by an angle fixed by the signal.  A
+\emph{QSP sequence} of degree $d$ alternates $d$ signal operators
+with $d+1$ phase rotations,
 \begin{equation}
-	\ket{z}=\frac{1}{\sqrt{1+|z|^2}}\bigl(z\ket{0}+\ket{1}\bigr).
-	\label{eq:encode}
+	U_{\bm\phi}(\tilde x)=e^{i\phi_0\PauliZ}\prod_{j=1}^{d}
+	W(\tilde x)\,e^{i\phi_j\PauliZ},
+	\label{eq:std-seq}
 \end{equation}
-Here $z=\psi_0/\psi_1$ is the ratio of the two amplitudes: the
-decoded quantity in Eq.~\eqref{eq:decode} is a \emph{ratio}, not an
-amplitude, and it ranges over all of $\CP$ even though the state
-stays normalized.  The map sends $z=0$ to the south pole $\ket{1}$,
-$z=\infty$ to the north pole $\ket{0}$, and the equator to
-$|z|=1$; its Bloch vector is
-$(\langle\PauliX\rangle,\langle\PauliY\rangle,\langle\PauliZ\rangle)
-=(2\re z,-2\im z,|z|^2-1)/(1+|z|^2)$.
+where the phases $\bm\phi=(\phi_0,\dots,\phi_d)\in\R^{d+1}$ are
+free parameters chosen classically.  The standard theorem
+characterizes exactly which matrices a QSP sequence can produce,
+and for this reason it is called a completeness theorem:
+$U_{\bm\phi}(\tilde x)$ equals
+\begin{equation}
+	\begin{pmatrix} P(\tilde x) & iQ(\tilde x)\sqrt{1-\tilde x^2}\\
+		iQ^*(\tilde x)\sqrt{1-\tilde x^2} & P^*(\tilde x)\end{pmatrix}
+	\label{eq:std-form}
+\end{equation}
+for some $\bm\phi$ if and only if the polynomials $P,Q$ satisfy
+(a) $\deg P\le d$ and $\deg Q\le d-1$; (b) $P$ has parity
+$d\bmod 2$ and $Q$ has parity $(d-1)\bmod 2$; and (c)
+$|P|^2+(1-\tilde x^2)|Q|^2=1$ on
+$[-1,1]$~\cite[Thm.~3]{GSLW2019}.  Here and below $P^*$ denotes the
+polynomial with complex-conjugated coefficients, which equals
+$\overline{P}$ for real arguments.  Condition (c) bounds
+$|P|\le 1$: the transformation a QSP sequence applies to its
+signal is a bounded polynomial on a bounded interval.  The phases
+for a given $P$ are computed classically by standard
+algorithms~\cite{DongMengWhaleyEtAl2021,BerntsonSunderhauf2024,NiSarkarYingLin2025}.
 
-Because decoding reads a ratio, a single-qubit gate acts on the
-encoded point by a M\"obius transformation: a unitary
-$\bigl(\begin{smallmatrix}a&b\\c&d\end{smallmatrix}\bigr)$ sends
-$\ket{z}$ to $\ket{(az+b)/(cz+d)}$.  The Pauli gates give
-$\PauliX\colon z\mapsto 1/z$, $\PauliY\colon z\mapsto -1/z$, and
-$\PauliZ\colon z\mapsto -z$, and the phase gate $e^{i\phi\PauliZ}$
-acts as $z\mapsto e^{2i\phi}z$.  The state $\ket{z}$ is prepared
-from $\ket{0}$ by
-\begin{equation}
-	U_z=\frac{1}{\sqrt{1+|z|^2}}
-	\begin{pmatrix} z & 1 \\ 1 & -\bar z\end{pmatrix},
-	\label{eq:prep-unitary}
-\end{equation}
-whose columns are $\ket{z}$ and the antipodal state
-$\ket{-1/\bar z}$.
-
-\subsection{The signal operator and its base case}
+\subsection{The stereographic coordinate}
 \label{subsec:signal}
 
-A QSP protocol interleaves a signal-dependent gate with tunable
-phases.  In the stereographic chart the signal is a point
-$z=re^{i\theta}\in\CP$, and we take as signal operator the
-unnormalized matrix
+We now describe the same circuit with the coordinate
 \begin{equation}
-	O_z=\begin{pmatrix} z & -1 \\ 1 & \bar z\end{pmatrix},
-	\qquad \det O_z=1+|z|^2,
-	\label{eq:Oz}
+	x=\cot\theta=\frac{\tilde x}{\sqrt{1-\tilde x^2}}\in\R,
+	\qquad \tilde x=\frac{x}{\sqrt{1+x^2}},
+	\label{eq:stereo-coord}
 \end{equation}
-whose determinant is the squared Fubini--Study norm of the
-homogeneous coordinate $(z:1)$.  For a real signal $z=x\in\R$ the
-operator $O_x=\bigl(\begin{smallmatrix}x&-1\\1&x\end{smallmatrix}\bigr)$
-is $\sqrt{1+x^2}$ times a rotation by $\theta=\mathrm{arccot}\,x$, and
-its $k$th power has entries
+which maps the open interval $(-1,1)$ one-to-one onto the whole
+real line.  We fix the branch $\theta=\mathrm{arccot}\,x\in(0,\pi)$,
+so $\sin\theta=1/\sqrt{1+x^2}>0$.  In this coordinate it is
+convenient to use the unnormalized signal operator
 \begin{equation}
-	O_x^{\,k}\ \propto\
-	\begin{pmatrix}\cos k\theta & -\sin k\theta\\
-		\sin k\theta & \cos k\theta\end{pmatrix},
-	\qquad \theta=\mathrm{arccot}\,x,
+	\begin{split}
+		O_x&=\begin{pmatrix} x & -1 \\ 1 & x\end{pmatrix}
+		=\sqrt{1+x^2}\,V^{-1}W(\tilde x)\,V,\\
+		V&=\mathrm{diag}(1,i),
+	\end{split}
+	\label{eq:Ox}
+\end{equation}
+which is $\sqrt{1+x^2}$ times a rotation by $\theta$ about the $y$
+axis.  Its entries are polynomials in $x$, whereas those of
+$W(\tilde x)$ written in $x$ involve $\sqrt{1+x^2}$.  The powers of
+$O_x$ are
+\begin{equation}
+	O_x^{\,k}=(1+x^2)^{k/2}
+	\begin{pmatrix}\TB_k(x) & -\SB_k(x)\\
+		\SB_k(x) & \TB_k(x)\end{pmatrix},
 	\label{eq:Ox-power}
 \end{equation}
-after dividing by $(1+x^2)^{k/2}$.  The matrix elements are the
-\emph{rational Chebyshev functions} of Boyd~\cite{Boyd1990}
-($\TB_k$ on the diagonal, $\mp\SB_k$ off it),
+where
 \begin{equation}
 	\TB_k(x)=\cos(k\,\mathrm{arccot}\,x),\qquad
-	\SB_k(x)=\sin(k\,\mathrm{arccot}\,x),
+	\SB_k(x)=\sin(k\,\mathrm{arccot}\,x)
 	\label{eq:rat-cheb}
 \end{equation}
-which are the images of $\cos k\theta$ and $\sin k\theta$ under the
-projection $x=\cot\theta$ and are orthogonal on $\R$ with the
-Cauchy weight $1/(1+x^2)$~\cite{Boyd1990,Boyd1987}.  Throughout we
-fix the branch $\mathrm{arccot}\colon\R\to(0,\pi)$, so $\sin\theta>0$
-and $\sqrt{1+x^2}=1/\sin\theta$ carries no sign ambiguity.  Conjugating
-the normalized $k$th power by $V=\mathrm{diag}(1,i)$, that is forming
-$V\,[(1+x^2)^{-k/2}O_x^{\,k}]\,V^{-1}$, gives the standard QSP signal
-$W(\tilde x)^k$ of Remark~\ref{rem:basis-change}, with $+i\sin k\theta$
-in \emph{both} off-diagonal entries.  Boyd writes
-$\TB_k$ as $T_k$ composed with the compression
-$x\mapsto x/\sqrt{1+x^2}$, since $T_k(\cos\theta)=\cos k\theta$;
-Eq.~\eqref{eq:rat-cheb} is the same family.
+are Boyd's rational Chebyshev functions~\cite{Boyd1987,Boyd1990}.
+They are the Chebyshev functions $T_k(\tilde x)=\cos k\theta$ and
+$U_{k-1}(\tilde x)\sqrt{1-\tilde x^2}=\sin k\theta$ rewritten in
+$x$, and they are orthogonal on $\R$ with weight $1/(1+x^2)$.
 
-\subsection{Completeness in the stereographic chart}
-\label{subsec:completeness}
+Because $V$ is diagonal it commutes with every phase rotation, so
+replacing $W(\tilde x)$ by $O_x$ in Eq.~\eqref{eq:std-seq} gives
+\begin{equation}
+	U^{\mathrm{S}}_{\bm\phi}(x)\equiv e^{i\phi_0\PauliZ}\prod_{j=1}^{d}
+	O_x\,e^{i\phi_j\PauliZ}
+	=(1+x^2)^{d/2}\,V^{-1}\,U_{\bm\phi}(\tilde x)\,V.
+	\label{eq:conj}
+\end{equation}
+A stereographic QSP sequence is therefore a standard QSP sequence,
+with the same phases, conjugated by the fixed gate $V$ and
+multiplied by a scalar.  The physical circuit is the unitary
+$(1+x^2)^{-d/2}U^{\mathrm{S}}_{\bm\phi}(x)$; the scalar only
+records that $O_x$ is unnormalized.
 
-The signal operator $O_x$ and the phase gates generate a
-QSP sequence whose achievable functions we now characterize.
-Throughout, $P^*$ denotes the polynomial
-$P^*(x)=\overline{P(\bar x)}$ obtained by conjugating the
-coefficients of $P$, so that $P^*$ coincides with the complex
-conjugate $\bar P$ on real arguments.  We give the real-signal case
-first.
-
-\begin{theorem}[Real stereographic QSP]
+\begin{theorem}[Stereographic QSP]
 	\label{thm:real-qsp}
-	For $x\in\R$ let
-	$U_{\bm\phi}(x)=e^{i\phi_0\PauliZ}\prod_{j=1}^{d}O_x\,
-	e^{i\phi_j\PauliZ}$.  A pair of polynomials $P,Q\in\C[x]$ is
-	realizable as
+	Polynomials $P,Q$ in $x$ satisfy
 	\begin{equation}
-		U_{\bm\phi}(x)=
+		U^{\mathrm{S}}_{\bm\phi}(x)=
 		\begin{pmatrix} P(x) & -Q^*(x)\\ Q(x) & P^*(x)\end{pmatrix}
+		\quad\text{for all }x\in\R
 		\label{eq:real-qsp-form}
 	\end{equation}
 	for some $\bm\phi\in\R^{d+1}$ if and only if
-	\begin{enumerate}
-		\item[(i)] $|P(x)|^2+|Q(x)|^2=(1+x^2)^d$ for all $x\in\R$;
-		\item[(ii)] $P$ has parity $d\bmod 2$ and $Q$ has parity
-			$(d-1)\bmod 2$;
-		\item[(iii)] $\deg P\le d$ and $\deg Q\le d-1$, with the
-			convention $\deg Q=-1\Leftrightarrow Q\equiv 0$.
-	\end{enumerate}
+	(i) $|P(x)|^2+|Q(x)|^2=(1+x^2)^d$ for all $x\in\R$;
+	(ii) $P$ has parity $d\bmod 2$ and $Q$ has parity
+	$(d-1)\bmod 2$; and (iii) $\deg P\le d$ and $\deg Q\le d-1$,
+	with $Q\equiv 0$ allowed.
 \end{theorem}
 
-The forward direction is an induction on $d$: each factor
-$O_x\,e^{i\phi\PauliZ}$ raises the degree by one and multiplies the
-normalization by $\det O_x=1+x^2$, which reproduces (i)--(iii).
-The backward direction is the substantive half.  Condition (i) forces
-$|P(i)|^2=|Q(i)|^2$ by evaluation at $x=i$; choosing the phase
-$e^{2i\phi}=-iP(i)/Q^*(i)$ makes the reduced polynomials
-$\widetilde P,\widetilde Q$ vanish at $x=i$, and, by parity, at
-$x=-i$.  Division by $1+x^2$ then lowers the degree by one and the
-induction closes.  Appendix~\ref{app:thm-real} gives the details.
-The normalization (i) is the only change from the standard QSP
-theorem: it is $(1+x^2)^d$ rather than $1$, because the signal
-operator $O_x$ is unnormalized.  The physical gate is the unitary
-$(1+x^2)^{-d/2}U_{\bm\phi}(x)\in\SU(2)$, and this global factor
-cancels in the decoded ratio $P/Q$; after the basis change of
-Remark~\ref{rem:basis-change} the constraint (i) becomes the
-standard completeness constraint $|P|^2+|Q|^2=1$ in the compressed
-variable.
-
-Lifting the controls from $\PauliZ$-phases to arbitrary $\SU(2)$
-rotations, and the signal from $\R$ to $\CP$, gives the generalized
-theorem.  Its achievable class consists of \emph{bivariate}
-polynomials in $z$ and $\bar z$.
-
-\begin{theorem}[Generalized stereographic QSP]
-	\label{thm:gen-qsp}
-	Let $O_z$ be as in Eq.~\eqref{eq:Oz} and let
-	$G_0,\dots,G_d\in\SU(2)$.  A pair $P,Q\in\C[z,\bar z]$, where
-	now $P^*(z,\bar z)=\overline{P(\bar z,z)}$ conjugates coefficients
-	and swaps $z\leftrightarrow\bar z$, is realizable as
+\begin{proof}
+	Conjugation by $V$ multiplies the upper-right entry of a
+	matrix by $i$ and the lower-left entry by $-i$.  By
+	Eqs.~\eqref{eq:std-form} and~\eqref{eq:conj}, a standard pair
+	$(P_{\mathrm{std}},Q_{\mathrm{std}})$ therefore produces
+	Eq.~\eqref{eq:real-qsp-form} with
 	\begin{equation}
-		G_d\,O_z\,G_{d-1}\,O_z\cdots O_z\,G_0
-		=\begin{pmatrix} P(z,\bar z) & -Q^*(z,\bar z)\\
-			Q(z,\bar z) & P^*(z,\bar z)\end{pmatrix}
-		\label{eq:gen-qsp-form}
+		\begin{split}
+			P(x)&=(1+x^2)^{d/2}P_{\mathrm{std}}(\tilde x),\\
+			Q(x)&=(1+x^2)^{(d-1)/2}Q^*_{\mathrm{std}}(\tilde x),
+		\end{split}
+		\label{eq:pair-map}
 	\end{equation}
-	if and only if
-	\begin{enumerate}
-		\item[(i)] every monomial $z^j\bar z^k$ of $P$ and $Q$ has
-			$j+k\le d$;
-		\item[(ii)] $P P^*+Q Q^*=(1+|z|^2)^d$.
-	\end{enumerate}
-\end{theorem}
+	where we used $\sqrt{1-\tilde x^2}=(1+x^2)^{-1/2}$.  By the
+	parity condition (b), $P_{\mathrm{std}}$ contains only the
+	powers $\tilde x^{d-2m}$, and
+	$(1+x^2)^{d/2}\tilde x^{d-2m}=x^{d-2m}(1+x^2)^m$ is a
+	polynomial in $x$ of degree $d$ and parity $d$; the same
+	holds for $Q$ with $d-1$.  Conversely, a pair obeying (ii) and
+	(iii) is mapped back by
+	$P_{\mathrm{std}}(\tilde x)=(1-\tilde x^2)^{d/2}P(x)$, which is
+	a polynomial in $\tilde x$ by the same computation.  Finally
+	$|P|^2+|Q|^2=(1+x^2)^d\bigl[|P_{\mathrm{std}}|^2+
+	(1-\tilde x^2)|Q_{\mathrm{std}}|^2\bigr]$, so (i) on $\R$ is
+	(c) on $(-1,1)$, and by continuity on $[-1,1]$.  Equation
+	\eqref{eq:pair-map} is thus a bijection between the pairs
+	allowed by (a)--(c) and those allowed by (i)--(iii), and the
+	theorem follows from the standard one with the same phases.
+\end{proof}
 
-The forward direction is again an induction on the number of
-factors.  The backward direction reads the leading data off a
-target pair and strips one layer at a time.  Applying the inverse
-iterate $O_z^{-1}G_d^{-1}$ produces reduced entries
-$P'=z^*\widetilde P+\widetilde Q$ and $Q'=z\widetilde Q-\widetilde
-P$; requiring $1+z\bar z$ to divide both fixes the control $G_d$,
-and the quotient lowers the bidegree from $d$ to $d-1$.  The
-divisibility rests on a factorization in the Laurent ring:
+The theorem adds no new circuits to standard QSP.  Its content is
+the list of polynomials in $x$ that a QSP sequence reaches, stated
+in a coordinate that covers the real line, and its phases are
+computed by any standard algorithm.  Appendix~\ref{app:thm-real}
+gives an independent proof by induction on $d$ directly in the
+variable $x$.  Allowing a complex signal $z\in\C$ and arbitrary
+$\SU(2)$ rotations in place of the phase rotations gives the
+stereographic form of generalized QSP~\cite{MotlaghWiebe2023},
+whose achievable class consists of polynomials in $z$ and $\bar z$;
+we state and prove it in Appendix~\ref{app:thm-gen}, where we also
+relate its phase finding to the nonlinear Fourier transform.  The
+results below need only Theorem~\ref{thm:real-qsp}.
 
-\begin{lemma}
-	\label{lem:DDstar}
-	If $D\in\C[z,z^{-1}]$ satisfies $D D^*=-1$, then $D=c\,z^k$ with
-	$|c|=1$ and $k$ odd.
-\end{lemma}
+\subsection{Reading out an unbounded ratio}
+\label{subsec:encoding}
 
-The lemma pins down the units of the ring that can appear, and with
-it the case analysis of the backward direction closes; the full
-argument, including the unique-factorization step, is in
-Appendix~\ref{app:thm-gen}.  Theorem~\ref{thm:gen-qsp} is the
-stereographic form of generalized QSP~\cite{MotlaghWiebe2023}: the
-bivariate structure in $(z,\bar z)$ is the projective-coordinate
-image of the Laurent structure in $z=e^{i\theta}$, and the
-Fubini--Study normalization $(1+|z|^2)^d$ is the image of the
-constraint $|P|^2+|Q|^2=1$ on the unit circle.
+Applied to $\ket{0}$, the physical circuit outputs the state
+$(1+x^2)^{-d/2}\bigl(P(x)\ket{0}+Q(x)\ket{1}\bigr)$, whose
+amplitudes are bounded by one.  The ratio of the two amplitudes,
+$P(x)/Q(x)$, is a rational function of $x$ that is unbounded on
+$\R$.  For example, with $d=1$ and $\bm\phi=0$ we have $P=x$ and
+$Q=1$, and the ratio returns the unbounded signal $x$ itself.
+Every single-qubit pure state is labelled, up to a global phase,
+by such a ratio $z=\psi_0/\psi_1\in\C\cup\{\infty\}$ of its
+amplitudes.  The label is computed from Pauli expectation values
+as
+\begin{equation}
+	z=\frac{\bra{\psi}\PauliX\ket{\psi}-i\bra{\psi}\PauliY\ket{\psi}}
+	{1-\bra{\psi}\PauliZ\ket{\psi}},
+	\qquad
+	\ket{z}=\frac{z\ket{0}+\ket{1}}{\sqrt{1+|z|^2}},
+	\label{eq:decode}
+\end{equation}
+which is the stereographic projection of the Bloch vector from the
+north pole $\ket{0}$ onto the equatorial plane.  The denominator
+vanishes only at the north pole, where $\psi_1=0$ and $z=\infty$.
+Thus a QSP sequence computes the bounded pair $(P,Q)$, and
+Eq.~\eqref{eq:decode} turns it into the unbounded value $P/Q$.  The
+unboundedness is produced by this classical division of measured
+quantities, not by the circuit.
 
-\subsection{Three readings of the same circuit}
-\label{subsec:remarks}
-
-\begin{remark}[Reduction to standard QSP]
-	\label{rem:basis-change}
-	The real signal operator, once normalized, is the standard
-	QSP signal conjugated by a fixed gate.  With
-	$V=\mathrm{diag}(1,i)$, $\tilde x=x/\sqrt{1+x^2}$, and
-	$W(\tilde x)=\bigl(\begin{smallmatrix}\tilde x &
-	i\sqrt{1-\tilde x^2}\\ i\sqrt{1-\tilde x^2}&\tilde
-	x\end{smallmatrix}\bigr)$ the standard signal,
-	\begin{equation}
-		(1+x^2)^{-1/2}O_x=V^{-1}W(\tilde x)V,
-	\end{equation}
-	equivalently $W(\tilde x)=V\,[(1+x^2)^{-1/2}O_x]\,V^{-1}$, and $V$
-	commutes with every phase gate.  A stereographic QSP
-	circuit is therefore a standard QSP circuit conjugated by a
-	gate that depends on neither the signal nor the phases.  Two
-	consequences follow.  The diagonal matrix element is unchanged,
-	so the completeness theorem and every phase-finding
-	algorithm~\cite{DongMengWhaleyEtAl2021,NiSarkarYingLin2025}
-	transfer verbatim.  And the unboundedness of the decoded ratio
-	is produced by the decoding step of Eq.~\eqref{eq:decode}, not
-	by the circuit, whose matrix elements never exceed one.
-\end{remark}
-
-\begin{remark}[A hardware-executable read-out]
+\begin{remark}[Read-out cost]
 	\label{rem:measurement}
-	After the basis change of Remark~\ref{rem:basis-change} the
-	circuit acts on real amplitudes, so its output is a
-	real-amplitude state, with a single flag qubit carrying the
-	imaginary unit in the real-number formulation of
-	Ref.~\cite{BarriosHita2026}.  Such states are read out by the
-	$n+1$-setting protocol of
+	Let $r=|P(x)/Q(x)|$ be the magnitude of the value to be read
+	out.  For real-coefficient pairs, the circuit conjugated back
+	by $V$ produces a state with real amplitudes, with a single
+	flag qubit carrying the imaginary unit in the real-number
+	formulation of Ref.~\cite{BarriosHita2026}.  Such states are
+	read out by the $(n+1)$-setting protocol of
 	Ref.~\cite{NguemtoLeytonOrtega2026}: computational-basis
-	sampling and one Hadamard-rotated setting per qubit, which is
-	minimal.  The stereographic ratio is then formed
-	classically.  The read-out costs $n+1$ measurement settings and
-	$\mathcal{O}(r^4/\varepsilon^2)$ shots to recover the decoded
-	value at signal magnitude $r$ to absolute precision
-	$\varepsilon$, the inverse projection amplifying sampling error
-	by $(1+r^2)/2$ (Appendix~\ref{app:readout}).  This makes the
-	decoding interface executable for order-one signals; it is a
-	trade of circuit depth for shot count, not an asymptotic
-	speedup, and its systematic use is left to future work.
-\end{remark}
-
-\begin{remark}[One geometry, two signal operators]
-	\label{rem:two-signals}
-	The stereographic map appears twice in this paper.  At the
-	single-qubit scale it selects the signal operator $O_z$, whose
-	powers produce the rational Chebyshev functions and whose
-	achievable class the two theorems above characterize.  At the
-	multi-qubit scale (Sec.~\ref{sec:stateprep}) the same map sends
-	a uniform angular grid $\theta_j$ to the cotangent grid
-	$y_j=L\cot\theta_j$ on $\R$, on which a diagonal walk operator
-	$e^{iA}=\sum_j e^{i\theta_j}\ket{j}\!\bra{j}$ acts and the
-	rational Chebyshev basis pulls back to the Fourier basis.  The
-	two operators $O_z$ and $e^{iA}$ are the \emph{same geometry},
-	not the same gate: they are the single- and multi-qubit
-	incarnations of one stereographic construction, and the
-	pairing of chart, grid, and signal operator is what turns the
-	approximation theory of this section into the gate counts of
-	Sec.~\ref{sec:stateprep}.
+	sampling plus one Hadamard-rotated setting per qubit, which is
+	the minimum.  Estimating $r$ to absolute precision
+	$\varepsilon$ costs $\mathcal{O}(r^4/\varepsilon^2)$ shots,
+	because the division in Eq.~\eqref{eq:decode} amplifies
+	sampling error by $(1+r^2)/2$ (Appendix~\ref{app:readout}).
+	The alternative is to rescale an unbounded target by its
+	maximum on a truncated window and implement it as a bounded
+	polynomial, at a degree that grows with the window.  The ratio
+	read-out keeps the degree low and pays in shots instead; it is
+	practical for order-one values and is a trade of circuit depth
+	for shot count, not an asymptotic speedup.
 \end{remark}

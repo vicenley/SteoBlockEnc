@@ -63,7 +63,7 @@
 
 \begin{document}
 
-\title{The projective geometry of quantum signal processing}
+\title{Stereographic quantum signal processing and state preparation on the real line}
 
 \thanks{This manuscript has been authored by UT-Battelle, LLC, under Contract No.\ DE-AC05-00OR22725 with the U.S.\ Department of Energy (DOE). The United States Government retains and the publisher, by accepting the article for publication, acknowledges that the United States Government retains a non-exclusive, paid-up, irrevocable, world-wide license to publish or reproduce the published form of this manuscript, or allow others to do so, for United States Government purposes. The Department of Energy will provide public access to these results of federally sponsored research in accordance with the DOE Public Access Plan.}
 
@@ -77,37 +77,37 @@
 \date{\today}
 
 \begin{abstract}
-	Quantum signal processing, its generalized form, and the
-	nonlinear Fourier transform on the sphere are the same
-	alternating product of a signal rotation with tunable gates,
-	written in different coordinates.  We develop the chart in which
-	a qubit is a point of the complex projective line and the signal
-	ranges over the whole real line, and we use it to give a unified
-	account of the method.  We prove two completeness theorems in
-	this chart, one for real signals and one for the generalized
-	construction with arbitrary controls, each characterizing the
-	achievable pair of polynomials by a single Fubini--Study
-	normalization.  We show that the inverse problem of finding the
-	phases is the layer-stripping algorithm of the nonlinear Fourier
-	transform, with the Schur parameters read as points of the
-	projective line, and that the underlying iteration is a discrete
-	Riccati flow whose continuum limit is the scattering problem of
-	inverse-scattering theory.  We prove that no change of chart can
-	accelerate a block-encoded matrix function, because the rate of
-	polynomial approximation is a conformal invariant of the target.
-	The advantage of the projective picture appears instead in state
-	preparation: pairing the chart with a matching grid and signal
-	operator prepares a quantum state encoding a function on the
-	whole real line, at a cost set only by the shape of the function
-	and with no truncation radius to choose.  For Lorentzian profiles
-	the preparation is linear in the number of qubits.
+	Quantum signal processing produces polynomial transformations of
+	a signal confined to a bounded interval, so targets defined on
+	the whole real line must be truncated and rescaled before they
+	can be implemented.  We ask whether a change of variable removes
+	this restriction, that is, whether a target that is costly as a
+	polynomial in the standard variable becomes cheap when written in
+	a coordinate that covers the whole line.  We study the
+	stereographic coordinate, in which the signal is the cotangent of
+	the eigenphase and the natural basis is Boyd's family of rational
+	Chebyshev functions.  The stereographic form of quantum signal
+	processing is the standard form conjugated by a fixed gate, so
+	its achievable polynomials and its phases follow from the
+	standard theory, and its unbounded output is a ratio of two
+	amplitudes formed after measurement.  For functions of a
+	block-encoded matrix the change of variable buys nothing: the
+	achievable set, the expansion coefficients, and the approximation
+	error at every degree coincide in every coordinate.  For state
+	preparation the remaining freedom is the choice of sample points,
+	and sampling on a cotangent grid turns a function on the real line
+	into a periodic function on a uniform angular grid, which standard
+	Fourier-type circuits load at a cost set by its smoothness.
+	Lorentzian profiles are prepared with a gate count linear in the
+	number of qubits, and the represented range grows exponentially
+	with the number of qubits instead of being fixed by a truncation
+	radius.
 \end{abstract}
 
 \maketitle
 
 \input{sections/01_intro}
 \input{sections/02_projective_qsp}
-\input{sections/03_nlft_geometry}
 \input{sections/04_limits}
 \input{sections/05_state_prep}
 \input{sections/06_discussion}
@@ -123,8 +123,8 @@
 The reference implementation and data supporting the numerical
 results, including the coefficient-decay study of
 Appendix~\ref{app:sech} and the convergence comparison of
-Fig.~\ref{fig:convergence}, are available from the authors upon
-reasonable request.
+Fig.~\ref{fig:convergence}, will be deposited in a public repository
+upon publication.
 
 \input{sections/appendix}
 
