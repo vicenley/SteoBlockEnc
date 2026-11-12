@@ -8,9 +8,8 @@ of a function $f\colon\R\to\C$.  We choose the sample points
 $y_j=L\cot\theta_j$ with $\theta_j$ uniformly spaced.  In the angle
 variable the target becomes $g(\theta)=f(L\cot\theta)$, sampled on
 a uniform grid, and a standard Fourier-type QSP circuit loads it.
-The circuit is not new; what the stereographic coordinate supplies
-is the choice of grid and, through Boyd's theory, the cost of the
-resulting expansion.
+The stereographic coordinate supplies the grid and, through Boyd's
+theory, the cost of the resulting expansion.
 
 \subsection{The cotangent grid}
 \label{subsec:grid}
@@ -189,8 +188,7 @@ diagonal on $\ket{+}^{\otimes n}$, and converts the $L^\infty$
 approximation error to trace distance through the filling fraction;
 the tolerance $\delta=\tfrac{\varepsilon}{4}\mathcal{F}_g^{[N]}$ is
 defined from the target alone, and the amplitude of the approximant
-is then automatically within a factor two of $\mathcal{F}_g^{[N]}$, so
-no circularity enters.  A degree-$d_\delta$
+is then within a factor two of $\mathcal{F}_g^{[N]}$.  A degree-$d_\delta$
 trigonometric polynomial has $2d_\delta+1\le N$ degrees of freedom
 on the $N$ grid points, so no aliasing enters while
 $d_\delta=\mathcal{O}((\log(1/\varepsilon))^{1/\sigma})$ stays below
@@ -209,11 +207,10 @@ error, $\delta=0$.  The filling fraction is
 $\mathcal{F}_g^{[\infty]}=\sqrt{3/8}\approx 0.612$, one round of
 amplitude amplification suffices, and the cost is $\mathcal{O}(n)$.
 More generally $1/(1+y^2)^s$ for integer $s$ pulls back to
-$\sin^{2s}\theta$, a trigonometric polynomial of degree $2s$.  We
-stress that this family is easy \emph{because} of the grid: on the
-cotangent grid its amplitudes are the samples of a low-degree
-trigonometric polynomial.  It illustrates the mechanism; it is not
-evidence that arbitrary targets become easy.
+$\sin^{2s}\theta$, a trigonometric polynomial of degree $2s$.  This
+family is cheap \emph{because} of the grid: on the cotangent grid
+its amplitudes are the samples of a low-degree trigonometric
+polynomial.  The targets below cost more.
 
 For the hyperbolic secant, $\sigma=1/2$ (Sec.~\ref{subsec:boyd}),
 so $d_\delta=\mathcal{O}(\log^2(1/\varepsilon))$ and the cost is
@@ -268,9 +265,9 @@ Three families of methods prepare the same profiles, but not the
 same states.  They sample $f$ on a uniform grid over a finite
 window, whereas our state samples $f$ on the cotangent grid of
 Eq.~\eqref{eq:cot-grid}, which is dense near the origin and sparse
-in the tails.  Equal trace distance therefore does not mean equal
-usefulness, and the gate counts below compare the cost of each
-method's own output, not of interchangeable outputs.  The QSVT
+in the tails.  The gate counts below are therefore the costs of
+different states, each at trace distance $\varepsilon$ from its
+own target.  The QSVT
 pipeline of McArdle, Gily\'en, and
 Berta~\cite{McArdleGilyenBerta2025} approximates $f$ on a truncated
 interval $[-L_{\mathrm{trunc}},L_{\mathrm{trunc}}]$ through
@@ -335,16 +332,16 @@ gate count $=n\times$ (polynomial degree) $\times\,1/\mathcal{F}$.
 	\end{ruledtabular}
 \end{table*}
 
-With this caveat, the table reads as follows.  For the centered
+For the centered
 Lorentzian the cotangent-grid state costs $\mathcal{O}(n)$, while
 the uniform-grid state of the QSVT pipeline costs
 $\mathcal{O}(n\varepsilon^{-1}\log(1/\varepsilon))$, because the
 QSVT pipeline must truncate the slowly decaying tail.  The
 linear-depth preparations of
 Refs.~\cite{GonzalezCondeEtAl2020,SanoHamamura2025} also reach
-$\mathcal{O}(n)$ for a truncated Lorentzian.  Our method differs
-from them in scope rather than in cost: one algorithm covers Boyd's
-class without per-target redesign.  For the hyperbolic secant the
+$\mathcal{O}(n)$ for a truncated Lorentzian.  At this equal cost,
+our method covers Boyd's class with one algorithm and no per-target
+redesign.  For the hyperbolic secant the
 stereographic cost is lower than the QSVT bound by
 $\log^{1/2}(1/\varepsilon)$.  For the Gaussian it is higher than
 every baseline, by $\log^{1/4}(1/\varepsilon)$ against the QSVT
@@ -357,8 +354,8 @@ pipeline, which uses four in the general case and three under
 parity, because the diagonal signal $e^{iA}$ needs no separate
 block-encoding ancilla; the linear-depth circuits use none.
 The linear-depth methods, in turn, prepare truncated Lorentzians
-exactly and extend to targets outside Boyd's class.  We therefore
-claim a complementary route, not a dominating one.  Applications
+exactly and extend to targets outside Boyd's class, so the two
+routes are complementary.  Applications
 that need the uniform-grid state require a regridding step, which
 we do not analyze.  Convergence data for these targets appear in
 Fig.~\ref{fig:convergence}.
@@ -375,8 +372,8 @@ Fig.~\ref{fig:convergence}.
 		midpoint grid of Eq.~\eqref{eq:cot-grid}: an orthogonal cosine
 		projection for the even targets (a)--(c), and a least-squares
 		fit in the even harmonics $\{1,\cos 2k\theta,\sin 2k\theta\}$,
-		$2k\le d$, for the shifted Lorentzian (d)---the only harmonics
-		the $\pi$-periodic pullback contains
+		$2k\le d$, for the shifted Lorentzian (d).  These are the only
+		harmonics the $\pi$-periodic pullback contains
 		(Sec.~\ref{subsec:boyd}), and the basis the preprocessing
 		stage of Sec.~\ref{subsec:algorithm} prescribes.  The reported error is
 		$\sup_{\theta\in(0,\pi)}|g-\tilde g|$, which equals

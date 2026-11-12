@@ -1,5 +1,5 @@
 % 04_limits.tex
-\section{What a change of variable cannot do}
+\section{Limits of a change of variable}
 \label{sec:limits}
 
 The stereographic coordinate maps $[-1,1]$ onto the whole real line
@@ -28,8 +28,8 @@ $\theta_j=\arccos a_j$, and each query contributes one power of
 $e^{\pm i\theta_j}$.  After $d$ queries the result is a
 trigonometric polynomial of degree $d$ in $\theta_j$, which is a
 polynomial of degree $d$ in $a_j$.  The set of reachable
-transformations is fixed by $d$; a coordinate only names its
-elements.
+transformations is therefore fixed by $d$ and is the same in every
+coordinate.
 
 \begin{corollary}[Same coefficients in every coordinate]
 	\label{cor:basis-indep}
@@ -53,14 +53,15 @@ set by the Bernstein ellipse through the nearest singularity of
 $f$~\cite[Ch.~8]{Trefethen2013}.  Under the stereographic map
 these ellipses become the bipolar contours with foci $\pm i$ that
 govern the convergence of rational Chebyshev
-series~\cite{Boyd1990}\cite[Sec.~17.7]{Boyd2001}, so Boyd's convergence rate for the
-rational Chebyshev series is the Chebyshev rate under another name.
+series~\cite{Boyd1990}\cite[Sec.~17.7]{Boyd2001}, so Boyd's
+convergence rate for the rational Chebyshev series equals the
+Chebyshev rate.
 Lower bounds for specific targets, such as those of
 Sherstov~\cite{Sherstov2013} and the adversary bound of
 Laneve~\cite{Laneve2025}, are therefore unchanged by the change of
 variable.
 
-\subsection{The freedom that remains}
+\subsection{Choice of sample points}
 \label{subsec:exit}
 
 Proposition~\ref{prop:nogo} takes the sample points of the
@@ -71,6 +72,4 @@ register, and the points $y_j$ at which $f$ is sampled are part of
 the design.  The proposition does not constrain this choice.
 Section~\ref{sec:stateprep} uses it: we choose the points so that
 $f$, written in the angle variable, is a smooth periodic function
-sampled on a uniform grid.  Any advantage below comes from this
-choice of sample points; the coordinate only identifies which
-choice to make.
+sampled on a uniform grid.

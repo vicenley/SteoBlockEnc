@@ -58,8 +58,8 @@ remains bounded; what is unbounded is the ratio $P/Q$ of the two
 amplitudes of its output qubit, which is a rational function of
 $x$ on the whole real line and is formed after measurement at a
 sampling cost that we quantify.  Second, we show that for
-functions of a block-encoded matrix the change of variable buys
-nothing.  A polynomial of degree $d$ in $\tilde x$ is a rational
+functions of a block-encoded matrix the change of variable gives
+no advantage.  A polynomial of degree $d$ in $\tilde x$ is a rational
 Chebyshev expansion of degree $d$ in $x$ with the \emph{same}
 coefficients, so the achievable set and the approximation error at
 every degree are identical in all four coordinates.
@@ -71,15 +71,15 @@ register we sample it on the grid $y_j=L\cot\theta_j$, with
 $\theta_j$ uniformly spaced.  On this grid $f$ becomes the periodic
 function $g(\theta)=f(L\cot\theta)$ sampled uniformly, which a
 standard Fourier-type QSP circuit loads with a diagonal phase
-operator costing $\mathcal{O}(n)$ gates per call.  The cost is set
+operator costing $\mathcal{O}(n)$ gates per call.  Its cost is set
 by the smoothness of $g$, which Boyd's theory of rational Chebyshev
-expansions classifies.  The Lorentzian is the extreme case: its
-pullback is the trigonometric polynomial $\sin^2\theta$, and the
-state costs $\mathcal{O}(n)$ gates.  The represented range grows
-exponentially with $n$ and requires no truncation radius.  The
-prepared state, however, lives on the cotangent grid rather than
-on a uniform grid, and we compare with existing methods with this
-difference made explicit.
+expansions classifies.  For the centered Lorentzian the pullback is
+the trigonometric polynomial $\sin^2\theta$, and the state costs
+$\mathcal{O}(n)$ gates.  The represented range grows exponentially
+with $n$ and requires no truncation radius.  Existing methods
+sample $f$ on a uniform grid, whereas our state samples it on the
+cotangent grid; Sec.~\ref{subsec:comparison} compares the costs
+with this difference stated.
 
 Section~\ref{sec:projective} reviews standard QSP, introduces the
 stereographic coordinate, and derives its completeness theorem and

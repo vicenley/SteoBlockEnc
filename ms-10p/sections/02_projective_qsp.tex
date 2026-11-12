@@ -183,10 +183,9 @@ as
 which is the stereographic projection of the Bloch vector from the
 north pole $\ket{0}$ onto the equatorial plane.  The denominator
 vanishes only at the north pole, where $\psi_1=0$ and $z=\infty$.
-Thus a QSP sequence computes the bounded pair $(P,Q)$, and
-Eq.~\eqref{eq:decode} turns it into the unbounded value $P/Q$.  The
-unboundedness is produced by this classical division of measured
-quantities, not by the circuit.
+Thus a QSP sequence computes the bounded pair $(P,Q)$, and the
+classical division of measured quantities in Eq.~\eqref{eq:decode}
+turns it into the unbounded value $P/Q$.
 
 \begin{remark}[Read-out cost]
 	\label{rem:measurement}
@@ -205,7 +204,7 @@ quantities, not by the circuit.
 	The alternative is to rescale an unbounded target by its
 	maximum on a truncated window and implement it as a bounded
 	polynomial, at a degree that grows with the window.  The ratio
-	read-out keeps the degree low and pays in shots instead; it is
-	practical for order-one values and is a trade of circuit depth
-	for shot count, not an asymptotic speedup.
+	read-out keeps the degree low and pays in shots.  It is
+	practical for order-one values and gives no asymptotic
+	speedup.
 \end{remark}
