@@ -158,7 +158,7 @@ stereographic form of generalized QSP~\cite{MotlaghWiebe2023},
 whose achievable class consists of polynomials in $z$ and $\bar z$;
 we state and prove it in Appendix~\ref{app:thm-gen}, where we also
 relate its phase finding to the nonlinear Fourier transform.  The
-results below need only Theorem~\ref{thm:real-qsp}.
+generalized form is not used below.
 
 \subsection{Reading out an unbounded ratio}
 \label{subsec:encoding}
@@ -190,17 +190,14 @@ turns it into the unbounded value $P/Q$.
 \begin{remark}[Read-out cost]
 	\label{rem:measurement}
 	Let $r=|P(x)/Q(x)|$ be the magnitude of the value to be read
-	out.  For real-coefficient pairs, the circuit conjugated back
-	by $V$ produces a state with real amplitudes, with a single
-	flag qubit carrying the imaginary unit in the real-number
-	formulation of Ref.~\cite{BarriosHita2026}.  Such states are
-	read out by the $(n+1)$-setting protocol of
-	Ref.~\cite{NguemtoLeytonOrtega2026}: computational-basis
-	sampling plus one Hadamard-rotated setting per qubit, which is
-	the minimum.  Estimating $r$ to absolute precision
-	$\varepsilon$ costs $\mathcal{O}(r^4/\varepsilon^2)$ shots,
-	because the division in Eq.~\eqref{eq:decode} amplifies
-	sampling error by $(1+r^2)/2$ (Appendix~\ref{app:readout}).
+	out.  It follows from computational-basis counts alone, since
+	the probability of the outcome $0$ is $p_0=r^2/(1+r^2)$ and
+	hence $r=\sqrt{p_0/(1-p_0)}$; the phase of $P/Q$ requires in
+	addition the $\PauliX$ and $\PauliY$ expectation values of
+	Eq.~\eqref{eq:decode}.  Estimating $r$ to absolute precision
+	$\varepsilon$ costs $\mathcal{O}(r^4/\varepsilon^2)$ shots for
+	$r\gtrsim 1$, because the division amplifies sampling error
+	by $(1+r^2)/2$ (Appendix~\ref{app:readout}).
 	The alternative is to rescale an unbounded target by its
 	maximum on a truncated window and implement it as a bounded
 	polynomial, at a degree that grows with the window.  The ratio

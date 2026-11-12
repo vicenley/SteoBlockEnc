@@ -35,17 +35,28 @@ particular at $x=i$, where the right side vanishes.  There
 $P^*(i)=\overline{P(-i)}=(-1)^d\overline{P(i)}$ and
 $Q^*(i)=(-1)^{d-1}\overline{Q(i)}$ by the parities (ii), so the
 identity at $x=i$ reads $(-1)^d\bigl(|P(i)|^2-|Q(i)|^2\bigr)=0$,
-that is, $|P(i)|^2=|Q(i)|^2$.  If $Q^*(i)\neq 0$,
-choose $\phi$ with $e^{2i\phi}=-iP(i)/Q^*(i)$, which has unit
-modulus by $|P(i)|=|Q(i)|$; stripping one factor via
-$e^{-i\phi\PauliZ}O_x^{-1}$ produces a reduced pair
-$\widetilde P,\widetilde Q$ with $\widetilde P(i)=iP(i)+e^{2i\phi}
-Q^*(i)=0$, and $\widetilde Q(i)=0$ follows from $|P(i)|=|Q(i)|$ and
-(ii).  By parity both vanish also at $x=-i$, so $1+x^2$ divides
-$\widetilde P$ and $\widetilde Q$; the quotients $\widehat
+that is, $|P(i)|^2=|Q(i)|^2$.  The outermost factor
+$e^{i\phi\PauliZ}O_x$ is removed by applying
+$(1+x^2)\,O_x^{-1}e^{-i\phi\PauliZ}$, with
+$(1+x^2)\,O_x^{-1}=\bigl(\begin{smallmatrix}x&1\\-1&x
+\end{smallmatrix}\bigr)$, which gives
+\begin{equation}
+	\begin{pmatrix}\widetilde P\\ \widetilde Q\end{pmatrix}
+	=\begin{pmatrix} x\,e^{-i\phi}P+e^{i\phi}Q\\
+		-e^{-i\phi}P+x\,e^{i\phi}Q\end{pmatrix}.
+\end{equation}
+If $Q(i)\neq 0$, choose $\phi$ with $e^{2i\phi}=-iP(i)/Q(i)$, which
+has unit modulus by $|P(i)|=|Q(i)|$.  Then
+$\widetilde P(i)=e^{-i\phi}\bigl(iP(i)+e^{2i\phi}Q(i)\bigr)=0$, and
+$\widetilde Q(i)=i\,\widetilde P(i)=0$.  By the parities (ii),
+$\widetilde P(-i)=(-1)^{d+1}\widetilde P(i)$ and
+$\widetilde Q(-i)=(-1)^{d}\widetilde Q(i)$, so both vanish also at
+$x=-i$ and $1+x^2$ divides $\widetilde P$ and $\widetilde Q$.  Since
+$|\widetilde P|^2+|\widetilde Q|^2=(1+x^2)^{d+1}$, the
+quotients $\widehat
 P=\widetilde P/(1+x^2)$, $\widehat Q=\widetilde Q/(1+x^2)$ satisfy
 $|\widehat P|^2+|\widehat Q|^2=(1+x^2)^{d-1}$ with degrees $d-1$ and
-$d-2$.  If instead $Q^*(i)=0$, then $P(i)=0$ as well, $1+x^2$
+$d-2$.  If instead $Q(i)=0$, then $P(i)=0$ as well, $1+x^2$
 already divides both, and any $\phi$ works.  Recursing to $d=0$
 yields the phases $\bm\phi$.\hfill$\square$
 
@@ -300,7 +311,7 @@ amplification~\cite{BrassardHoyerMoscaTapp2002,McArdleGilyenBerta2025}
 prepare the normalized state.  For the error, the relative $\ell^2$
 deviation of $\tilde g$ from $\hat g$ is at most
 $\delta/\mathcal{F}_g^{[N]}=\varepsilon/4$; the normalized-vector
-bound~\cite[Lem.~III.1]{McArdleGilyenBerta2025} and
+bound~\cite[Lem.~6]{McArdleGilyenBerta2025} and
 $D_{\mathrm{tr}}\le\|\cdot\|$ for pure states give trace distance at
 most $2\delta/\mathcal{F}_g^{[N]}=\varepsilon/2\le\varepsilon$.  Each
 $e^{iA}$ costs $\mathcal{O}(n)$ gates, there are $d_\delta$ of them
@@ -320,8 +331,9 @@ $\int_{L_{\mathrm{trunc}}}^\infty(1+y^2)^{-2}dy=
 \mathcal{O}(L_{\mathrm{trunc}}^{-3})$, and the truncated-state trace
 distance is its square root, $\mathcal{O}(L_{\mathrm{trunc}}^{-3/2})$;
 setting this to $\varepsilon$ gives
-$L_{\mathrm{trunc}}=\varepsilon^{-2/3}$.  Through
-$y=L_{\mathrm{trunc}}\sin\theta$ the composite has poles at distance
+$L_{\mathrm{trunc}}=\varepsilon^{-2/3}$.  In the variable
+$s=\sin(y/L_{\mathrm{trunc}})$ of
+Ref.~\cite{McArdleGilyenBerta2025} the target has poles at distance
 $\mathcal{O}(1/L_{\mathrm{trunc}})$, so the degree is
 $d=\mathcal{O}(L_{\mathrm{trunc}}\log(1/\varepsilon))$, and the
 filling fraction on the uniform grid is
@@ -348,8 +360,9 @@ $\mathcal{F}=\mathcal{O}(1)$, cost
 $\mathcal{O}(n\log^2(1/\varepsilon))$.
 
 \emph{Gaussian.}  The QSVT entry
-$\tilde{\mathcal{O}}(n\log^{5/4}(1/\varepsilon))$ is the result of
-Ref.~\cite[Thm.~3]{McArdleGilyenBerta2025}.  Stereographically the
+$\mathcal{O}(n\log^{5/4}(1/\varepsilon))$ is the result of
+Ref.~\cite[Thm.~2, Eq.~(6)]{McArdleGilyenBerta2025}, valid for
+$\beta\ge\log(1/\varepsilon)$.  Stereographically the
 Gaussian is subgeometric with $\sigma=2/3$
 (Appendix~\ref{app:sech}), giving
 $\mathcal{O}(n\log^{3/2}(1/\varepsilon))$, slower by
@@ -379,10 +392,14 @@ $\Delta\theta\simeq bL/(L^2+a^2)\simeq b/2|a|$, so
 $\mathcal{F}\simeq(\Delta\theta)^{1/2}/\sqrt2\simeq
 \tfrac12(b/|a|)^{1/2}$; numerically, $\mathcal{F}=0.25$, $0.18$,
 $0.13$ at $|a|/b=4$, $8$, $16$.  The cost is
-$\mathcal{O}(n(|a|/b)^{3/2}\log(1/\varepsilon))$.  The QSVT bound at the
-optimal truncation is $\mathcal{O}((n/b)\varepsilon^{-1}
-\log(1/\varepsilon))$ by the Lorentzian derivation with the width
-$b$ carried through.
+$\mathcal{O}(n(|a|/b)^{3/2}\log(1/\varepsilon))$.  The QSVT estimate follows from the centered derivation after
+rescaling $y$ by $b$: the window is
+$L_{\mathrm{trunc}}=b\,\varepsilon^{-2/3}$, the degree is
+$\mathcal{O}((L_{\mathrm{trunc}}/b)\log(1/\varepsilon))$, and
+$\mathcal{F}=\mathcal{O}((b/L_{\mathrm{trunc}})^{1/2})$, so the cost
+is $\mathcal{O}(n\,\varepsilon^{-1}\log(1/\varepsilon))$,
+independent of $b$, provided the window contains the peak,
+$|a|\lesssim b\,\varepsilon^{-2/3}$.
 
 \emph{Ancilla row.}  The QSVT pipeline uses four ancillas in the
 general case and three under parity~\cite{McArdleGilyenBerta2025}.
@@ -412,6 +429,4 @@ counts avoids the division and, by the delta method with variance
 $(1+f^2)^2/(4N_s)$, improves this to
 $N_s=\mathcal{O}(r^4/\varepsilon^2)$ for absolute and
 $\mathcal{O}(r^2/\varepsilon_{\mathrm{rel}}^2)$ for relative
-precision.  The read-out settings are the $n+1$ settings of
-Ref.~\cite{NguemtoLeytonOrtega2026} described in
-Remark~\ref{rem:measurement}.
+precision.

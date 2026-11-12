@@ -141,10 +141,13 @@ all of $\T$ and is restored to $|\tilde g|\le 1$ by rescaling with
 $1/(1+\delta)$.  The QSP phases follow from any standard
 solver~\cite{DongMengWhaleyEtAl2021,BerntsonSunderhauf2024,NiSarkarYingLin2025}
 at cost negligible against the circuit for the targets here.
-\emph{The QSP circuit} is the construction of
-Ref.~\cite{McArdleGilyenBerta2025}, a QSP sequence whose signal is a
-diagonal operator on the register, with the Fourier basis in place
-of the Chebyshev basis.  Its signal operator is
+\emph{The QSP circuit} follows the template of
+Ref.~\cite{McArdleGilyenBerta2025}: a polynomial of a diagonal
+operator on the register is applied to $\ket{+}^{\otimes n}$ and the
+result is amplified.  That work block-encodes the Hermitian operator
+$\sum_x\sin(2x/N)\ket{x}\!\bra{x}$ and applies the quantum singular
+value transformation; we instead use a diagonal unitary directly as
+the QSP signal operator,
 \begin{equation}
 	e^{iA}=\sum_{j=0}^{N-1}e^{i\theta_j}\ket{j}\!\bra{j},\qquad
 	\theta_j=\frac{\pi(2j+1)}{2N},
@@ -270,8 +273,8 @@ different states, each at trace distance $\varepsilon$ from its
 own target.  The QSVT
 pipeline of McArdle, Gily\'en, and
 Berta~\cite{McArdleGilyenBerta2025} approximates $f$ on a truncated
-interval $[-L_{\mathrm{trunc}},L_{\mathrm{trunc}}]$ through
-$y=L_{\mathrm{trunc}}\sin\theta$; the user picks
+interval $[-L_{\mathrm{trunc}},L_{\mathrm{trunc}}]$ by a polynomial
+in $\sin(y/L_{\mathrm{trunc}})$; the user picks
 $L_{\mathrm{trunc}}$ to balance the truncation tail against the
 polynomial degree.  The Schmidt-decomposition circuit of
 Gonz\'alez-Conde \emph{et al.}~\cite{GonzalezCondeEtAl2020} and the
@@ -284,8 +287,10 @@ gate count $=n\times$ (polynomial degree) $\times\,1/\mathcal{F}$.
 
 \begin{table*}[t]
 	\caption{Gate complexity for preparing a state encoding $f(y)$
-		on $n$ qubits to trace distance $\varepsilon$.  The QSVT
-		column~\cite{McArdleGilyenBerta2025} is evaluated at the
+		on $n$ qubits to trace distance $\varepsilon$.  In the QSVT
+		column, the Gaussian entry is the result of
+		Ref.~\cite{McArdleGilyenBerta2025}; the other entries are
+		our estimates from Theorem~1 of that work, evaluated at the
 		truncation radius that balances the tail against the degree;
 		for the Lorentzian this is $L_{\mathrm{trunc}}=\varepsilon^{-2/3}$,
 		since the truncated-state trace distance scales as the square
@@ -317,11 +322,11 @@ gate count $=n\times$ (polynomial degree) $\times\,1/\mathcal{F}$.
 			& $\mathcal{O}(n\log^{5/2}\tfrac1\varepsilon)$
 			& n.a. & n.a. & $\mathcal{O}(n\log^{2}\tfrac1\varepsilon)$\\[2pt]
 			$e^{-\beta y^2/2}$
-			& $\tilde{\mathcal{O}}(n\log^{5/4}\tfrac1\varepsilon)$
+			& $\mathcal{O}(n\log^{5/4}\tfrac1\varepsilon)$
 			& $\mathcal{O}(n)$ & $\mathcal{O}(n)$
 			& $\mathcal{O}(n\log^{3/2}\tfrac1\varepsilon)$\\[2pt]
 			$1/((y-a)^2+b^2)$
-			& $\mathcal{O}(\tfrac{n}{b}\varepsilon^{-1}\log\tfrac1\varepsilon)$
+			& $\mathcal{O}(n\,\varepsilon^{-1}\log\tfrac1\varepsilon)$
 			& $\mathcal{O}(n)$ & n.a.
 			& $\mathcal{O}(n(\tfrac{|a|}{b})^{3/2}\log\tfrac1\varepsilon)$\\
 			\hline
@@ -342,13 +347,14 @@ Refs.~\cite{GonzalezCondeEtAl2020,SanoHamamura2025} also reach
 $\mathcal{O}(n)$ for a truncated Lorentzian.  At this equal cost,
 our method covers Boyd's class with one algorithm and no per-target
 redesign.  For the hyperbolic secant the
-stereographic cost is lower than the QSVT bound by
-$\log^{1/2}(1/\varepsilon)$.  For the Gaussian it is higher than
+stereographic cost is lower than our estimate for the QSVT
+pipeline by $\log^{1/2}(1/\varepsilon)$.  For the Gaussian it is higher than
 every baseline, by $\log^{1/4}(1/\varepsilon)$ against the QSVT
 pipeline and by more against the linear-depth methods.  For the
 shifted Lorentzian the cost grows with the shift as
 $(|a|/b)^{3/2}$, because the cotangent grid is centered at the
-origin.  The two-ancilla budget (last row of
+origin; it stays below our QSVT estimate as long as
+$(|a|/b)^{3/2}\lesssim\varepsilon^{-1}$.  The two-ancilla budget (last row of
 Table~\ref{tab:comparison}) is one to two qubits below the QSVT
 pipeline, which uses four in the general case and three under
 parity, because the diagonal signal $e^{iA}$ needs no separate
