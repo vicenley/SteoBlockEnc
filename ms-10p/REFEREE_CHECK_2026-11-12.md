@@ -2,19 +2,18 @@
 
 Manuscript: "Stereographic quantum signal processing and state preparation on the real line".
 Referee PDF: `~/Dropbox/temp/QSPExtended_PCL.pdf` (annotations on pp. 1–4).
-State of the repo: commits `20b1760` (restructure) and `f4819bd` (prose pass) on `paper-10p`;
-the item 1–3 fixes in Part B are **uncommitted**.
+State of the repo: commits `20b1760` (restructure), `f4819bd` (prose pass) and `d6203af`
+(the item 1–3 fixes in Part B, with this report) on `paper-10p`. Nothing is pushed.
 
 ## Open questions to decide
 
-1. **Commit the item 1–3 fixes?** (Appendix A, Remark 2, Table I corrections.)
-2. **Do the like-for-like comparison (item 4)?** A downstream task, most naturally the weighted
+1. **Do the like-for-like comparison (item 4)?** A downstream task, most naturally the weighted
    quadrature of Sec. IV F, where the cotangent-grid state is used directly and its total cost
    is compared with the uniform-grid route. This is new analysis, not editing, and it decides
    whether the paper is submittable as more than a note.
-3. **Cite the companion read-out paper?** `NguemtoLeytonOrtega2026` and `BarriosHita2026` dropped
+2. **Cite the companion read-out paper?** `NguemtoLeytonOrtega2026` and `BarriosHita2026` dropped
    out when Remark 2 was rewritten for a single qubit. Re-adding one needs a sentence that fits.
-4. **Keep the title?** "Stereographic quantum signal processing and state preparation on the real line".
+3. **Keep the title?** "Stereographic quantum signal processing and state preparation on the real line".
 
 ---
 
@@ -105,12 +104,12 @@ A QSP-literate reader can now follow it from start to finish. Remaining friction
 
 As it stands, the paper is honest and readable but incremental. The expected verdict from a
 PRA referee is "correct, limited novelty". The single change that would raise it is a
-like-for-like result (open question 2). Without that, the central claim is "a different state
+like-for-like result (open question 1). Without that, the central claim is "a different state
 is cheaper to prepare".
 
 ---
 
-## Part B. Fixes applied after the report (items 1–3, uncommitted)
+## Part B. Fixes applied after the report (items 1–3, commit `d6203af`)
 
 The manuscript builds cleanly at 12 pages, with no undefined references or overfull boxes.
 
