@@ -49,18 +49,19 @@ def qsvt_upper(f, a, eps, norm2, M=1 << 15, dmax=6000):
             lo = mid
     return hi, stats(hi)[1]
 
-T = {'lorentz': (lambda y: 1 / (1 + y**2), [1e-2, 1e-3], 3e3),
-     'sech': (lambda y: 1 / np.cosh(y), [1e-2, 1e-3, 1e-4, 1e-5, 1e-6], 60),
-     'gauss': (lambda y: np.exp(-y**2 / 2), [1e-2, 1e-3, 1e-4, 1e-5, 1e-6], 30)}
-for name, (f, epss, amax) in T.items():
-    norm2 = 2 * integrate.quad(lambda y: f(y)**2, 0, np.inf)[0]
-    print(f"== {name}:  eps | ours C | QSVT lower C | QSVT upper C (a*, d, F)")
-    for eps in epss:
-        bo = min((max(d, 1) / F for d, F in (ours(f, L, eps) for L in np.geomspace(0.5, 12, 60)) if d is not None))
-        bl = min((max(d, 1) / F for d, F in (qsvt_lower(f, a, eps, norm2) for a in np.geomspace(1.5, amax, 50)) if d is not None))
-        bu = None
-        for a in np.geomspace(1.5, amax, 50):
-            r = qsvt_upper(f, a, eps, norm2)
-            if r and (bu is None or r[0] / r[1] < bu[0]):
-                bu = (r[0] / r[1], a, r[0], r[1])
-        print(f"  {eps:.0e} | {bo:7.1f} | {bl:9.1f} | {bu[0]:9.1f}  ({bu[1]:.1f}, {bu[2]}, {bu[3]:.3f})")
+if __name__ == "__main__":
+    T = {'lorentz': (lambda y: 1 / (1 + y**2), [1e-2, 1e-3], 3e3),
+         'sech': (lambda y: 1 / np.cosh(y), [1e-2, 1e-3, 1e-4, 1e-5, 1e-6], 60),
+         'gauss': (lambda y: np.exp(-y**2 / 2), [1e-2, 1e-3, 1e-4, 1e-5, 1e-6], 30)}
+    for name, (f, epss, amax) in T.items():
+        norm2 = 2 * integrate.quad(lambda y: f(y)**2, 0, np.inf)[0]
+        print(f"== {name}:  eps | ours C | QSVT lower C | QSVT upper C (a*, d, F)")
+        for eps in epss:
+            bo = min((max(d, 1) / F for d, F in (ours(f, L, eps) for L in np.geomspace(0.5, 12, 60)) if d is not None))
+            bl = min((max(d, 1) / F for d, F in (qsvt_lower(f, a, eps, norm2) for a in np.geomspace(1.5, amax, 50)) if d is not None))
+            bu = None
+            for a in np.geomspace(1.5, amax, 50):
+                r = qsvt_upper(f, a, eps, norm2)
+                if r and (bu is None or r[0] / r[1] < bu[0]):
+                    bu = (r[0] / r[1], a, r[0], r[1])
+            print(f"  {eps:.0e} | {bo:7.1f} | {bl:9.1f} | {bu[0]:9.1f}  ({bu[1]:.1f}, {bu[2]}, {bu[3]:.3f})")

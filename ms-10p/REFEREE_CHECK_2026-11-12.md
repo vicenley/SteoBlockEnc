@@ -305,12 +305,41 @@ polynomial that is bounded on all of [−1, 1].
 These numbers are now quoted in Sec. IV G and Appendix D. Scripts: `scripts/like_for_like/`
 (`like4like.py`, `qsvt_bounded.py`, `check_weighted_theorem.py`, `pair.py`, `rates.py`).
 
-### D4. Still open
+### D4. Second pass on the open items (2026-11-13, after commit `47af4fc`)
 
-- **Tuned-L exponents** for sech and the Gaussian are not proved; the paper quotes fixed-L rates.
-- **"G decays like g"** is argued for the targets used and checked numerically, not proved in general.
-- **GC and SH** dependence on ε in the L² measure is not derived.
-- **Fig. 2** still shows the unweighted pullback in sup norm; the caption says so.
-- **Proposition 2 looseness, authorship voice, companion citations, title:** unchanged from B4
-  and the open questions above.
+- **Tuned L, sech:** with L ∝ d^(1/3) the error decays as exp(−c·d^(2/3)) (Boyd Sec. 17.9) and
+  the cost is O(n log^(7/4)). Numerics up to d = 85 (error 10⁻¹²) give exponents 0.66, 0.34
+  and 1.75 against 2/3, 1/3 and 7/4. Now stated in Sec. IV E.
+- **Tuned L, Gaussian:** numerics up to d = 57 give error exp(−c·d^0.90) and cost log^1.36.
+  No asymptotic law claimed. Now stated in Sec. IV E as an observation.
+- **Linear-depth methods:** the bib entry `GonzalezCondeEtAl2020` was wrong. Its arXiv id
+  2005.04351 is Holmes and Matsuura, "Efficient Quantum Circuits for Accurate State
+  Preparation of Smooth, Differentiable Functions", which is the matrix-product-state paper
+  the text describes. A correct entry `HolmesMatsuura2020` is added to
+  `references_extra.bib` (arXiv only; add the IEEE QCE 2020 proceedings details if wanted) and
+  ms-10p cites it. The wrong entry is left in the shared `ms/references.bib` because
+  `ms-short` still cites that key; it needs the same fix there. Neither that paper nor Sano–Hamamura states how cost
+  grows with 1/ε or with the window; both show accuracy numerically at fixed bond dimension.
+  The paragraph after Table I now says this.
+- **Proposition 2:** restated for the QSVT circuit specifically, and the text now separates
+  the encoded block (a polynomial) from the off-diagonal elements (√(1−a²) times a polynomial).
+- **Figure:** new Fig. 3 (`figures/like_for_like.pdf`, from
+  `scripts/like_for_like/fig_like_for_like.py`, data in `data/like_for_like.npz`) shows L²
+  error against cost for sech and the Gaussian and cost against 1/ε for algebraic tails.
+  Fig. 2 is unchanged.
 
+### D5. Final pass (2026-11-13)
+
+- **"G decays like g" is now proved.** The coefficient of e^{i(2j+1)θ} in G is 2i times the
+  tail sum of the coefficients of g, when f vanishes at infinity. The identity holds to
+  10⁻¹⁶ numerically (`scripts/like_for_like/check_G_coefficients.py`); the derivation is in
+  the appendix proof of Theorem 4, and the theorem's hypothesis is stated on f.
+- **Holmes–Matsuura** entry completed from Crossref: IEEE QCE 2020, pp. 169–179,
+  doi 10.1109/QCE49297.2020.00030.
+
+### D6. Still open
+
+- **Gaussian with tuned L** has no proved or cleanly fitted exponent; the paper says so.
+- **`ms-short`** still cites the wrong `GonzalezCondeEtAl2020` entry in the shared bib file.
+- **Authorship voice, companion citations, title:** your decisions (see the open questions at
+  the top). My recommendation is to keep the title and leave the companion citations out.

@@ -305,11 +305,22 @@ calls the block-encoding and its inverse
 $\mathcal{O}(1/\mathcal{F}_p)$ times.  The product is
 Eq.~\eqref{eq:stateprep-cost}.
 
-\emph{Boyd class.}  Let $G=\sum_k c_k e^{ik\theta}$ on $(0,\pi)$
-with $|c_k|\le C\exp(-q|k|^\sigma)$, and let $p_0$ be the sum over
-$|k|\le d$.  Then
-$\|G-p_0\|^2=\pi\sum_{|k|>d}|c_k|^2$, which is
-$\mathcal{O}(d^{1-\sigma}e^{-2qd^\sigma})$, and the distance
+\emph{Boyd class.}  Let $g=\sum_m a_m w^m$ with $w=e^{2i\theta}$
+and $|a_m|\le C\exp(-q|m|^\sigma)$.  If $f$ vanishes at infinity,
+then $g(0)=\sum_m a_m=0$ and $g=\sum_m a_m(w^m-1)$.  With
+$1/\sin\theta=2ie^{i\theta}/(w-1)$ and
+$(w^m-1)/(w-1)=\sum_{j=0}^{m-1}w^j$ for $m>0$, and the
+corresponding sum for $m<0$,
+\begin{equation}
+	G=2i\sum_{j\ge0}\Bigl(\sum_{m>j}a_m\Bigr)e^{i(2j+1)\theta}
+	-2i\sum_{j<0}\Bigl(\sum_{m\le j}a_m\Bigr)e^{i(2j+1)\theta}.
+\end{equation}
+The coefficients $c_k$ of $G$ are thus tail sums of the $a_m$ and
+obey $|c_k|=\mathcal{O}(|k|^{1-\sigma}\exp(-q|k/2|^\sigma))$.  Let
+$p_0$ be the sum over $|k|\le d$.  Then
+$\|G-p_0\|^2=\pi\sum_{|k|>d}|c_k|^2$, which decays as
+$\exp(-2q(d/2)^\sigma)$ up to a factor polynomial in $d$, and the
+distance
 between the normalized functions is at most $2\|G-p_0\|/\|G\|$.
 Setting it to $\varepsilon$ gives
 $d=\mathcal{O}((\log(1/\varepsilon))^{1/\sigma})$.  The uniform

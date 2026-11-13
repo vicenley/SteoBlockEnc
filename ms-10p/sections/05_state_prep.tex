@@ -139,8 +139,9 @@ $\exp(-\cot^2\theta)$, whose coefficients decay as
 $\exp(-1.5\,k^{2/3})$~\cite[Eq.~(2.11)]{Boyd2001}.  The hyperbolic
 secant pulls back to $\approx 2e^{-L/\theta}$, so $\nu=1$ and
 $\sigma=1/2$.  Letting $L$ grow with the degree raises the
-effective exponent~\cite[Sec.~17.9]{Boyd2001}; we quote the rates
-at fixed $L$, which bound the cost from above.  For $\mathrm{sech}(L\cot\theta)$ the poles of $\mathrm{sech}$
+effective exponent~\cite[Sec.~17.9]{Boyd2001}; we first quote the
+rates at fixed $L$ and return to this choice in
+Sec.~\ref{subsec:examples}.  For $\mathrm{sech}(L\cot\theta)$ the poles of $\mathrm{sech}$
 pull back to points $\theta_m$ with $|\im\theta_m|\to 0$ as
 $m\to\infty$, accumulating on the real axis, so no strip exists and
 the coefficients decay as $\exp(-c\sqrt{k})$
@@ -153,10 +154,13 @@ at infinity.
 The weighted function of Eq.~\eqref{eq:weighted} is
 $G=g/\sin\theta$.  Because $\sin\theta$ changes sign under
 $\theta\to\theta+\pi$, $G$ is antiperiodic and its Fourier series
-contains only odd harmonics.  For the targets below $g$ vanishes at
-$\theta=0$ and $\theta=\pi$, where $f$ decays, the division by
-$\sin\theta$ creates no singularity, and the coefficients of $G$
-decay at the rate of those of $g$.  Only the values of $G$ on
+contains only odd harmonics.  If $f$ vanishes at infinity, then
+$g(0)=0$, and the coefficient of $e^{i(2j+1)\theta}$ in $G$ is $2i$
+times the tail sum $\sum_{m>j}a_m$ of the coefficients $a_m$ of
+$e^{2im\theta}$ in $g$ (Appendix~\ref{app:stateprep}).  A bound
+$C\exp(-q\,m^\sigma)$ on $a_m$ therefore holds for the
+coefficients of $G$ up to a factor polynomial in $j$, and $G$
+converges at the rate of $g$.  Only the values of $G$ on
 $(0,\pi)$ enter Eq.~\eqref{eq:weighted}, so $G$ may instead be
 continued periodically, with even harmonics, when that continuation
 is the smoother one.
@@ -252,8 +256,9 @@ is exact~\cite{BrassardHoyerMoscaTapp2002}.
 		\bigl\|f/\|f\|-f_p\bigr\|_{L^2(\R)}=\varepsilon .
 		\label{eq:error-identity}
 	\end{equation}
-	If the Fourier coefficients of $G$ obey the bound of
-	Definition~\ref{def:boyd}, the truncated Fourier series of $G$
+	If the pullback of $f$ obeys the bound of
+	Definition~\ref{def:boyd} and $f$ vanishes at infinity, the
+	truncated Fourier series of $G$
 	reaches error $\varepsilon$ at degree
 	$d=\mathcal{O}((\log(1/\varepsilon))^{1/\sigma})$, and
 	$\mathcal{F}_p$ tends to
@@ -300,6 +305,21 @@ $e^{-\beta y^2/2}$ with $L=1/\sqrt{\beta}$, $\sigma=2/3$, giving
 $d=\mathcal{O}(\log^{3/2}(1/\varepsilon))$ and cost
 $\mathcal{O}(n\log^{3/2}(1/\varepsilon))$.
 
+These rates hold at fixed $L$.  Because $L$ is free, it can grow
+with the degree.  For the hyperbolic secant the choice
+$L\propto d^{1/3}$ raises the decay of the error from
+$\exp(-c\,d^{1/2})$ to
+$\exp(-c\,d^{2/3})$~\cite[Sec.~17.9]{Boyd2001}, while the filling
+fraction falls as $L^{-1/2}$, and the cost becomes
+$\mathcal{O}(n\log^{7/4}(1/\varepsilon))$.  A numerical
+minimization of the $L^2$ error over $L$ at each degree up to
+$d=85$, where the error is $10^{-12}$, reproduces the three
+exponents: we find $0.66$, $0.34$, and $1.75$ against $2/3$,
+$1/3$, and $7/4$.  For the Gaussian the same minimization up to
+$d=57$ gives an error decaying as $\exp(-c\,d^{0.90})$ and a cost
+growing as $\log^{1.36}(1/\varepsilon)$, below the fixed-$L$
+exponent $3/2$; we have no asymptotic law for this case.
+
 A target with features at several positions cannot be centered on
 all of them.  For the pair of Lorentzians
 $1/((y-a)^2+b^2)+1/((y+a)^2+b^2)$ with $y_0=0$, the weighted
@@ -322,7 +342,9 @@ $\mathcal{O}(n(|a|/b)^{3/2}\log(1/\varepsilon))$.
 \subsection{Overlaps}
 \label{subsec:quadrature}
 
-By Lemma~\ref{lem:quadrature}, two states prepared with the same
+Let $\ket{\Phi_p}$ and $\ket{\Phi_r}$ be the normalized states with
+amplitudes proportional to $p(\theta_j)$ and $r(\theta_j)$.  By
+Lemma~\ref{lem:quadrature}, two such states prepared with the same
 $L$, $y_0$, and parity have overlap
 \begin{equation}
 	\braket{\Phi_p|\Phi_r}
@@ -401,8 +423,9 @@ the QSVT cost is
 $\mathcal{O}(n\,\varepsilon^{-3/(2m-1)}\log(1/\varepsilon))$.  For
 the hyperbolic secant the cost on the cotangent grid is lower than
 our estimate for the QSVT pipeline by
-$\log^{1/2}(1/\varepsilon)$.  For the Gaussian it is higher, by
-$\log^{1/4}(1/\varepsilon)$.  For the pair of Lorentzians the cost
+$\log^{1/2}(1/\varepsilon)$ at fixed $L$ and by
+$\log^{3/4}(1/\varepsilon)$ with $L\propto d^{1/3}$.  For the Gaussian it is higher, by
+$\log^{1/4}(1/\varepsilon)$ at fixed $L$.  For the pair of Lorentzians the cost
 grows with the separation as $(|a|/b)^{3/2}$, because the grid is
 dense at one point only; it stays below our QSVT estimate as long
 as $(|a|/b)^{3/2}\lesssim\varepsilon^{-1}$.  The two-ancilla budget
@@ -422,19 +445,20 @@ on the cotangent grid is $5$ to $8$ times smaller than for the QSVT
 pipeline.  For the Gaussian it lies between $0.9$ and $1.3$ times
 the QSVT value.  For the Lorentzian it is $\sqrt2$ against about
 $400$ at $\varepsilon=10^{-2}$ and about $6\times10^{3}$ at
-$\varepsilon=10^{-3}$.
+$\varepsilon=10^{-3}$.  Figure~\ref{fig:like-for-like} shows the
+error against this product for the three families.
 
 Two linear-depth constructions also prepare such profiles on a
-uniform grid over a finite window: the Schmidt-decomposition
-circuit of Gonz\'alez-Conde
-\emph{et al.}~\cite{GonzalezCondeEtAl2020} and the
-matrix-product-state construction of Sano and
-Hamamura~\cite{SanoHamamura2025}.  They use no amplitude
-amplification and no ancilla, reach $\mathcal{O}(n)$ gates for a
-truncated Lorentzian or Gaussian, and extend to targets outside
-Boyd's class.  Their cost model differs from the one above, and we
-have not derived their dependence on $\varepsilon$ in the $L^2(\R)$
-measure, so they are absent from Table~\ref{tab:comparison}.
+uniform grid over a finite window: the matrix-product-state
+circuits of Holmes and Matsuura~\cite{HolmesMatsuura2020} and of
+Sano and Hamamura~\cite{SanoHamamura2025}.  They use no amplitude
+amplification, reach $\mathcal{O}(n)$ gates at bond dimension two
+for a truncated Gaussian or Lorentzian, and extend to targets
+outside Boyd's class.  Their accuracy is set by the bond dimension
+and is demonstrated numerically at fixed bond dimension on a
+window chosen by the user.  Neither work states how the cost grows
+with $1/\varepsilon$ or with the window, so they are absent from
+Table~\ref{tab:comparison}.
 Convergence data for the targets appear in
 Fig.~\ref{fig:convergence}.
 
@@ -482,6 +506,30 @@ Fig.~\ref{fig:convergence}.
 		The figure is reproduced by the reference
 		implementation (see Data availability).}
 	\label{fig:convergence}
+\end{figure*}
+
+\begin{figure*}[t]
+	\centering
+	\includegraphics[width=\textwidth]{figures/like_for_like.pdf}
+	\caption{Cost of the cotangent grid against the QSVT pipeline
+		of Ref.~\cite{McArdleGilyenBerta2025} at equal $L^2(\R)$
+		error $\varepsilon$.  The cost is the product
+		$d/\mathcal{F}$ of degree and inverse filling fraction,
+		which multiplies $n$ in both gate counts.  (a),~(b) Error
+		against cost for the hyperbolic secant and the Gaussian.
+		\emph{Blue:} truncated Fourier series of the weighted
+		function $G$ at $L=1$ (dashed) and at the $L$ of least cost
+		(solid).  \emph{Shaded:} QSVT pipeline at the
+		$L_{\mathrm{trunc}}$ of least cost, between a polynomial
+		fitted on the window alone and one bounded on all of
+		$[-1,1]$ (Appendix~\ref{app:table}).  (c) Cost against
+		$1/\varepsilon$ for two amplitudes with algebraic tails.
+		\emph{Symbols:} QSVT pipeline, window-only fit, which
+		bounds its cost from below; the dotted lines have slopes
+		$3$ and $1$.  \emph{Dashed:} cotangent grid, where the
+		weighted function is an exact polynomial and the cost is
+		$1$ and $\sqrt2$ at every $\varepsilon$.}
+	\label{fig:like-for-like}
 \end{figure*}
 
 These costs are consistent with Sec.~\ref{sec:limits}.

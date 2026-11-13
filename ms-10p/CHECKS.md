@@ -53,3 +53,18 @@ Verdict matches the plan's expected outcome; no plan contradiction, build procee
   fraction of the uniform-grid method and should be cross-checked against MGB directly.
 - `references_extra.bib`: `NguemtoLeytonOrtega2026` (Re-QGAN companion) needs its arXiv
   number once posted.
+
+## Like-for-like comparison (2026-11-13)
+
+Scripts in `scripts/like_for_like/`, run in the repo `.venv`. Results and the full table are
+in `REFEREE_CHECK_2026-11-12.md`, Part D.
+
+- [x] **Exact quadrature lemma** and **error identity of Theorem 4**: `check_weighted_theorem.py`.
+- [x] **Coefficients of G as tail sums of those of g**: `check_G_coefficients.py`, to 1e-16.
+- [x] **Pair of Lorentzians**, degree and filling fraction: `pair.py`, to 1%.
+- [x] **Constant factors against the QSVT pipeline**, with the boundedness bracket:
+  `qsvt_bounded.py`; figure from `fig_like_for_like.py`.
+- [x] **Tuned L**: `tuned_L.py`; sech exponents 0.66, 0.34, 1.75 against 2/3, 1/3, 7/4.
+- [ ] The "Phase 0" notes above predate this round: the Gaussian exponent is σ = 2/3, and
+  Table 1 no longer has a QET column or a shifted-Lorentzian row.
+
