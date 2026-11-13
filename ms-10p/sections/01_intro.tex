@@ -68,18 +68,21 @@ The freedom the change of variable does not touch is the choice of
 sample points, and we show that state preparation can exploit it.
 To load a function $f$ on $\R$ into the amplitudes of an $n$-qubit
 register we sample it on the grid $y_j=L\cot\theta_j$, with
-$\theta_j$ uniformly spaced.  On this grid $f$ becomes the periodic
-function $g(\theta)=f(L\cot\theta)$ sampled uniformly, which a
-standard Fourier-type QSP circuit loads with a diagonal phase
-operator costing $\mathcal{O}(n)$ gates per call.  Its cost is set
-by the smoothness of $g$, which Boyd's theory of rational Chebyshev
-expansions classifies.  For the centered Lorentzian the pullback is
-the trigonometric polynomial $\sin^2\theta$, and the state costs
-$\mathcal{O}(n)$ gates.  The represented range grows exponentially
-with $n$ and requires no truncation radius.  Existing methods
-sample $f$ on a uniform grid, whereas our state samples it on the
-cotangent grid; Sec.~\ref{subsec:comparison} compares the costs
-with this difference stated.
+$\theta_j$ uniformly spaced, and weight each sample by the square
+root of the local grid spacing.  The amplitudes are then uniform
+samples of the function $G(\theta)=f(L\cot\theta)/\sin\theta$,
+which a standard Fourier-type QSP circuit loads with a diagonal
+phase operator costing $\mathcal{O}(n)$ gates per call.  Its cost
+is set by the smoothness of $G$, which Boyd's theory of rational
+Chebyshev expansions classifies.  The weight makes the map from
+$f$ to $G$ unitary, and the grid sums that define norms and
+overlaps are exact, so the state represents $f$ in the norm of
+$L^2(\R)$ with no discretization error and no truncation radius.
+For the Lorentzian the weighted function is $\sin\theta$, and the
+state is exact at $\mathcal{O}(n)$ gates.  Existing methods sample
+$f$ on a uniform grid over a finite window and represent the same
+function up to the discarded tail; Sec.~\ref{subsec:comparison}
+compares the costs at equal $L^2$ error.
 
 Section~\ref{sec:projective} reviews standard QSP, introduces the
 stereographic coordinate, and derives its completeness theorem and

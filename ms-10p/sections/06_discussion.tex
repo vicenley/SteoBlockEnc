@@ -14,27 +14,32 @@ block-encoded matrix the change of variable is only a relabeling:
 the expansion coefficients, the approximation error at every
 degree, and its rate of decay coincide in every coordinate.  What
 the coordinate does provide is a choice of sample points for state
-preparation.  On the cotangent grid a function on $\R$ becomes a
-periodic function on a uniform angular grid, which a standard
-Fourier-type QSP circuit loads.  The cost is $\mathcal{O}(n)$ gates
-for centered Lorentzians, $\mathcal{O}(n\log^2(1/\varepsilon))$ for the
-hyperbolic secant, and $\mathcal{O}(n\log^{3/2}(1/\varepsilon))$ for
-the Gaussian, with two ancilla qubits and a represented range that
-grows exponentially with $n$.
+preparation.  On the cotangent grid a function on $\R$, weighted
+by the square root of the grid spacing, becomes a function on a
+uniform angular grid, which a standard Fourier-type QSP circuit
+loads.  The state represents the function in the norm of
+$L^2(\R)$, and its error is the approximation error alone.  The
+cost is $\mathcal{O}(n)$ gates, with no error, for Lorentzians and
+other amplitudes with algebraic tails, for which a uniform grid
+pays a power of $1/\varepsilon$; it is
+$\mathcal{O}(n\log^2(1/\varepsilon))$ for the hyperbolic secant and
+$\mathcal{O}(n\log^{3/2}(1/\varepsilon))$ for the Gaussian.  The
+circuit uses two ancilla qubits.
 
-These results have three limitations.  First, the prepared state
-lives on the cotangent grid.  It is a different state from the
-uniform-grid states of existing methods, and a task that needs the
-uniform grid must pay for regridding, which we have not analyzed.
-Second, the cost depends on where the target sits relative to the
-grid: a Lorentzian of width $b$ shifted by $|a|\gg b$ costs a
-factor $(|a|/b)^{3/2}$ more than the centered one, and the Gaussian
-is slower than every existing method we compared.  Third, the
+These results have three limitations.  First, the comparison
+identifies a state on the cotangent grid with the function that
+interpolates its amplitudes in the rational Chebyshev basis.  A
+task that needs the amplitudes on a uniform grid must pay for
+regridding, which we have not analyzed.  Second, the grid is dense
+at one point only: two Lorentzians of width $b$ separated by
+$2|a|\gg b$ cost a factor $(|a|/b)^{3/2}$ more than a single one,
+and the Gaussian is slower than the QSVT pipeline by
+$\log^{1/4}(1/\varepsilon)$.  Third, the
 construction requires a signal operator whose eigenphases we
 choose; it does not extend to a block-encoded Hamiltonian with
 given eigenvalues, for which Sec.~\ref{sec:limits} shows that no
 change of variable helps.  A natural next step is to identify
-which downstream tasks, such as quadrature with the weighted states
-of Sec.~\ref{subsec:quadrature}, can use the cotangent-grid state
-directly, since for those tasks the comparison with uniform-grid
-methods becomes a comparison of equal outputs.
+downstream tasks that consume the state through the overlaps of
+Sec.~\ref{subsec:quadrature}, which are exact integrals over the
+real line, and to compare constant factors with the QSVT pipeline
+for the targets whose scalings are close.
