@@ -33,13 +33,14 @@ task that needs the amplitudes on a uniform grid must pay for
 regridding, which we have not analyzed.  Second, the grid is dense
 at one point only: two Lorentzians of width $b$ separated by
 $2|a|\gg b$ cost a factor $(|a|/b)^{3/2}$ more than a single one,
-and the Gaussian is slower than the QSVT pipeline by
-$\log^{1/4}(1/\varepsilon)$.  Third, the
+and for the Gaussian the cotangent grid has no advantage: its
+scaling is worse than that of the QSVT pipeline by
+$\log^{1/4}(1/\varepsilon)$, and its measured cost is within a
+factor $1.3$ of it.  Third, the
 construction requires a signal operator whose eigenphases we
 choose; it does not extend to a block-encoded Hamiltonian with
 given eigenvalues, for which Sec.~\ref{sec:limits} shows that no
 change of variable helps.  A natural next step is to identify
 downstream tasks that consume the state through the overlaps of
 Sec.~\ref{subsec:quadrature}, which are exact integrals over the
-real line, and to compare constant factors with the QSVT pipeline
-for the targets whose scalings are close.
+real line.

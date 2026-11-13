@@ -348,8 +348,10 @@ approximate the same unit vector of $L^2(\R)$, and
 Table~\ref{tab:comparison} compares their gate counts at equal
 $L^2$ error $\varepsilon$.  Appendix~\ref{app:table} derives each
 entry under one accounting, gate count $=n\times$ (polynomial
-degree) $\times\,1/\mathcal{F}$.  We neglect the discretization
-error of the uniform grid, which favors the QSVT pipeline.
+degree) $\times\,1/\mathcal{F}$.  For the QSVT pipeline we neglect
+the discretization error of the uniform grid and the degree needed
+to keep its polynomial bounded outside the window; both omissions
+favor that method.
 
 \begin{table}[t]
 	\caption{Gate complexity for preparing an $n$-qubit state that
@@ -408,6 +410,19 @@ as $(|a|/b)^{3/2}\lesssim\varepsilon^{-1}$.  The two-ancilla budget
 the QSVT pipeline, which uses four in the general case and three
 under parity, because the diagonal signal $e^{iA}$ needs no
 separate block-encoding ancilla.
+
+The scalings of the hyperbolic secant and the Gaussian are close,
+so we also compared constant factors.  For
+$\varepsilon$ between $10^{-2}$ and $10^{-6}$ we minimized the
+product $d/\mathcal{F}$, which multiplies $n$ in both gate counts,
+over the free parameter of each method: $L$ on the cotangent grid
+and $L_{\mathrm{trunc}}$ for the QSVT pipeline
+(Appendix~\ref{app:table}).  For the hyperbolic secant the product
+on the cotangent grid is $5$ to $8$ times smaller than for the QSVT
+pipeline.  For the Gaussian it lies between $0.9$ and $1.3$ times
+the QSVT value.  For the Lorentzian it is $\sqrt2$ against about
+$400$ at $\varepsilon=10^{-2}$ and about $6\times10^{3}$ at
+$\varepsilon=10^{-3}$.
 
 Two linear-depth constructions also prepare such profiles on a
 uniform grid over a finite window: the Schmidt-decomposition

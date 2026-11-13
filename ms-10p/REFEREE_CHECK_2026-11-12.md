@@ -7,7 +7,7 @@ State of the repo: commits `20b1760` (restructure), `f4819bd` (prose pass) and `
 
 ## Open questions to decide
 
-1. **Do the like-for-like comparison (item 4)?** A downstream task, most naturally the weighted
+1. **Do the like-for-like comparison (item 4)?** *Done 2026-11-13, see Part D.* A downstream task, most naturally the weighted
    quadrature of Sec. IV F, where the cotangent-grid state is used directly and its total cost
    is compared with the uniform-grid route. This is new analysis, not editing, and it decides
    whether the paper is submittable as more than a note. Scoped in Part C, which ends with
@@ -150,9 +150,11 @@ text now adds that our cost stays below this estimate as long as (|a|/b)^{3/2} �
 
 ### B4. Still open after the fixes
 
-- **Lemma 6 statement and any sech/Lorentzian results in McArdle et al.:** check the PDF
-  directly before submission.
-- **Bib year:** the McArdle entry says 2025 (the v2 date) for a 2022 arXiv id.
+- ~~Lemma 6 statement and any sech/Lorentzian results in McArdle et al.~~ Checked against the
+  v2 PDF on 2026-11-13: Lemma 6 exists (Appendix C.1), and the paper has no Lorentzian, Cauchy
+  or sech result. See Part D.
+- **Bib year:** the McArdle entry says 2025 (the v2 date) for a 2022 arXiv id. The arXiv page
+  lists no journal reference, so the entry is acceptable as an arXiv v2 citation.
 - **Proposition 2 looseness:** see A2.
 - **Fig. 2 data** not regenerated since the restructure; `scripts/check_sech_class.py` still
   labels the Gaussian a σ ≈ 1/2 "control" (correct value: 2/3).
@@ -255,3 +257,60 @@ applied coherently in the θ coordinate and is closer to a separate paper than a
 
 If 1 and 2 are agreed, the next step is work item 1, ending with a re-derived Table I before
 any manuscript edit.
+
+---
+
+## Part D. Like-for-like comparison carried out (2026-11-13)
+
+Commit `edb0980` put the weighted state and the new Theorem 4 into Sec. IV. The follow-up
+edits described in D3 are not committed yet.
+
+### D1. What the paper now claims
+
+- **Common yardstick:** L²(ℝ) distance between the normalized target and the function the
+  state represents. The weighted state has amplitudes f(y_j)/sin θ_j; L and the grid centre
+  y₀ are free.
+- **Theorem 4:** for a pure-parity trigonometric polynomial p of degree d < N, cost
+  O(n·d/F_p), two ancillas, and L²(ℝ) error equal to the approximation error of G by p.
+  No discretization term; F_p is exact.
+- **Table I:** QSVT pipeline against this work only. Algebraic tails are exact at O(n);
+  sech wins by log^(1/2); the Gaussian loses by log^(1/4); two peaks at ±a cost (|a|/b)^(3/2).
+- **GC and SH** are out of the table and described in a paragraph.
+
+### D2. Checks made
+
+| Item | Result |
+|---|---|
+| Exact quadrature lemma | discrete and continuum norms agree to 4×10⁻¹⁶ for pure parity, d = N−1 |
+| Error identity of Theorem 4 | L²(ℝ) and L²(0,π) errors agree to 4 digits (sech, Gaussian) |
+| Pair of Lorentzians | d = 2(a/b)·ln(1/ε) and F = (b/2a)^(1/2), both to 1% |
+| G against g decay rate | fitted σ = 0.50 (sech) and 0.65 (Gaussian) for G; same class as g |
+| GQSP completeness | Motlagh–Wiebe Corollary 5: any P with \|P\| ≤ 1 on the circle, d signal calls, d+1 rotations |
+| McArdle Theorem 1 (v2) | O(n·d/F) gates, at most 3 ancillas for definite parity (abstract: 4 in general) |
+| McArdle boundedness | they multiply by a threshold function and "expect a modest increase in the degree"; not counted in their bound |
+
+### D3. Constant factors (product d/F at each method's best parameter)
+
+The QSVT value is bracketed: lower bound from a fit on the window only, upper bound from a
+polynomial that is bounded on all of [−1, 1].
+
+| ε | sech: ours / QSVT | Gaussian: ours / QSVT | Lorentzian: ours / QSVT |
+|---|---|---|---|
+| 10⁻² | 5.5 / 33–42 | 13 / 11–14 | 1.4 / 382–447 |
+| 10⁻³ | 18 / 90–101 | 27 / 20–24 | 1.4 / 5500–6600 |
+| 10⁻⁴ | 34 / 163–195 | 40 / 31–35 | not run |
+| 10⁻⁵ | 48 / 281–330 | 56 / 42–51 | not run |
+| 10⁻⁶ | 68 / 432–508 | 69 / 53–62 | not run |
+
+These numbers are now quoted in Sec. IV G and Appendix D. Scripts: `scripts/like_for_like/`
+(`like4like.py`, `qsvt_bounded.py`, `check_weighted_theorem.py`, `pair.py`, `rates.py`).
+
+### D4. Still open
+
+- **Tuned-L exponents** for sech and the Gaussian are not proved; the paper quotes fixed-L rates.
+- **"G decays like g"** is argued for the targets used and checked numerically, not proved in general.
+- **GC and SH** dependence on ε in the L² measure is not derived.
+- **Fig. 2** still shows the unweighted pullback in sup norm; the caption says so.
+- **Proposition 2 looseness, authorship voice, companion citations, title:** unchanged from B4
+  and the open questions above.
+

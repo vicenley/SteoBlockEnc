@@ -270,7 +270,7 @@ $q(w)=\sum_{m=0}^{d}c_{2m-d}\,w^m$, which is
 Eq.~\eqref{eq:factorization}, and
 $|q(e^{2i\theta})|=|p(\theta)|\le1$ on the unit circle.  By the
 completeness theorem of generalized
-QSP~\cite{MotlaghWiebe2023}, there are $d+1$ rotations of the
+QSP~\cite[Cor.~5]{MotlaghWiebe2023}, there are $d+1$ rotations of the
 signal ancilla which, interleaved with $d$ applications of the
 controlled $e^{2iA}$, place $q(e^{2iA})$ in the flagged block.
 Since $A=\sum_j\theta_j\ket{j}\!\bra{j}$ is diagonal, this block is
@@ -416,6 +416,27 @@ $\mathcal{F}=\mathcal{O}((b/L_{\mathrm{trunc}})^{1/2})$, so the cost
 is $\mathcal{O}(n\,\varepsilon^{-1}\log(1/\varepsilon))$, provided
 the window contains both peaks,
 $|a|\lesssim b\,\varepsilon^{-2/3}$.
+
+\emph{Constant factors.}  The QSVT polynomial must be bounded by
+one on all of $[-1,1]$, while it approximates the target only on
+$[-\sin1,\sin1]$; Ref.~\cite{McArdleGilyenBerta2025} expects the
+resulting increase of the degree to be modest, and the estimates
+above do not count it.  To bound its effect we computed the product
+$d/\mathcal{F}$ at the best $L_{\mathrm{trunc}}$ in two ways.  A
+fit on the window alone, with no condition outside it, bounds the
+product from below.  The Chebyshev series of
+$f(L_{\mathrm{trunc}}\arcsin s)$ on the full interval, which is
+bounded there by $\max|f|$, bounds it from above.  The two differ
+by at most $30\%$ for the targets and errors of
+Sec.~\ref{subsec:comparison}.  For the cotangent grid we used the
+truncated Fourier series of $G$ at the best $L$.  At
+$\varepsilon=10^{-2}$, $10^{-4}$, and $10^{-6}$ the products are
+$5.5$, $34$, and $68$ for the hyperbolic secant, against QSVT
+intervals $[33,42]$, $[163,195]$, and $[432,508]$; and $13$, $40$,
+and $69$ for the Gaussian, against $[11,14]$, $[31,35]$, and
+$[53,62]$.  For the Lorentzian the product on the cotangent grid is
+$\sqrt2$, against $[382,447]$ at $\varepsilon=10^{-2}$ and
+$[5.5,6.6]\times10^{3}$ at $\varepsilon=10^{-3}$.
 
 \emph{Ancilla row.}  The QSVT pipeline uses four ancillas in the
 general case and three under parity~\cite{McArdleGilyenBerta2025}.
