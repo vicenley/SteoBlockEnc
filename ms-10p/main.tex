@@ -77,19 +77,28 @@
 \date{\today}
 
 \begin{abstract}
-	We formulate quantum signal processing in the stereographic
+	Quantum signal processing acts on a signal confined to a bounded
+	interval, so a target defined on the whole real line must be
+	truncated and rescaled before it can be implemented.  We
+	formulate quantum signal processing in the stereographic
 	coordinate, the cotangent of the signal angle, which covers the
 	whole real line.  The resulting circuit is the standard one
-	conjugated by a fixed gate, and for functions of a block-encoded
-	matrix the change of variable leaves the approximation error at
-	every degree unchanged.  It does lower the cost of state
-	preparation, where the sample points can be chosen.  We show
-	that a function sampled on a cotangent grid, with each sample
-	weighted by the square root of the local spacing, is represented
-	on the whole real line without truncation.  Lorentzian profiles
-	and other amplitudes with algebraic tails are prepared exactly
-	with a gate count linear in the number of qubits, whereas
-	uniform-grid methods pay a power of the inverse error.
+	conjugated by a fixed gate.  Its unbounded output is the ratio
+	of two measured amplitudes, at a sampling cost that grows as the
+	fourth power of the value read out.  For functions of a
+	block-encoded matrix the change of variable leaves the
+	approximation error at every degree unchanged.  It does lower
+	the cost of state preparation, where the sample points can be
+	chosen.  We show that a function sampled on a cotangent grid,
+	with each sample weighted by the square root of the local
+	spacing, is represented on the whole real line without
+	truncation.  Lorentzian profiles and other amplitudes with
+	algebraic tails are prepared exactly with a gate count linear in
+	the number of qubits, whereas uniform-grid methods pay a power of
+	the inverse error.  For the hyperbolic secant the gate count is
+	polylogarithmic in the inverse error and lower than that of
+	existing methods, and for the Gaussian the cotangent grid has no
+	advantage.
 \end{abstract}
 
 \maketitle
