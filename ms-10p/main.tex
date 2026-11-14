@@ -77,34 +77,19 @@
 \date{\today}
 
 \begin{abstract}
-	Quantum signal processing produces polynomial transformations of
-	a signal confined to a bounded interval, so targets defined on
-	the whole real line must be truncated and rescaled before they
-	can be implemented.  We ask whether a change of variable removes
-	this restriction, that is, whether a target that is costly as a
-	polynomial in the standard variable becomes cheap when written in
-	a coordinate that covers the whole line.  We study the
-	stereographic coordinate, in which the signal is the cotangent of
-	the eigenphase and the natural basis is Boyd's family of rational
-	Chebyshev functions.  The stereographic form of quantum signal
-	processing is the standard form conjugated by a fixed gate, so
-	its achievable polynomials and its phases follow from the
-	standard theory, and its unbounded output is a ratio of two
-	amplitudes formed after measurement.  For functions of a
-	block-encoded matrix the change of variable gives no advantage: the
-	achievable set, the expansion coefficients, and the approximation
-	error at every degree coincide in every coordinate.  For state
-	preparation the remaining freedom is the choice of sample points,
-	and sampling on a cotangent grid turns a function on the real line
-	into a function on a uniform angular grid, which standard
-	Fourier-type circuits load at a cost set by its smoothness.  With
-	each sample weighted by the square root of the local grid
-	spacing, the state represents the function in the
-	square-integrable norm of the real line, with no discretization
-	error and no truncation radius.  Lorentzian profiles and other
-	amplitudes with algebraic tails are prepared exactly with a gate
-	count linear in the number of qubits, whereas a uniform grid pays
-	a power of the inverse error to truncate the tail.
+	We formulate quantum signal processing in the stereographic
+	coordinate, the cotangent of the signal angle, which covers the
+	whole real line.  The resulting circuit is the standard one
+	conjugated by a fixed gate, and for functions of a block-encoded
+	matrix the change of variable leaves the approximation error at
+	every degree unchanged.  It does lower the cost of state
+	preparation, where the sample points can be chosen.  We show
+	that a function sampled on a cotangent grid, with each sample
+	weighted by the square root of the local spacing, is represented
+	on the whole real line without truncation.  Lorentzian profiles
+	and other amplitudes with algebraic tails are prepared exactly
+	with a gate count linear in the number of qubits, whereas
+	uniform-grid methods pay a power of the inverse error.
 \end{abstract}
 
 \maketitle
