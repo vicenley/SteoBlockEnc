@@ -63,7 +63,7 @@
 
 \begin{document}
 
-\title{Stereographic quantum signal processing and state preparation on the real line}
+\title{Quantum state preparation on the real line with stereographic quantum signal processing}
 
 \thanks{This manuscript has been authored by UT-Battelle, LLC, under Contract No.\ DE-AC05-00OR22725 with the U.S.\ Department of Energy (DOE). The United States Government retains and the publisher, by accepting the article for publication, acknowledges that the United States Government retains a non-exclusive, paid-up, irrevocable, world-wide license to publish or reproduce the published form of this manuscript, or allow others to do so, for United States Government purposes. The Department of Energy will provide public access to these results of federally sponsored research in accordance with the DOE Public Access Plan.}
 
@@ -77,34 +77,29 @@
 \date{\today}
 
 \begin{abstract}
-	Quantum signal processing acts on a signal confined to a bounded
-	interval, so a target defined on the whole real line must be
-	truncated and rescaled before it can be implemented.  We
-	formulate quantum signal processing in the stereographic
-	coordinate, the cotangent of the signal angle, which covers the
-	whole real line.  The resulting circuit is the standard one
-	conjugated by a fixed gate.  Its unbounded output is the ratio
-	of two measured amplitudes, at a sampling cost that grows as the
-	fourth power of the value read out.  For functions of a
-	block-encoded matrix the change of variable leaves the
-	approximation error at every degree unchanged.  It does lower
-	the cost of state preparation, where the sample points can be
-	chosen.  We show that a function sampled on a cotangent grid,
-	with each sample weighted by the square root of the local
-	spacing, is represented on the whole real line without
-	truncation, by interpolation in rational Chebyshev functions.
-	Overlaps and a class of expectation values of such states are
-	exact integrals over the real line, but the states are not
-	samples on a uniform grid.  The state is the quantum Fourier
-	transform of a short coefficient vector, whose length is set by
-	the smoothness of the weighted function.  Lorentzian profiles
-	and related amplitudes with algebraic tails are prepared
-	exactly, with a gate count linear in the number of qubits,
-	whereas on a uniform grid the required Fourier length or
-	polynomial degree grows as a power of the inverse error.  For
-	the hyperbolic secant the length is polylogarithmic in the
-	inverse error and lower than our estimate for the uniform grid,
-	and for the Gaussian the two grids scale alike.
+	Preparing a function defined on the whole real line as a quantum
+	state on a uniform grid requires truncation, and for algebraic
+	tails the required Fourier length or polynomial degree grows as
+	a power of the inverse error.  We formulate quantum signal
+	processing in the stereographic coordinate, the cotangent of the
+	signal angle, and use it to prepare states on a cotangent grid,
+	which covers the whole real line.  For functions of a block-
+	encoded matrix the change of variable leaves the approximation
+	error at every degree unchanged.  The unbounded output is a
+	ratio of two amplitudes, read out at a sampling cost that grows
+	as the fourth power of its value.  The gain is in state
+	preparation, where the sample points can be chosen.  With each
+	sample weighted by the square root of the local spacing, the
+	state is the quantum Fourier transform of a short coefficient
+	vector.  Lorentzian profiles and related amplitudes with
+	algebraic tails are prepared exactly, with a gate count linear
+	in the number of qubits.  For the hyperbolic secant the vector
+	length is polylogarithmic in the inverse error and lower than
+	our estimate for the uniform grid.  For the Gaussian the two
+	grids scale alike.  The state represents the function by
+	interpolation and is not a set of samples on a uniform grid.
+	Its overlaps and a class of its expectation values are exact
+	integrals over the real line.
 \end{abstract}
 
 \maketitle

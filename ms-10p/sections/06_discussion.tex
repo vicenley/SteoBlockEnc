@@ -2,18 +2,20 @@
 \section{Discussion}
 \label{sec:discussion}
 
-We asked whether rewriting QSP in a coordinate that covers the
-whole real line makes targets on the real line cheaper.  In the
-stereographic coordinate $x=\cot\theta$, a QSP sequence is the
-standard sequence conjugated by a fixed gate.  Its achievable
+To conclude, we have formulated QSP in the stereographic
+coordinate $x=\cot\theta$, which covers the whole real line, and
+have used it to prepare functions on the real line as quantum
+states without truncation.  In this coordinate a QSP sequence is
+the standard sequence conjugated by a fixed gate.  Its achievable
 polynomials and its phases therefore follow from the standard
 theory, and its unbounded output is the ratio of two bounded
-amplitudes, formed after measurement at a shot cost that grows as
-the fourth power of the value read out.  For functions of a
+amplitudes, whose estimation requires a number of shots that grows
+as the fourth power of its value.  For functions of a
 block-encoded matrix the change of variable is only a relabeling:
 the expansion coefficients, the approximation error at every
-degree, and its rate of decay coincide in every coordinate.  What
-the coordinate does provide is a choice of sample points for state
+degree, and its rate of decay coincide in every coordinate.
+
+What the coordinate does provide is a choice of sample points for state
 preparation.  On the cotangent grid a function on $\R$, weighted
 by the square root of the grid spacing, becomes a function on a
 uniform angular grid, which a standard Fourier-type QSP circuit
@@ -24,7 +26,8 @@ with $\mathcal{O}(nd/\mathcal{F})$ gates and two ancillas.  The
 signal of that circuit is the Cayley transform of the position
 operator of the grid, and its success amplitude is the inverse
 square root of the rejection-sampling constant of the target
-against a Cauchy proposal, so a heavy tail costs nothing.  The
+against a Cauchy proposal, which is of order one for a single peak
+with a tail no heavier than $1/|y|$.  The
 degree $d$ is independent of $\varepsilon$ for Lorentzians and the
 amplitudes $(1+y^2)^{-m/2}$, for which a uniform grid needs a
 degree that grows as a power of $1/\varepsilon$.  It is
@@ -48,7 +51,9 @@ construction requires a signal operator whose eigenphases we
 choose, the Cayley transform of a diagonal position operator.  For
 a block-encoded Hamiltonian with given eigenvalues the Cayley
 transform costs a linear solve~\cite{DelCorso2026}, and
-Sec.~\ref{sec:limits} shows that no change of variable helps.  A natural next step is to identify
+Sec.~\ref{sec:limits} shows that no change of variable helps.
+
+A natural next step is to identify
 tasks that consume the state through the overlaps and expectation
 values of Sec.~\ref{subsec:quadrature}, which are exact integrals
 over the real line.  One candidate is amplitude estimation of

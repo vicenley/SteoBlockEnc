@@ -2,178 +2,110 @@
 \section{Introduction}
 \label{sec:intro}
 
-Quantum signal processing (QSP) applies a polynomial to a scalar
-signal by interleaving a fixed single-qubit rotation, whose angle
-encodes the signal, with single-qubit phase rotations whose angles
-are free parameters~\cite{LowChuang2017,GSLW2019}.  The signal
-$\tilde x$ lives on the interval $[-1,1]$, and after $d$ rotations
-one matrix element of the circuit is a polynomial $P(\tilde x)$ of
-degree at most $d$ with $|P|\le 1$.  Conversely, a completeness
-theorem states exactly which polynomials, characterized by a
-degree, a parity, and a normalization condition, are reachable by
-some choice of phases.  In the
-quantum singular value transformation the signal is an eigenvalue
-or singular value of a block-encoded matrix, and the same
-construction applies a polynomial to the whole
-matrix~\cite{GSLW2019,MartynRossiTanChuang2021}.  The interval
-$[-1,1]$ is therefore built into every QSP-based algorithm.  A
-target defined on the whole real line, such as a Lorentzian or a
-Gaussian amplitude profile, must first be truncated to a finite
-window and rescaled into the interval, and the cost then grows
-with the window size~\cite{McArdleGilyenBerta2025}.
+The efficient preparation of a quantum register in a state whose
+amplitudes follow a prescribed function is a key component of many
+quantum algorithms.  Simulations of quantum field theories start
+from wave packets~\cite{JordanLeePreskill2012}, grid-based
+simulations of chemistry start from localized electronic
+orbitals~\cite{ChanMeisterEtAl2022,KosugiEtAl2025}, and the Monte
+Carlo pricing of financial derivatives starts from a price
+distribution~\cite{StamatopoulosEtAl2020}.  Further examples are
+the basis and boundary functions of the finite element
+method~\cite{MontanaroPallister2016}, the initial data of
+differential equations~\cite{BerryChildsOstranderWang2017}, and
+the prior distributions used in phase
+estimation~\cite{BerryEtAl2022QPE}.  In many of these applications
+the function is defined on the whole real line, where it decays
+exponentially or only algebraically, whereas the register offers
+a finite number of basis states.
 
-It is natural to ask whether a change of variable removes this
-restriction: whether a target that is costly as a polynomial in
-$\tilde x$ becomes cheap when written in a coordinate that covers
-the whole line.  Three coordinates for the same QSP circuit are
-already in use.  The original formulation of Low and
-Chuang~\cite{LowChuang2017} works with the rotation angle $\theta$
-and produces trigonometric polynomials.  The formulation of
-Gily\'en, Su, Low, and Wiebe~\cite{GSLW2019} works with
-$\tilde x=\cos\theta$ and produces ordinary polynomials.
-Generalized QSP~\cite{MotlaghWiebe2023} works with
-$e^{i\theta}$ on the unit circle, allows arbitrary $\SU(2)$
-rotations in place of the phase rotations, and produces Laurent
-polynomials; this form was identified with the $\SU(2)$ nonlinear
-Fourier transform by Alexis, Mnatsakanyan, and
-Thiele~\cite{AlexisMnatsakanyanThiele2024,AlexisBeckerEtAl2026} and
-by Laneve~\cite{Laneve2025b}, and its phases are computed by the
-layer-stripping algorithm of Ni, Sarkar, Ying, and
-Lin~\cite{NiSarkarYingLin2025}.  None of these coordinates covers
-the real line.  The coordinate that does is $x=\cot\theta$, which
-maps the circle onto $\R\cup\{\infty\}$ and in which the natural
-basis is Boyd's family of rational Chebyshev
-functions~\cite{Boyd1987b,Boyd1990}.  We call it the stereographic
-coordinate, because $x$ is the stereographic projection of the
-point $e^{2i\theta}$ of the unit circle onto the real line.
-Figure~\ref{fig:charts} collects the four coordinates and the
-changes of variable that relate them.
+Several schemes exist for this task.  The proposal of Grover and
+Rudolph~\cite{GroverRudolph2002} computes the amplitudes with
+coherent arithmetic, the cost of which dominates the circuit.
+More recent schemes avoid the arithmetic.  In the scheme of
+McArdle, Gily\'en, and Berta~\cite{McArdleGilyenBerta2025}, the
+quantum singular value transformation applies a polynomial
+approximation of the function to a simple diagonal operator, and
+amplitude amplification then raises the success probability.
+Alternatively, the leading Fourier coefficients of the function
+are loaded into a few qubits and a quantum Fourier transform
+distributes them over the register~\cite{MoosaEtAl2023}, or the
+state is written as a matrix product state of small bond
+dimension~\cite{HolmesMatsuura2020,SanoHamamura2025}.  All these
+schemes sample the function on a uniform grid over a finite
+window.  Hence, the tails outside the window are discarded, and
+the window has to be chosen large enough for the discarded weight
+to stay below the tolerated error.  For a Gaussian this is
+harmless, since the tails are negligible beyond a few widths.  For
+a Lorentzian, however, the tails decay only algebraically, so that
+the window, and with it the polynomial degree or the number of
+Fourier modes, grows as a power of the inverse error.
 
-Here we answer the question in two parts.  First, we write QSP in
-the stereographic coordinate and show that the resulting circuit
-is the standard QSP circuit conjugated by one fixed gate.  Its
-achievable polynomials, its phases, and its completeness theorem
-therefore follow from the standard theory.  The circuit itself
-remains bounded; what is unbounded is the ratio $P/Q$ of the two
-amplitudes of its output qubit, which is a rational function of
-$x$ on the whole real line and is formed after measurement at a
-sampling cost that we quantify.  Second, we show that for
-functions of a block-encoded matrix the change of variable gives
-no advantage.  A polynomial of degree $d$ in $\tilde x$ is a rational
-Chebyshev expansion of degree $d$ in $x$ with the \emph{same}
-coefficients, so the achievable set and the approximation error at
-every degree are identical in all four coordinates.
+Clearly, it would be desirable to work on a grid which covers the
+whole real line, so that no truncation is needed.  Such grids are
+well known in numerical analysis.  In the rational Chebyshev
+methods of Boyd~\cite{Boyd1987b,Boyd1990}, the points are placed
+at $y_j=L\cot\theta_j$ with equally spaced angles $\theta_j$.  The
+resulting grid is dense near the center, becomes sparse in the
+tails, and reaches infinity with a finite number of points.  A
+function with slowly decaying tails thereby turns into a smooth
+function of the angle, which is described by a few Fourier
+coefficients.  Yet, to our knowledge, this change of variable has
+not been used for the preparation of quantum states; a nonuniform
+grid was suggested in Ref.~\cite{RattewKoczor2022}, without a
+construction.
 
-The freedom the change of variable does not touch is the choice of
-sample points, and we show that state preparation can exploit it.
-To load a function $f$ on $\R$ into the amplitudes of an $n$-qubit
-register we sample it on the grid $y_j=L\cot\theta_j$, with
-$\theta_j$ uniformly spaced, and weight each sample by the square
-root of the local grid spacing.  The amplitudes are then uniform
-samples of the function $G(\theta)=f(L\cot\theta)/\sin\theta$.
-They are loaded either by a quantum Fourier transform of the
-Fourier coefficients of $G$, or by a Fourier-type QSP circuit whose
-signal is a diagonal phase operator costing $\mathcal{O}(n)$ gates
-per call.  This operator is the Cayley transform of the position
-operator of the grid, so the second circuit is QSP of an unbounded
-operator.  In both circuits the cost is set by the smoothness of
-$G$, which Boyd's theory of rational Chebyshev expansions
-classifies.  The weight makes the map from $f$ to $G$ unitary, and
-the grid sums that define norms and overlaps are exact, so the
-state represents $f$ in the norm of $L^2(\R)$ with no
-discretization error and no truncation radius.  The representation
-is by interpolation in rational Chebyshev functions: the state
-gives overlaps and a class of expectation values as exact
-integrals over $\R$, but it is not a set of samples of $f$ on a
-uniform grid.  For the Lorentzian the weighted function is
-$\sin\theta$, and the state is exact at $\mathcal{O}(n)$ gates.
-The success amplitude of the QSP circuit equals $M^{-1/2}$, where
-$M$ is the constant of classical rejection sampling of $|f|^2$ from
-a Cauchy proposal; it is of order one for a single peak with a
-tail no heavier than $1/|y|$.  Constructions on a uniform grid
-sample $f$ over a finite window and represent the same function up
-to the discarded tail; Sec.~\ref{subsec:comparison} compares the
-costs at equal $L^2$ error.
+The same coordinate arises in quantum signal processing (QSP), the
+framework behind the quantum singular value transformation.  QSP
+applies a polynomial to a signal which is encoded in the angle
+$\theta$ of a single-qubit rotation~\cite{LowChuang2017,GSLW2019},
+and the quantum singular value transformation extends it to the
+singular values of a block-encoded
+matrix~\cite{GSLW2019,MartynRossiTanChuang2021}.  The existing
+formulations describe the signal by the rotation
+angle~\cite{LowChuang2017}, by its cosine~\cite{GSLW2019}, or by a
+point of the unit circle~\cite{MotlaghWiebe2023}.  In each of them
+the signal is confined to a bounded set, so that a target defined
+on the real line must again be truncated and rescaled.  The
+cotangent $x=\cot\theta$, in turn, covers the whole real line, and
+we call it the stereographic coordinate.
 
-Section~\ref{sec:projective} reviews standard QSP, introduces the
-stereographic coordinate, and derives its completeness theorem and
-read-out.  Section~\ref{sec:limits} shows that a change of variable
-cannot accelerate a block-encoded matrix function.
+In this paper, we formulate QSP in the stereographic coordinate
+and use it to prepare states on the cotangent grid.  We first show
+that the resulting circuit is the standard QSP circuit conjugated
+by one fixed gate, so that its phases and its completeness theorem
+follow directly from the standard theory.  The circuit itself
+remains bounded, and the unbounded quantity is the ratio of the
+two amplitudes of the output qubit, which is formed after
+measurement at a sampling cost that grows as the fourth power of
+the value read out.  We then turn to functions of a block-encoded
+matrix and find that the change of variable gives no advantage
+there, since the achievable functions and the approximation error
+at every degree are the same in all coordinates.  The advantage
+arises in state preparation, where the sample points can be chosen
+freely.  We show that a function sampled on the cotangent grid,
+with each sample weighted by the square root of the local grid
+spacing, is loaded either by a quantum Fourier transform of a
+short coefficient vector or by a QSP circuit, and that in both
+cases the cost is set by the smoothness of the function in the
+angle.  In particular, the Lorentzian and related amplitudes with
+algebraic tails are prepared exactly, with a gate count which is
+linear in the number of qubits.  For the hyperbolic secant the
+cost is lower than our estimate for the uniform grid, whereas for
+the Gaussian the two grids scale alike.  We emphasize that the
+prepared state represents the function by interpolation and
+differs from a set of samples on a uniform grid.  Nevertheless,
+its overlaps and a class of its expectation values are exact
+integrals over the real line.
+
+The paper is organized as follows.  In Sec.~\ref{sec:projective},
+we review standard QSP, introduce the stereographic coordinate,
+and derive its completeness theorem and the read-out.  In
+Sec.~\ref{sec:limits}, we show that a change of variable cannot
+accelerate a block-encoded matrix function.
 Section~\ref{sec:stateprep} develops the state-preparation
-algorithm and compares it with existing methods.
-Section~\ref{sec:discussion} summarizes the results and their
-limitations.  The extension to complex signals and its relation to
-the nonlinear Fourier transform are given in
+algorithm and compares it with existing methods.  Finally, we
+summarize the results and their limitations in
+Sec.~\ref{sec:discussion}.  The extension to complex signals and
+its relation to the nonlinear Fourier transform are given in
 Appendix~\ref{app:thm-gen}.
-
-\begin{figure*}[t]
-	\centering
-	\begin{tikzpicture}[
-		>=Stealth,
-		every node/.style={font=\small},
-		picnode/.style={
-			rectangle, rounded corners=2pt, draw=black!60,
-			thick, align=center, inner sep=5pt, minimum width=3.1cm
-		},
-		fourier/.style    ={picnode, fill=violet!10},
-		chebyshev/.style  ={picnode, fill=blue!10},
-		gqsp/.style       ={picnode, fill=orange!10},
-		ratcheb/.style    ={picnode, fill=teal!10},
-		edgelab/.style    ={font=\footnotesize, midway, sloped},
-	]
-	\node[fourier]   (F)  at (-4.0,  1.8) {%
-		\textbf{Fourier} \\[1pt]
-		$\theta \in (0,\pi)$ \\
-		$\cos k\theta,\ \sin k\theta$};
-	\node[chebyshev] (C)  at ( 4.0,  1.8) {%
-		\textbf{Chebyshev} \\[1pt]
-		$\tilde x \in (-1,1)$ \\
-		$T_k(\tilde x),\ U_{k-1}(\tilde x)\sqrt{1-\tilde x^2}$};
-	\node[gqsp]      (G)  at (-4.0, -1.8) {%
-		\textbf{Unit circle} \\[1pt]
-		$w \in \T$ \\
-		$w^k+w^{-k},\ w^k-w^{-k}$};
-	\node[ratcheb]   (R)  at ( 4.0, -1.8) {%
-		\textbf{Stereographic} \\[1pt]
-		$x \in \R$ \\
-		$\TB_k(x),\ \SB_k(x)$};
-
-	\draw[<->, thick] (F) -- (C)
-	node[edgelab, above] {$\tilde x = \cos\theta$}
-	node[edgelab, below] {$\theta = \arccos \tilde x$};
-
-	\draw[<->, thick] (F) -- (G)
-	node[edgelab, above] {$w = e^{2i\theta}$}
-	node[edgelab, below] {$\theta = \tfrac12\arg w$};
-
-	\draw[<->, thick] (C) -- (R)
-	node[edgelab, above] {$x = \tilde x/\sqrt{1-\tilde x^2}$}
-	node[edgelab, below] {$\tilde x = x/\sqrt{1+x^2}$};
-
-	\draw[<->, thick] (G) -- (R)
-	node[edgelab, above] {$x = i(w+1)/(w-1)$}
-	node[edgelab, below] {$w = (x+i)/(x-i)$};
-
-	\draw[<->, dashed, thick, gray] (F) -- (R)
-	node[edgelab, above, gray] {$x = \cot\theta$};
-	\end{tikzpicture}
-	\caption{Four coordinates for the signal of one QSP circuit,
-		with the changes of variable on the edges and the natural
-		basis of each.  The rotation angle $\theta$ (Fourier) gives
-		trigonometric polynomials; $\tilde x=\cos\theta$
-		(Chebyshev) gives the ordinary polynomials of standard
-		QSP~\cite{GSLW2019}; a point $w$ of the unit circle gives
-		Laurent polynomials, as in generalized
-		QSP~\cite{MotlaghWiebe2023}; and $x=\cot\theta$
-		(stereographic) gives Boyd's rational Chebyshev functions
-		$\TB_k(x)=\cos(k\,\mathrm{arccot}\,x)$ and
-		$\SB_k(x)=\sin(k\,\mathrm{arccot}\,x)$, which are orthogonal
-		on $\R$ with weight $1/(1+x^2)$~\cite{Boyd1990}.  Each
-		basis function is the image of $\cos k\theta$ or
-		$\sin k\theta$, so the same circuit is described in every
-		box; only the stereographic coordinate covers the whole
-		real line.  We use $w=e^{2i\theta}$ so that the bottom
-		edge is the Cayley transform; generalized QSP uses
-		$e^{i\theta}$, whose square is $w$.}
-	\label{fig:charts}
-\end{figure*}

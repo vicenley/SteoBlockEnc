@@ -48,6 +48,96 @@ algorithms~\cite{DongMengWhaleyEtAl2021,BerntsonSunderhauf2024,NiSarkarYingLin20
 \subsection{The stereographic coordinate}
 \label{subsec:signal}
 
+Three coordinates for the QSP circuit are in use.  The original
+formulation of Low and Chuang~\cite{LowChuang2017} works with the
+rotation angle $\theta$ and produces trigonometric polynomials.
+The formulation of Gily\'en, Su, Low, and Wiebe~\cite{GSLW2019}
+works with $\tilde x=\cos\theta$ and produces ordinary
+polynomials.  Generalized QSP~\cite{MotlaghWiebe2023} works with
+$e^{i\theta}$ on the unit circle, allows arbitrary $\SU(2)$
+rotations in place of the phase rotations, and produces Laurent
+polynomials; this form was identified with the $\SU(2)$ nonlinear
+Fourier transform by Alexis, Mnatsakanyan, and
+Thiele~\cite{AlexisMnatsakanyanThiele2024,AlexisBeckerEtAl2026} and
+by Laneve~\cite{Laneve2025b}, and its phases are computed by the
+layer-stripping algorithm of Ni, Sarkar, Ying, and
+Lin~\cite{NiSarkarYingLin2025}.  None of these coordinates covers
+the real line.  Figure~\ref{fig:charts} collects them, together
+with the coordinate introduced here and the changes of variable
+that relate the four.
+
+\begin{figure*}[t]
+	\centering
+	\begin{tikzpicture}[
+		>=Stealth,
+		every node/.style={font=\small},
+		picnode/.style={
+			rectangle, rounded corners=2pt, draw=black!60,
+			thick, align=center, inner sep=5pt, minimum width=3.1cm
+		},
+		fourier/.style    ={picnode, fill=violet!10},
+		chebyshev/.style  ={picnode, fill=blue!10},
+		gqsp/.style       ={picnode, fill=orange!10},
+		ratcheb/.style    ={picnode, fill=teal!10},
+		edgelab/.style    ={font=\footnotesize, midway, sloped},
+	]
+	\node[fourier]   (F)  at (-4.0,  1.8) {%
+		\textbf{Fourier} \\[1pt]
+		$\theta \in (0,\pi)$ \\
+		$\cos k\theta,\ \sin k\theta$};
+	\node[chebyshev] (C)  at ( 4.0,  1.8) {%
+		\textbf{Chebyshev} \\[1pt]
+		$\tilde x \in (-1,1)$ \\
+		$T_k(\tilde x),\ U_{k-1}(\tilde x)\sqrt{1-\tilde x^2}$};
+	\node[gqsp]      (G)  at (-4.0, -1.8) {%
+		\textbf{Unit circle} \\[1pt]
+		$w \in \T$ \\
+		$w^k+w^{-k},\ w^k-w^{-k}$};
+	\node[ratcheb]   (R)  at ( 4.0, -1.8) {%
+		\textbf{Stereographic} \\[1pt]
+		$x \in \R$ \\
+		$\TB_k(x),\ \SB_k(x)$};
+
+	\draw[<->, thick] (F) -- (C)
+	node[edgelab, above] {$\tilde x = \cos\theta$}
+	node[edgelab, below] {$\theta = \arccos \tilde x$};
+
+	\draw[<->, thick] (F) -- (G)
+	node[edgelab, above] {$w = e^{2i\theta}$}
+	node[edgelab, below] {$\theta = \tfrac12\arg w$};
+
+	\draw[<->, thick] (C) -- (R)
+	node[edgelab, above] {$x = \tilde x/\sqrt{1-\tilde x^2}$}
+	node[edgelab, below] {$\tilde x = x/\sqrt{1+x^2}$};
+
+	\draw[<->, thick] (G) -- (R)
+	node[edgelab, above] {$x = i(w+1)/(w-1)$}
+	node[edgelab, below] {$w = (x+i)/(x-i)$};
+
+	\draw[<->, dashed, thick, gray] (F) -- (R)
+	node[edgelab, above, gray] {$x = \cot\theta$};
+	\end{tikzpicture}
+	\caption{Four coordinates for the signal of one QSP circuit,
+		with the changes of variable on the edges and the natural
+		basis of each.  The rotation angle $\theta$ (Fourier) gives
+		trigonometric polynomials; $\tilde x=\cos\theta$
+		(Chebyshev) gives the ordinary polynomials of standard
+		QSP~\cite{GSLW2019}; a point $w$ of the unit circle gives
+		Laurent polynomials, as in generalized
+		QSP~\cite{MotlaghWiebe2023}; and $x=\cot\theta$
+		(stereographic) gives Boyd's rational Chebyshev functions
+		$\TB_k(x)=\cos(k\,\mathrm{arccot}\,x)$ and
+		$\SB_k(x)=\sin(k\,\mathrm{arccot}\,x)$, which are orthogonal
+		on $\R$ with weight $1/(1+x^2)$~\cite{Boyd1990}.  Each
+		basis function is the image of $\cos k\theta$ or
+		$\sin k\theta$, so the same circuit is described in every
+		box; only the stereographic coordinate covers the whole
+		real line.  We use $w=e^{2i\theta}$ so that the bottom
+		edge is the Cayley transform; generalized QSP uses
+		$e^{i\theta}$, whose square is $w$.}
+	\label{fig:charts}
+\end{figure*}
+
 We now describe the same circuit with the coordinate
 \begin{equation}
 	x=\cot\theta=\frac{\tilde x}{\sqrt{1-\tilde x^2}}\in\R,
@@ -56,7 +146,10 @@ We now describe the same circuit with the coordinate
 \end{equation}
 which maps the open interval $(-1,1)$ one-to-one onto the whole
 real line.  We fix the branch $\theta=\mathrm{arccot}\,x\in(0,\pi)$,
-so $\sin\theta=1/\sqrt{1+x^2}>0$.  In this coordinate it is
+so $\sin\theta=1/\sqrt{1+x^2}>0$.  We call $x$ the
+stereographic coordinate, because it is the stereographic
+projection of the point $e^{2i\theta}$ of the unit circle onto the
+real line.  In this coordinate it is
 convenient to use the unnormalized signal operator
 \begin{equation}
 	\begin{split}
