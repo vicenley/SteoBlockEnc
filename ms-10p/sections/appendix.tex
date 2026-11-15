@@ -7,7 +7,7 @@ The proof in Sec.~\ref{subsec:signal} reduces the theorem to the
 standard one.  Here we prove it directly in the variable $x$, by
 induction on $d$.
 
-\emph{Forward direction.}  We induct on $d$.  For $d=0$,
+\emph{Forward direction.}  For $d=0$,
 $e^{i\phi_0\PauliZ}=\mathrm{diag}(e^{i\phi_0},e^{-i\phi_0})$ has
 $P=e^{i\phi_0}$, $Q\equiv 0$, and $|P|^2+|Q|^2=1=(1+x^2)^0$, with
 $\deg P=0$ and $\deg Q=-1$.  Assume the form~\eqref{eq:real-qsp-form}
@@ -23,8 +23,8 @@ gives
 $|\widetilde P|^2+|\widetilde Q|^2=|xP-Q|^2+|xQ+P|^2
 =(1+x^2)(|P|^2+|Q|^2)=(1+x^2)^d$, the cross terms cancelling.  Since
 $x$ multiplies $P$ on the diagonal and $Q$ on the off-diagonal,
-$\deg\widetilde P\le d$ and $\deg\widetilde Q=\deg\widetilde P-1\le
-d-1$, and the parities shift by one as required.
+$\deg\widetilde P\le d$ and $\deg\widetilde Q\le d-1$, and the
+parities shift by one as required.
 
 \emph{Backward direction.}  Let $P,Q$ satisfy (i)--(iii).  For
 real $x$, $|P(x)|^2=P(x)P^*(x)$ with $P^*(x)=\overline{P(\bar x)}$,
@@ -78,114 +78,35 @@ $\bar z$.  For such a polynomial, $P^*(z,\bar z)=
 \overline{P(\bar z,z)}$ conjugates the coefficients and exchanges
 $z$ and $\bar z$, so that $P^*=\overline{P}$ for every $z\in\C$.
 
-\begin{theorem}[Generalized stereographic QSP]
+\begin{proposition}[Generalized stereographic sequences]
 	\label{thm:gen-qsp}
-	Polynomials $P,Q$ in $z$ and $\bar z$ satisfy
+	For all $G_0,\dots,G_d\in\SU(2)$,
 	\begin{equation}
 		G_d\,O_z\,G_{d-1}\,O_z\cdots O_z\,G_0
 		=\begin{pmatrix} P & -Q^*\\ Q & P^*\end{pmatrix}
-		\quad\text{for all }z\in\C
+		\quad\text{for all }z\in\C,
 		\label{eq:gen-qsp-form}
 	\end{equation}
-	for some $G_0,\dots,G_d\in\SU(2)$ if and only if (i) every
-	monomial $z^j\bar z^k$ of $P$ and $Q$ has $j+k\le d$, and (ii)
+	where $P$ and $Q$ are polynomials in $z$ and $\bar z$ such that
+	(i) every monomial $z^j\bar z^k$ has $j+k\le d$, and (ii)
 	$|P|^2+|Q|^2=(1+|z|^2)^d$ for all $z\in\C$.
-\end{theorem}
+\end{proposition}
 
-By the argument at the start of the backward direction below,
-condition (ii) for all $z\in\C$ is equivalent to the polynomial
-identity $PP^*+QQ^*=(1+z\bar z)^d$ in independent variables $z$
-and $\bar z$.  The proof uses one algebraic fact about Laurent
-polynomials, with $D^*(z)=\overline{D(-1/\bar z)}$:
+\begin{proof}
+	We induct on $d$.  For $d=0$ the product is $G_0\in\SU(2)$.
+	Let $M_{d-1}$ have the stated form at degree $d-1$.  Both
+	$O_z$ and $G_d$ have the form
+	$\bigl(\begin{smallmatrix}\alpha&-\bar\beta\\
+	\beta&\bar\alpha\end{smallmatrix}\bigr)$, which is closed
+	under multiplication, so $G_dO_zM_{d-1}$ has the form of
+	Eq.~\eqref{eq:gen-qsp-form}.  Its entries are those of
+	$M_{d-1}$ multiplied by $z$, $\bar z$, or constants, which
+	gives (i), and its determinant is
+	$\det O_z\,\det M_{d-1}=(1+|z|^2)^d$, which is (ii).
+\end{proof}
 
-\begin{lemma}
-	\label{lem:DDstar}
-	If $D\in\C[z,z^{-1}]$ satisfies $D D^*=-1$, then $D=c\,z^k$ with
-	$|c|=1$ and $k$ odd.
-\end{lemma}
-
-\emph{Forward direction.}  Induct on the number of factors.  Write
-$M_d=G_d O_z G_{d-1}O_z\cdots O_z G_0$.  With $M_{d-1}=
-\bigl(\begin{smallmatrix}P&-Q^*\\Q&P^*\end{smallmatrix}\bigr)$
-of bidegree $\le d-1$ and $|P|^2+|Q|^2=(1+|z|^2)^{d-1}$, the product
-$G_d O_z M_{d-1}$ has entries linear in $z,\bar z$ times the previous
-entries, so its bidegree is $\le d$; a direct computation using
-$\det O_z=1+|z|^2$ and $G_d\in\SU(2)$ gives
-$|\widetilde P|^2+|\widetilde Q|^2=(1+|z|^2)^d$, which is (ii), and
-the monomial support obeys (i).
-
-\emph{Backward direction.}  Given a target pair of bidegree $\le d$
-obeying (i)--(ii), apply $O_z^{-1}G_d^{-1}$, with
-$G_d^{-1}=\bigl(\begin{smallmatrix}a^*&b^*\\-b&a\end{smallmatrix}\bigr)$,
-producing reduced entries $P'=z^*\widetilde P+\widetilde Q$ and
-$Q'=z\widetilde Q-\widetilde P$, where $\widetilde P=a^*P+b^*Q$ and
-$\widetilde Q=-bP+aQ$.  We require the factor $1+z\bar z$ to divide
-$P'$ and $Q'$.  Setting $P'(z,-1/z)=0$ gives
-\begin{equation}
-	(bz+a^*)\,\hat p(z)=(az-b^*)\,\hat q(z),
-	\label{eq:B-divis}
-\end{equation}
-with $\hat p(z)=P(z,-1/z)$, $\hat q(z)=Q(z,-1/z)$ Laurent
-polynomials, and substituting $z\bar z=-1$ into $Q'$ returns
-$-(bz+a^*)\hat p+(az-b^*)\hat q$, the negative of the same
-expression.  The two divisibility requirements therefore coincide:
-they are the single Laurent condition~\eqref{eq:B-divis} on $(a,b)$,
-one linear equation per power of $z$, not an independent pair.
-
-The evaluations on $z\bar z=-1$ are justified by treating $z$ and
-$\bar z$ as independent variables $(z,w)$: an identity in
-$\C[z,\bar z]$ valid for all $z\in\C$ becomes, under $z=x+iy$,
-$w=x-iy$, a polynomial in $(x,y)$ vanishing on $\R^2$, hence a
-polynomial identity in $(z,w)$.  This lets us evaluate on the
-hypersurface $w=-1/z$, which meets the physical locus $w=\bar z$
-nowhere, since there $1+z\bar z=1+|z|^2>0$.  Under this extension the
-normalization (ii) becomes $\hat p\hat p^*=-\hat q\hat q^*$ on
-$\C[z,z^{-1}]$, because $(1+zw)^d\mapsto 0$.
-
-If $\hat p\equiv\hat q\equiv 0$, then $1+z\bar z$ already divides $P$
-and $Q$, condition~\eqref{eq:B-divis} holds for every $(a,b)$, and any
-$G_d$ strips the layer, the projective analogue of the branch
-$Q^*(i)=0$ in Appendix~\ref{app:thm-real}.  Otherwise write
-$A=\gcd(\hat p,\hat q)$, $\hat p=AB$, $\hat q=AC$ with
-$\gcd(B,C)=1$; then $BB^*=-CC^*$, whence $B\mid C^*$, $C\mid B^*$, $B$
-and $C$ have equal support width $\deg-\mathrm{ord}$, and $DD^*=-1$
-for $D=B/C^*$ up to units.  Lemma~\ref{lem:DDstar} forces $D=cz^k$
-with $k$ odd.
-
-Coefficient-matching in~\eqref{eq:B-divis} at each power of $z$ is a
-homogeneous linear condition on $(a,b)$, and a priori the conditions
-from different powers could be mutually inconsistent.
-Lemma~\ref{lem:DDstar} is precisely what makes them consistent: the
-normalization forces $B/C^*=cz^k$, collapsing the linear system to
-rank one, so a single ratio $[a:b]$, a point of the projective line $\CP=\C\cup\{\infty\}$, satisfies~\eqref{eq:B-divis} at
-\emph{every} power of $z$ simultaneously, not only at top degree.
-Matching leading data then identifies that point.  When
-$p_d,q_d\neq 0$ the top-degree comparison
-forces equal top degrees and $b\,p_d=a\,q_d$, fixing
-$[a:b]=[p_d:q_d]$ up to a global phase.  When $q_d=0$ (or $p_d=0$) the
-two sides of~\eqref{eq:B-divis} differ in top degree by one and the
-solution is the point $[1:0]$ (resp.\ $[0:1]$).  This is precisely the
-case the classical layer-stripping recursion excludes by its positivity
-normalization and the stereographic $\CP$ coordinate treats as an
-ordinary point (see below).  In every branch $G_d$
-is one well-defined point of $\CP$.  The quotient
-$(P',Q')/(1+z\bar z)$ then has bidegree $\le d-1$ and satisfies (ii)
-with $d\to d-1$; recursion completes the extraction.
-
-\emph{Proof of Lemma~\ref{lem:DDstar}.}  With $D=\sum_n d_n z^n$ and
-$D^*(z)=\overline{D(-1/\bar z)}=\sum_n\bar d_n(-1)^n z^{-n}$, the
-$z^0$ coefficient of $DD^*$ is $\sum_n|d_n|^2(-1)^n$, and the $z^m$
-coefficient for $m\neq 0$ is $\sum_n d_n\bar d_{n-m}(-1)^{n-m}$.
-Suppose $D$ had more than one nonzero coefficient, and let $j$ and
-$k$ be its maximal and minimal nonzero indices, so $j>k$.  In the
-$z^{j-k}$ coefficient $\sum_n d_n\bar d_{n-(j-k)}(-1)^{n-(j-k)}$ a
-term survives only when both $n$ and $n-(j-k)$ lie in the support
-$[k,j]$; this forces $n=j$ and $n-(j-k)=k$, the unique such pair,
-since any $n<j$ would push $n-(j-k)<k$ out of the support.  The
-coefficient is therefore exactly $d_j\bar d_k(-1)^k\neq 0$, with no
-other pair to cancel it, contradicting $DD^*=-1$.  Hence $D$ has a
-single term $D=cz^k$, and $DD^*=|c|^2(-1)^k=-1$ forces $|c|=1$ and
-$k$ odd.\hfill$\square$
+We do not characterize which pairs obeying (i) and (ii) arise in
+this way.
 
 \emph{Relation to the nonlinear Fourier transform.}  The $\SU(2)$
 nonlinear Fourier transform (NLFT) of a sequence
@@ -198,7 +119,7 @@ $(\gamma_0,\dots,\gamma_{d-1})$ is the ordered product
 	\label{eq:nlft}
 \end{equation}
 which is equivalent to generalized
-QSP~\cite{AlexisMnatsakanyanThiele2024,AlexisBeckerEtAl2026,Laneve2025}.
+QSP~\cite{AlexisMnatsakanyanThiele2024,AlexisBeckerEtAl2026,Laneve2025b}.
 Each unnormalized factor at $w=1$ is
 $\bigl(\begin{smallmatrix}1&\gamma\\-\bar\gamma&1\end{smallmatrix}\bigr)
 =O_\gamma\,(i\PauliY)$ with $i\PauliY=\bigl(\begin{smallmatrix}0&1\\
@@ -207,30 +128,18 @@ normalization $\sqrt{1+|\gamma|^2}$ appears in both constructions.
 We note that this identity says only that both matrices are
 positive multiples of $\SU(2)$ matrices of the same shape, and that
 $\gamma$ plays the role of a coefficient in the NLFT but of the
-signal in $O_\gamma$.  The two inverse problems correspond more
-closely: the extraction above is the layer-stripping
-inverse of the NLFT~\cite{NiSarkarYingLin2025,AlexisBeckerEtAl2026}
-written in the stereographic variable.  At each layer the removed
-control $G_d$ is fixed by the ratio $[p_d:q_d]$ of the leading
-coefficients, which is the Schur parameter of the NLFT; the
-divisibility $1+z\bar z\mid P'$ corresponds to the NLFT condition
-that the residual datum be divisible by $w$; and the normalization
-drops from $(1+|z|^2)^d$ to $(1+|z|^2)^{d-1}$ at each layer.  The
-one difference is the case $p_d=0$.  The classical recursion
-excludes it by the normalization $a^*(0)>0$, whereas here it is the
-ordinary solution $[a:b]=[0:1]$, because the pair $(p_d,q_d)$ is
-treated as a ratio rather than through the quotient
-$\gamma_d=q_d/p_d$.
+signal in $O_\gamma$.  The inverse problem of the NLFT is solved by
+layer stripping~\cite{NiSarkarYingLin2025,AlexisBeckerEtAl2026}.
 
 \section{Subgeometric pullbacks: hyperbolic secant and Gaussian}
 \label{app:sech}
 
 The pullback $g(\theta)=\mathrm{sech}(L\cot\theta)$ inherits the
 singularities of $\mathrm{sech}$, whose poles sit at
-$w=i\pi(2m+1)/2$.  Solving $L\cot\theta=i\pi(2m+1)/2$ with
-$u=e^{2i\theta}$ gives $\cot\theta=i(u+1)/(u-1)$, so
-$u=(C+1)/(C-1)$ with $C=\pi(2m+1)/(2L)$, a real number greater than
-one; hence $\theta_m=-\tfrac{i}{2}\log u$ is purely imaginary with
+$y=i\pi(2m+1)/2$.  Solving $L\cot\theta=i\pi(2m+1)/2$ with
+$w=e^{2i\theta}$ gives $\cot\theta=i(w+1)/(w-1)$, so
+$w=(C+1)/(C-1)$ with $C=\pi(2m+1)/(2L)$, which exceeds one for
+$\pi(2m+1)>2L$; then $\theta_m=-\tfrac{i}{2}\log w$ is purely imaginary with
 \begin{equation}
 	\begin{split}
 		|\im\theta_m| &=\tfrac12\log\frac{C+1}{C-1}
@@ -248,14 +157,26 @@ $|a_k|\sim\exp(-c\sqrt{k})$, i.e.\ $\sigma=1/2$.
 
 The Gaussian has the same mechanism with a stronger singularity.
 Its pullback behaves as $\exp(-L^2/2\theta^2)$ near $\theta=0$.
-For $\int e^{-q/\theta^2+ik\theta}d\theta$ the saddle point is at
-$\theta_\star^3=2iq/k$, where the exponent equals
-$-3q/\theta_\star^2$, whose real part is
-$-\tfrac32 q^{1/3}(k/2)^{2/3}$.  The coefficients therefore decay
-as $\exp(-c\,k^{2/3})$, i.e.\ $\sigma=2/3$.  For $q=1$ and $k=2m$
+For $\int e^{-\kappa/\theta^2+ik\theta}d\theta$ the saddle point
+is at $\theta_\star^3=2i\kappa/k$, where the exponent equals
+$-3\kappa/\theta_\star^2$, whose real part is
+$-\tfrac32\kappa^{1/3}(k/2)^{2/3}$.  The coefficients therefore decay
+as $\exp(-c\,k^{2/3})$, i.e.\ $\sigma=2/3$.  For $\kappa=1$ and $k=2m$
 this reproduces Boyd's result $\exp(-1.5\,m^{2/3})
 \cos(2.60\,m^{2/3}+\pi/4)$ for $\exp(-\cot^2\theta)$, including the
 oscillation frequency $1.5\sqrt3\approx 2.60$~\cite[Eq.~(2.11)]{Boyd2001}.
+With $L=\lambda\sqrt{d}$ the two rates above become equal in
+order.  The coefficient of $e^{id\theta}$ in $G$ is then
+$\pi^{-1}\int_0^\pi\exp\{d[-\beta\lambda^2\cot^2\theta/2
+-i\theta]\}\,d\theta/\sin\theta$, whose exponent is $d$ times a
+function independent of $d$, and the same holds for the harmonics
+$k>d$ at fixed $k/d$.  Steepest descent therefore gives an error
+$\exp(-\varphi(\lambda)\,d)$ up to a factor polynomial in $d$.
+For $\beta=1$ and $\lambda=0.86$, an evaluation of the $L^2$ error
+of the truncated series in extended-precision arithmetic gives
+$-\log\varepsilon/d=0.457$, $0.454$, and $0.446$ at $d=81$, $161$,
+and $321$; the values $\lambda=0.7$, $0.8$, and $0.95$ give smaller
+rates at $d=161$ and $321$.
 The numerical coefficient decay for both targets is generated by
 the reference implementation (see Data availability).
 
@@ -277,6 +198,19 @@ Since $A=\sum_j\theta_j\ket{j}\!\bra{j}$ is diagonal, this block is
 $\sum_j q(e^{2i\theta_j})\ket{j}\!\bra{j}$, and multiplication by
 $e^{-idA}$ gives
 $D_p=\sum_j p(\theta_j)\ket{j}\!\bra{j}$.
+
+\emph{Fourier loading.}  With
+$e^{2im\theta_j}=e^{i\pi m/N}e^{2\pi imj/N}$, the same
+factorization gives Eq.~\eqref{eq:fourier-loading}.  The quantum
+Fourier transform maps $\ket{m}$ to
+$N^{-1/2}\sum_je^{2\pi imj/N}\ket{j}$, so it maps the normalized
+state with amplitudes proportional to $c_{2m-d}\,e^{i\pi m/N}$,
+$m=0,\dots,d$, to the state with amplitudes proportional to
+$q(e^{2i\theta_j})$, and the layer $e^{-idA}$ completes
+$p(\theta_j)$.  A state on $\lceil\log_2(d+1)\rceil$ qubits is
+prepared with $\mathcal{O}(d)$ gates, the transform on $n$ qubits
+costs $\mathcal{O}(n^2)$, and the layer costs $n$, which is count
+(a).
 
 \emph{Amplitude.}  Applied to $\ket{+}^{\otimes n}$, the circuit
 flags the vector $N^{-1/2}\sum_j p(\theta_j)\ket{j}$, whose norm is
@@ -306,7 +240,7 @@ $\mathcal{O}(1/\mathcal{F}_p)$ times.  The product is
 Eq.~\eqref{eq:stateprep-cost}.
 
 \emph{Boyd class.}  Let $g=\sum_m a_m w^m$ with $w=e^{2i\theta}$
-and $|a_m|\le C\exp(-q|m|^\sigma)$.  If $f$ vanishes at infinity,
+and $|a_m|\le C\exp(-\mu|m|^\sigma)$.  If $f$ vanishes at infinity,
 then $g(0)=\sum_m a_m=0$ and $g=\sum_m a_m(w^m-1)$.  With
 $1/\sin\theta=2ie^{i\theta}/(w-1)$ and
 $(w^m-1)/(w-1)=\sum_{j=0}^{m-1}w^j$ for $m>0$, and the
@@ -316,24 +250,39 @@ corresponding sum for $m<0$,
 	-2i\sum_{j<0}\Bigl(\sum_{m\le j}a_m\Bigr)e^{i(2j+1)\theta}.
 \end{equation}
 The coefficients $c_k$ of $G$ are thus tail sums of the $a_m$ and
-obey $|c_k|=\mathcal{O}(|k|^{1-\sigma}\exp(-q|k/2|^\sigma))$.  Let
-$p_0$ be the sum over $|k|\le d$.  Then
-$\|G-p_0\|^2=\pi\sum_{|k|>d}|c_k|^2$, which decays as
-$\exp(-2q(d/2)^\sigma)$ up to a factor polynomial in $d$, and the
+obey $|c_k|=\mathcal{O}(|k|^{1-\sigma}\exp(-\mu|k/2|^\sigma))$.  Let
+$p_d$ be the sum over $|k|\le d$.  Then
+$\|G-p_d\|^2=\pi\sum_{|k|>d}|c_k|^2$, which decays as
+$\exp(-2\mu(d/2)^\sigma)$ up to a factor polynomial in $d$, and the
 distance
-between the normalized functions is at most $2\|G-p_0\|/\|G\|$.
+between the normalized functions is at most $2\|G-p_d\|/\|G\|$.
 Setting it to $\varepsilon$ gives
 $d=\mathcal{O}((\log(1/\varepsilon))^{1/\sigma})$.  The uniform
-error obeys $\sup|G-p_0|\le\sum_{|k|>d}|c_k|\to0$, so
-$|p_0|_{\max}\to\sup|G|$ and
+error obeys $\sup|G-p_d|\le\sum_{|k|>d}|c_k|\to0$, so
+$|p_d|_{\max}\to\sup|G|$ and, for $p=p_d/|p_d|_{\max}$,
 $\mathcal{F}_p\to\mathcal{F}_G$.\hfill$\square$
 
 \section{Derivation of Table~\ref{tab:comparison}}
 \label{app:table}
 
-All entries use gate count $=n\times d\times(1/\mathcal{F})$, with
-$d$ the polynomial degree and $\mathcal{F}$ the filling fraction,
-at $L^2(\R)$ error $\varepsilon$.
+The table lists the degree $d$ and the inverse filling fraction
+$1/\mathcal{F}$ at $L^2(\R)$ error $\varepsilon$.  Gate counts are
+$n\times d\times(1/\mathcal{F})$ with amplitude amplification and
+$d+n^2$ with Fourier loading.
+
+\emph{Fourier loading on a uniform grid.}  The Fourier series of
+$f$ on the window, of period $2L_{\mathrm{trunc}}$, has
+coefficients proportional to the Fourier transform $\hat f$ at
+the frequencies $\pi k/L_{\mathrm{trunc}}$, up to the tail.  The
+transforms of the targets decay as $e^{-b|\xi|}$ for a Lorentzian
+of width $b$, as $\mathrm{sech}(\pi\xi/2)$ for the hyperbolic
+secant, and as $e^{-\xi^2/2\beta}$ for the Gaussian.  The number of
+modes for error $\varepsilon$ is therefore
+$\mathcal{O}(L_{\mathrm{trunc}}\log(1/\varepsilon))$ in the first
+two cases and
+$\mathcal{O}(L_{\mathrm{trunc}}\log^{1/2}(1/\varepsilon))$ in the
+third.  At the truncation radii derived below these are the
+degrees $d$ of the uniform-grid column.
 
 \emph{Algebraic tails, QSVT.}  For $f=(1+y^2)^{-m/2}$ on
 $[-L_{\mathrm{trunc}},L_{\mathrm{trunc}}]$ the discarded $L^2$-mass
@@ -384,27 +333,31 @@ rows reproduces it: $L_{\mathrm{trunc}}=
 \mathcal{O}(\log^{1/2}(1/\varepsilon))$,
 $d=\mathcal{O}(\log(1/\varepsilon))$, and
 $\mathcal{F}=\mathcal{O}(L_{\mathrm{trunc}}^{-1/2})$.  On the
-cotangent grid the Gaussian is subgeometric with $\sigma=2/3$
-(Appendix~\ref{app:sech}), giving
-$\mathcal{O}(n\log^{3/2}(1/\varepsilon))$, slower by
-$\log^{1/4}(1/\varepsilon)$.
+cotangent grid the Gaussian is subgeometric with $\sigma=2/3$ at
+fixed $L$ (Appendix~\ref{app:sech}), giving
+$d=\mathcal{O}(\log^{3/2}(1/\varepsilon))$ and
+$\mathcal{F}_p=\mathcal{O}(1)$.  With $L\propto d^{1/2}$ the
+degree is $\mathcal{O}(\log(1/\varepsilon))$ and
+$1/\mathcal{F}_p\propto L^{1/2}=
+\mathcal{O}(\log^{1/4}(1/\varepsilon))$, the scaling of the
+uniform grid.
 
 \emph{Pair of Lorentzians.}  With $y_0=0$, the pullback of
 $1/((y\mp a)^2+b^2)$ is singular where
-$\cot\theta=(\pm a\pm ib)/L$.  With $u=e^{2i\theta}$ and
-$\cot\theta=i(u+1)/(u-1)$ these points are
-$u=(\omega+i)/(\omega-i)$, $\omega=(\pm a\pm ib)/L$, and
+$\cot\theta=(\pm a\pm ib)/L$.  With $w=e^{2i\theta}$ and
+$\cot\theta=i(w+1)/(w-1)$ these points are
+$w=(\omega+i)/(\omega-i)$, $\omega=(\pm a\pm ib)/L$, and
 \begin{equation}
 	\begin{split}
-		|u|^{\pm2}&=\frac{a^2+(L+b)^2}{a^2+(L-b)^2}=\rho^2
+		|w|^{\pm2}&=\frac{a^2+(L+b)^2}{a^2+(L-b)^2}=\rho^2
 		=\frac{1+s}{1-s},\\
 		s&=\frac{2Lb}{a^2+b^2+L^2}.
 	\end{split}
 \end{equation}
 The pullback vanishes at $\theta=0$ and $\theta=\pi$, so the
 division by $\sin\theta$ adds no singularity, and $e^{i\theta}G$ is
-analytic in the annulus $\rho^{-1}<|u|<\rho$.  Its coefficient of
-$u^k$ decays as $\rho^{-k}$, and the degree in $e^{i\theta}$ needed
+analytic in the annulus $\rho^{-1}<|w|<\rho$.  Its coefficient of
+$w^k$ decays as $\rho^{-k}$, and the degree in $e^{i\theta}$ needed
 for error $\varepsilon$ is
 $d\simeq 2\log(1/\varepsilon)/\log\rho$, which is
 Eq.~\eqref{eq:shifted-rate}.  The parameter $s$, and with it $\rho$,
@@ -449,7 +402,7 @@ $[53,62]$.  For the Lorentzian the product on the cotangent grid is
 $\sqrt2$, against $[382,447]$ at $\varepsilon=10^{-2}$ and
 $[5.5,6.6]\times10^{3}$ at $\varepsilon=10^{-3}$.
 
-\emph{Ancilla row.}  The QSVT pipeline uses four ancillas in the
+\emph{Ancilla qubits.}  The QSVT pipeline uses four ancillas in the
 general case and three under parity~\cite{McArdleGilyenBerta2025}.
 The budget of this work is the two qubits of
 Theorem~\ref{thm:stateprep}, one for the signal and one for
@@ -463,14 +416,18 @@ from Pauli expectation values.  For a real signal,
 $\langle\PauliX\rangle=2r/(1+r^2)$ and
 $\langle\PauliZ\rangle=(r^2-1)/(1+r^2)$, so with
 $z=\langle\PauliX\rangle/(1-\langle\PauliZ\rangle)$ the partial
-derivatives at the encoded point are $(1+r^2)/2$ and $r(1+r^2)/2$,
-giving $|\hat z-z|\le\tfrac12(1+r^2)(1+r)\,\delta$ for
-per-expectation precision $\delta$.  With $\delta=\mathcal{O}(1/\sqrt
-N_s)$ for $N_s$ shots, absolute precision $\varepsilon$ needs
-$N_s=\mathcal{O}(r^6/\varepsilon^2)$.  A Born-probability estimator
-that recovers $|f|=\sqrt{p_0/(1-p_0)}$ from computational-basis
-counts avoids the division and, by the delta method with variance
-$(1+f^2)^2/(4N_s)$, improves this to
-$N_s=\mathcal{O}(r^4/\varepsilon^2)$ for absolute and
+derivatives at the encoded point are $(1+r^2)/2$ and $r(1+r^2)/2$.
+With $N_s$ shots for each expectation value, the variances are
+$(1-\langle\PauliX\rangle^2)/N_s$ and
+$(1-\langle\PauliZ\rangle^2)/N_s$, and the delta method gives
+\begin{equation}
+	\mathrm{Var}(\hat z)=\frac{5r^4-2r^2+1}{4N_s}.
+\end{equation}
+The estimator $\hat r=\sqrt{\hat p_0/(1-\hat p_0)}$ of
+Remark~\ref{rem:measurement} uses computational-basis counts alone
+and has variance $(1+r^2)^2/(4N_s)$.  Both routes therefore need
+$N_s=\mathcal{O}(r^4/\varepsilon^2)$ shots for absolute precision
+$\varepsilon$ and
 $\mathcal{O}(r^2/\varepsilon_{\mathrm{rel}}^2)$ for relative
-precision.
+precision; the second has the smaller constant, by a factor of
+five at large $r$.

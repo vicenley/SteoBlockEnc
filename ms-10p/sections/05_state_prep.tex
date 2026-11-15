@@ -52,13 +52,15 @@ without loss.  We prepare its samples,
 Neighboring grid points are separated by
 $\Delta y_j\simeq\pi L/(N\sin^2\theta_j)$, so
 $G(\theta_j)\propto f(y_j)\sqrt{\Delta y_j}$, and the probability of
-outcome $j$ is the mass of $|f|^2$ in the cell around $y_j$.  The
+outcome $j$ is, to leading order in $1/N$, the mass of $|f|^2$ in
+the cell around $y_j$.  The
 parameters $L$ and $y_0$ are not part of the target.  They select
 the representation, as the window does on a uniform grid, and we
 choose them to lower the cost.
 
 On this grid the sums that define norms and overlaps are exact for
-trigonometric polynomials of one parity.
+trigonometric polynomials of one parity, as in Fourier quadrature
+on a mapped grid~\cite{Boyd1987}.
 
 \begin{lemma}[Exact quadrature]
 	\label{lem:quadrature}
@@ -94,7 +96,10 @@ Eq.~\eqref{eq:weighted}, $f_p$ has unit norm in $L^2(\R)$, and by
 Lemma~\ref{lem:quadrature} the overlap of two such states of equal
 parity equals the $L^2(\R)$ inner product of the functions they
 represent.  Equation~\eqref{eq:represented} interpolates the
-amplitudes in the rational Chebyshev basis.  It is the counterpart
+amplitudes in the rational Chebyshev basis.  For $L=1$ and $y_0=0$
+the functions $\sin\theta\,e^{i(2k+1)\theta}$ that span it are
+$(y+i)^k/(y-i)^{k+1}$, the orthogonal rational functions of
+Christov and Higgins~\cite{Boyd1990}.  It is the counterpart
 on the cotangent grid of band-limited interpolation on a uniform
 grid.
 
@@ -114,7 +119,7 @@ degree-$d$ trigonometric approximation of $g$ on the circle.
 	\label{def:boyd}
 	$f$ belongs to $\mathcal{B}(L)$ if it is free of singularities
 	on the real axis and its pullback $g$ has Fourier coefficients
-	obeying $|a_k|,|b_k|\le C\exp(-q k^\sigma)$ for some $C,q>0$ and
+	obeying $|a_k|,|b_k|\le C\exp(-\mu k^\sigma)$ for some $C,\mu>0$ and
 	$\sigma\in(0,1]$.
 \end{definition}
 
@@ -130,7 +135,7 @@ at the endpoint $\theta=0$, the analyticity strip collapses, and
 the rate is \emph{subgeometric}, $\sigma<1$, with
 $d_\delta=\mathcal{O}((\log(1/\delta))^{1/\sigma})$.  The exponent
 is set by the form of the singularity: near $\theta=0$ a pullback
-behaving as $\exp(-q/\theta^{\,\nu})$ has Fourier coefficients
+behaving as $\exp(-\kappa/\theta^{\,\nu})$ has Fourier coefficients
 decaying as $\exp(-c\,k^{\nu/(\nu+1)})$, by steepest
 descent~\cite[Ch.~2]{Boyd2001}.  The Gaussian $e^{-y^2/2}$ pulls
 back to $\exp(-L^2\cot^2\theta/2)\approx\exp(-L^2/2\theta^2)$, so
@@ -158,7 +163,7 @@ contains only odd harmonics.  If $f$ vanishes at infinity, then
 $g(0)=0$, and the coefficient of $e^{i(2j+1)\theta}$ in $G$ is $2i$
 times the tail sum $\sum_{m>j}a_m$ of the coefficients $a_m$ of
 $e^{2im\theta}$ in $g$ (Appendix~\ref{app:stateprep}).  A bound
-$C\exp(-q\,m^\sigma)$ on $a_m$ therefore holds for the
+$C\exp(-\mu\,m^\sigma)$ on $a_m$ therefore holds for the
 coefficients of $G$ up to a factor polynomial in $j$, and $G$
 converges at the rate of $g$.  Only the values of $G$ on
 $(0,\pi)$ enter Eq.~\eqref{eq:weighted}, so $G$ may instead be
@@ -188,7 +193,8 @@ $(0,\pi)$ is its maximum over the circle.
 \subsection{Algorithm and main result}
 \label{subsec:algorithm}
 
-The algorithm has three stages.  \emph{Classical preprocessing}
+Two circuits prepare the state.  The first is a QSP circuit with
+three stages.  \emph{Classical preprocessing}
 chooses $L$ and $y_0$, expands $G$ on $(0,\pi)$ in the harmonics
 $e^{ik\theta}$ of one parity, truncates at degree $d$, and rescales
 the result to a polynomial $p$ with $|p|_{\max}=1$.  Such a
@@ -218,7 +224,22 @@ whose phase $\theta_j=\pi/(2N)+\sum_{k}j_k\pi 2^k/N$ decomposes over
 the bits of $j$.  The operator $e^{2iA}$, controlled on the signal
 ancilla, therefore costs $\mathcal{O}(n)$ elementary gates: $n$
 controlled phase rotations, one on each qubit $k$, and one phase on
-the ancilla.  Generalized QSP~\cite{MotlaghWiebe2023} with $d$
+the ancilla.  In terms of the position operator
+$Y=\sum_j y_j\ket{j}\!\bra{j}$ of the grid,
+\begin{equation}
+	e^{2iA}=(Y-y_0+iL)(Y-y_0-iL)^{-1}
+	\label{eq:cayley}
+\end{equation}
+is the Cayley transform of $Y$, the bottom edge of
+Fig.~\ref{fig:charts}.  The circuit is therefore QSP of an
+unbounded operator that enters through its Cayley transform, and
+the functions it applies are rational functions of $Y$ with poles
+at $y_0\pm iL$, the class reached by generalized QSP on a Cayley
+transform~\cite{DelCorso2026}.  For a block-encoded matrix the
+Cayley transform requires a shifted linear solve, whose cost
+offsets the gain in the number of
+queries~\cite{DelCorso2026}; here it costs $n$ controlled phases, because $Y$ is
+diagonal on a grid of our choice.  Generalized QSP~\cite{MotlaghWiebe2023} with $d$
 applications of the controlled $e^{2iA}$ and $d+1$ rotations of the
 ancilla block-encodes $q(e^{2iA})$, and one layer $e^{-idA}$ of $n$
 single-qubit rotations supplies the prefactor of
@@ -231,6 +252,25 @@ $\mathcal{O}(1/\mathcal{F}_p)$ rounds with one extra ancilla.
 Because $\mathcal{F}_p$ is known in closed form, the amplification
 is exact~\cite{BrassardHoyerMoscaTapp2002}.
 
+\emph{Fourier loading} reaches the same state without QSP.  By
+Eq.~\eqref{eq:factorization},
+\begin{equation}
+	p(\theta_j)=e^{-id\theta_j}\sum_{m=0}^{d}
+	\bigl(c_{2m-d}\,e^{i\pi m/N}\bigr)e^{2\pi imj/N},
+	\label{eq:fourier-loading}
+\end{equation}
+where $c_k$ is the coefficient of $e^{ik\theta}$ in $p$.  The state
+is thus a layer of $n$ single-qubit phase rotations applied to the
+quantum Fourier transform of a state supported on the $d+1$ basis
+states $m=0,\dots,d$.  Loading these amplitudes on
+$\lceil\log_2(d+1)\rceil$ qubits costs $\mathcal{O}(d)$ gates and
+the transform $\mathcal{O}(n^2)$, as in Fourier-series loaders on a
+uniform grid~\cite{MoosaEtAl2023}.  This circuit is deterministic
+and uses no ancilla, and its cost does not contain the filling
+fraction.  It replaces the $d+1$ ancilla rotations of the QSP
+circuit by a general state preparation on
+$\lceil\log_2(d+1)\rceil$ qubits.
+
 \begin{theorem}[State preparation on the cotangent grid]
 	\label{thm:stateprep}
 	Let $f\in L^2(\R)$, $L>0$, $y_0\in\R$, and let $G$ be the
@@ -242,8 +282,10 @@ is exact~\cite{BrassardHoyerMoscaTapp2002}.
 		\biggr\|_{L^2(0,\pi)}.
 		\label{eq:eps-def}
 	\end{equation}
-	The algorithm prepares the state with amplitudes proportional
-	to $p(\theta_j)$ using
+	The state with amplitudes proportional to $p(\theta_j)$ is
+	prepared (a) by Fourier loading, with
+	$\mathcal{O}(d+n^2)$ gates and no ancilla qubit, and (b) by
+	the QSP circuit with amplitude amplification, with
 	\begin{equation}
 		\mathcal{O}\!\left(\frac{n\,d}{\mathcal{F}_p}\right)
 		\text{ gates}
@@ -266,14 +308,58 @@ is exact~\cite{BrassardHoyerMoscaTapp2002}.
 	$\varepsilon\to0$.
 \end{theorem}
 
-The proof is given in Appendix~\ref{app:stateprep}.  The error of
+The proof is given in Appendix~\ref{app:stateprep}.  Circuit (a)
+is the cheaper one when $d/\mathcal{F}_p\gtrsim n$.  The error of
 Eq.~\eqref{eq:error-identity} is the approximation error of $G$ by
-$p$ and contains no discretization term.  The qubit count enters
-only through the condition $d<N$: $n=\lceil\log_2(d+1)\rceil$
-qubits suffice, and further qubits change neither $\varepsilon$ nor
-$\mathcal{F}_p$.  Both functions in Eq.~\eqref{eq:error-identity}
-are unit vectors of $L^2(\R)$, so their trace distance as pure
-states is at most $\varepsilon$.
+$p$ and contains no discretization term.  Both functions in
+Eq.~\eqref{eq:error-identity} are unit vectors of $L^2(\R)$, so
+their trace distance as pure states is at most $\varepsilon$.
+
+The qubit count enters only through the condition $d<N$:
+$n=\lceil\log_2(d+1)\rceil$ qubits suffice, and further qubits
+change neither $\varepsilon$ nor $\mathcal{F}_p$.  For the
+Lorentzian $d=1$, and a single qubit already represents the target
+with $\varepsilon=0$.  The state is thus a representation of $f$ by
+interpolation, as a band-limited state is on a uniform grid; it is
+\emph{not} a set of samples of $f$ on a uniform grid.  Additional
+qubits extend the grid, whose extent is $2LN/\pi$, and enlarge the
+class of observables whose expectation values are exact integrals
+(Sec.~\ref{subsec:quadrature}).
+
+The limit $\mathcal{F}_G$ has a classical counterpart.  The
+cotangent grid is the quantile grid of the Cauchy distribution with
+density $\rho_L(y)=L/\{\pi[(y-y_0)^2+L^2]\}$: the cumulative
+distribution of $\rho_L$ is $1-\theta/\pi$, so every cell of the
+uniform angular grid carries Cauchy probability $1/N$.  Let
+$\tau=|f|^2/\|f\|^2$ be the probability density of the target.
+Because $\sin^2\theta=\pi L\rho_L(y)$, Eq.~\eqref{eq:weighted}
+gives $|G|^2/\|G\|^2=\tau/(\pi\rho_L)$, and therefore
+\begin{equation}
+	\mathcal{F}_G=M^{-1/2},\qquad
+	M=\sup_{y\in\R}\frac{\tau(y)}{\rho_L(y)}.
+	\label{eq:rejection}
+\end{equation}
+Here $M$ is the constant of classical rejection sampling: a sampler
+that draws $y$ from $\rho_L$ and accepts it with probability
+$\tau/(M\rho_L)$ needs $M$ trials on average.  The circuit is the
+coherent form of this
+sampler~\cite{OzolsRoettelerRoland2013,LemieuxEtAl2024}.  The uniform superposition is the
+Cauchy proposal on its quantile grid, the polynomial $p$ applies the
+acceptance amplitude, and amplitude amplification needs
+$\mathcal{O}(\sqrt{M})$ rounds.  Equation~\eqref{eq:rejection}
+states which targets suit the grid.  For bounded $f$ the constant
+$M$ is finite whenever $f=\mathcal{O}(1/|y|)$ at infinity, so a
+heavy tail does not lower the filling fraction.  It is of order one
+for a single peak of width comparable to $L$, and it grows as
+$|a|/b$ for a peak of width $b$ at distance $|a|\gg b$ from the grid
+center (Sec.~\ref{subsec:examples}).  The remaining cost is the
+degree $d$, which is set by the smoothness of $G$.
+
+The state of Eq.~\eqref{eq:target-state}, which samples $G$
+itself, lies within $2\sup_\theta|G-p|/\mathcal{F}_p$ of the
+prepared state in Euclidean norm, with $G$ scaled as $p$.  For
+targets of the Boyd class this uniform error decays with $d$ at
+the rate of $\varepsilon$.
 
 \subsection{Examples}
 \label{subsec:examples}
@@ -286,39 +372,46 @@ the peak, $y_0=a$, and set $L=b$.  The weighted function is
 \end{equation}
 a trigonometric polynomial of degree one.  The approximation error
 vanishes, the filling fraction is $\mathcal{F}_p=1/\sqrt2$, and the
-cost is $\mathcal{O}(n)$ for every shift $a$ and width $b$.  More
+QSP circuit costs $\mathcal{O}(n)$ gates for every shift $a$ and
+width $b$.  Here
+the Lorentzian is the amplitude; the probability density $|f|^2$ is
+its square.  More
 generally, for integer $m\ge1$ the amplitude $(1+y^2)^{-m/2}$ with
 $L=1$ has $G=\sin^{m-1}\theta$ on $(0,\pi)$, an exact polynomial of
-degree $m-1$ and of the parity of $m-1$.  The case $m=1$ is the
-square root of the Cauchy density, the slowest algebraic decay that
-is square integrable.  Its weighted function is the constant $G=1$,
+degree $m-1$ and of the parity of $m-1$.  With $y$ and $L$ rescaled by $\sqrt{2m-1}$, this amplitude is the
+square root of the Student $t$ density with $2m-1$ degrees of
+freedom.  The case $m=1$ is the
+square root of the Cauchy density, the slowest decay in the family.
+Its weighted function is the constant $G=1$,
 and the state is the uniform superposition
-$\ket{+}^{\otimes n}$, prepared by $n$ Hadamard gates.  This
-family is cheap \emph{because} of the grid: on the cotangent grid
-its weighted amplitudes are the samples of a low-degree
-trigonometric polynomial.  The targets below cost more.
+$\ket{+}^{\otimes n}$, prepared by $n$ Hadamard gates.
 
 For the hyperbolic secant, $\sigma=1/2$ (Sec.~\ref{subsec:boyd}),
-so $d=\mathcal{O}(\log^2(1/\varepsilon))$ and the cost is
-$\mathcal{O}(n\log^2(1/\varepsilon))$.  For the Gaussian
+so $d=\mathcal{O}(\log^2(1/\varepsilon))$.  Fourier loading then
+costs $\mathcal{O}(\log^2(1/\varepsilon)+n^2)$ gates and the QSP
+circuit $\mathcal{O}(n\log^2(1/\varepsilon))$.  For the Gaussian
 $e^{-\beta y^2/2}$ with $L=1/\sqrt{\beta}$, $\sigma=2/3$, giving
-$d=\mathcal{O}(\log^{3/2}(1/\varepsilon))$ and cost
+$d=\mathcal{O}(\log^{3/2}(1/\varepsilon))$, with costs
+$\mathcal{O}(\log^{3/2}(1/\varepsilon)+n^2)$ and
 $\mathcal{O}(n\log^{3/2}(1/\varepsilon))$.
 
 These rates hold at fixed $L$.  Because $L$ is free, it can grow
 with the degree.  For the hyperbolic secant the choice
 $L\propto d^{1/3}$ raises the decay of the error from
 $\exp(-c\,d^{1/2})$ to
-$\exp(-c\,d^{2/3})$~\cite[Sec.~17.9]{Boyd2001}, while the filling
-fraction falls as $L^{-1/2}$, and the cost becomes
-$\mathcal{O}(n\log^{7/4}(1/\varepsilon))$.  A numerical
+$\exp(-c\,d^{2/3})$~\cite[Sec.~17.9]{Boyd2001}, so that
+$d=\mathcal{O}(\log^{3/2}(1/\varepsilon))$, while the filling
+fraction falls as $L^{-1/2}$, and the cost of the QSP circuit
+becomes $\mathcal{O}(n\log^{7/4}(1/\varepsilon))$.  A numerical
 minimization of the $L^2$ error over $L$ at each degree up to
 $d=85$, where the error is $10^{-12}$, reproduces the three
 exponents: we find $0.66$, $0.34$, and $1.75$ against $2/3$,
-$1/3$, and $7/4$.  For the Gaussian the same minimization up to
-$d=57$ gives an error decaying as $\exp(-c\,d^{0.90})$ and a cost
-growing as $\log^{1.36}(1/\varepsilon)$, below the fixed-$L$
-exponent $3/2$; we have no asymptotic law for this case.
+$1/3$, and $7/4$.  For the Gaussian the choice $L=\lambda\sqrt{d}$
+makes the error geometric, $\exp(-\varphi(\lambda)\,d)$, so that
+$d=\mathcal{O}(\log(1/\varepsilon))$ and the QSP circuit costs
+$\mathcal{O}(n\log^{5/4}(1/\varepsilon))$
+(Appendix~\ref{app:sech}).  We find $\varphi\approx0.45$ at
+$\lambda=0.86$ for $\beta=1$.
 
 A target with features at several positions cannot be centered on
 all of them.  For the pair of Lorentzians
@@ -336,10 +429,12 @@ $L=\sqrt{a^2+b^2}$, where
 $\log\rho=\mathrm{artanh}(b/\sqrt{a^2+b^2})$; for $|a|\gg b$ this
 gives $d\simeq 2(|a|/b)\log(1/\varepsilon)$.  Each peak has width
 $\simeq b/2|a|$ in $\theta$, which lowers the filling fraction to
-$\mathcal{F}_p\simeq(b/2|a|)^{1/2}$.  The cost is then
-$\mathcal{O}(n(|a|/b)^{3/2}\log(1/\varepsilon))$.
+$\mathcal{F}_p\simeq(b/2|a|)^{1/2}$.  The QSP circuit then costs
+$\mathcal{O}(n(|a|/b)^{3/2}\log(1/\varepsilon))$ gates, and
+Fourier loading, which does not pay the filling fraction,
+$\mathcal{O}((|a|/b)\log(1/\varepsilon)+n^2)$.
 
-\subsection{Overlaps}
+\subsection{Overlaps and expectation values}
 \label{subsec:quadrature}
 
 Let $\ket{\Phi_p}$ and $\ket{\Phi_r}$ be the normalized states with
@@ -351,94 +446,144 @@ $L$, $y_0$, and parity have overlap
 	=\int_{-\infty}^{\infty}\overline{f_p(y)}\,f_r(y)\,dy ,
 	\label{eq:quadrature}
 \end{equation}
-with no quadrature error.  A task that consumes the states through
-overlaps therefore obtains integrals over the whole real line, and
-the cotangent grid never has to be converted to a uniform one.
+with no quadrature error.  The proof of the lemma also gives
+expectation values.  Let
+$h(y)=\sum_{k=0}^{K}(\alpha_k\cos 2k\theta+\beta_k\sin 2k\theta)$
+with $\theta=\mathrm{arccot}[(y-y_0)/L]$, a combination of the
+rational Chebyshev functions of even order.  If $p$ has degree $d$
+and $K\le N-d-1$, then $h|p|^2$ contains only even harmonics of
+order below $2N$, and
+\begin{equation}
+	\bra{\Phi_p}\Bigl(\sum_{j=0}^{N-1}h(y_j)\ket{j}\!\bra{j}\Bigr)
+	\ket{\Phi_p}
+	=\int_{-\infty}^{\infty}h(y)\,|f_p(y)|^2\,dy .
+	\label{eq:expectation}
+\end{equation}
+A task that consumes the states through overlaps or through such
+expectation values therefore obtains integrals over the whole real
+line, and the cotangent grid never has to be converted to a uniform
+one.
 
 \subsection{Comparison}
 \label{subsec:comparison}
 
-The QSVT pipeline of McArdle, Gily\'en, and
-Berta~\cite{McArdleGilyenBerta2025} samples $f$ on a uniform grid
-over a window $[-L_{\mathrm{trunc}},L_{\mathrm{trunc}}]$ and
-approximates it there by a polynomial in
-$\sin(y/L_{\mathrm{trunc}})$.  Its state represents $f$ on the
+We compare with two constructions on a uniform grid over a window
+$[-L_{\mathrm{trunc}},L_{\mathrm{trunc}}]$.  The QSVT pipeline of
+McArdle, Gily\'en, and Berta~\cite{McArdleGilyenBerta2025}
+approximates $f$ there by a polynomial of degree $d$ in
+$\sin(y/L_{\mathrm{trunc}})$ and amplifies the result, at
+$\mathcal{O}(nd/\mathcal{F})$ gates.  A Fourier-series
+loader~\cite{MoosaEtAl2023} prepares the Fourier series of the
+windowed function, truncated at $d$ modes, at
+$\mathcal{O}(d+n^2)$ gates.  Either state represents $f$ on the
 window, and its $L^2(\R)$ distance from $f/\|f\|$ adds the
-discarded tail to the polynomial error; the user picks
-$L_{\mathrm{trunc}}$ to balance the two.  Both methods therefore
-approximate the same unit vector of $L^2(\R)$, and
-Table~\ref{tab:comparison} compares their gate counts at equal
-$L^2$ error $\varepsilon$.  Appendix~\ref{app:table} derives each
-entry under one accounting, gate count $=n\times$ (polynomial
-degree) $\times\,1/\mathcal{F}$.  For the QSVT pipeline we neglect
-the discretization error of the uniform grid and the degree needed
-to keep its polynomial bounded outside the window; both omissions
-favor that method.
+discarded tail to the approximation error; the user picks
+$L_{\mathrm{trunc}}$ to balance the two.  All constructions
+therefore approximate the same unit vector of $L^2(\R)$, each
+through the interpolant of its own grid.
+Table~\ref{tab:comparison} lists the degree $d$ and the inverse
+filling fraction at equal $L^2$ error $\varepsilon$.  The gate
+counts follow from these two numbers: $\mathcal{O}(nd/\mathcal{F})$
+for the circuits with amplitude amplification and
+$\mathcal{O}(d+n^2)$ for Fourier loading, on either grid.
+Appendix~\ref{app:table} derives each entry.  For the uniform grid
+we neglect the discretization error, the degree needed to keep the
+QSVT polynomial bounded outside the window, and the wrap-around
+error of the Fourier series; these omissions favor the uniform
+grid.
 
-\begin{table}[t]
-	\caption{Gate complexity for preparing an $n$-qubit state that
-		represents $f$ to $L^2(\R)$ error $\varepsilon$.  In the QSVT
-		column, the Gaussian entry is the result of
+\begin{table*}[t]
+	\caption{Degree $d$ and inverse filling fraction
+		$1/\mathcal{F}$ for representing $f$ on an $n$-qubit
+		register to $L^2(\R)$ error $\varepsilon$, up to constant
+		factors.  The gate count is $\mathcal{O}(nd/\mathcal{F})$
+		with amplitude amplification and $\mathcal{O}(d+n^2)$ with
+		Fourier loading.  Uniform-grid entries are evaluated at the
+		truncation radius that balances the tail against the
+		degree.  The Gaussian entry is the result of
 		Ref.~\cite{McArdleGilyenBerta2025}, stated there for the
-		trace distance on the window; the other entries are our
-		estimates from Theorem~1 of that work, evaluated at the
-		truncation radius that balances the tail against the degree.
-		The last column is Theorem~\ref{thm:stateprep} at fixed $L$;
-		entries without $\varepsilon$ are exact.  The last target is
-		a pair of Lorentzians at $\pm a$ with $|a|\gg b$.
-		Derivations are in Appendix~\ref{app:table}.}
+		trace distance on the window; the other uniform-grid entries
+		are our estimates from Theorem~1 of that work, and the
+		number of Fourier modes on the window is of the same order.
+		Cotangent-grid entries are Theorem~\ref{thm:stateprep} at
+		fixed $L$, with the values for $L$ growing with $d$ in
+		parentheses; entries without $\varepsilon$ are exact.  The
+		last target is a pair of Lorentzians at $\pm a$ with
+		$|a|\gg b$.  Derivations are in Appendix~\ref{app:table}.}
 	\label{tab:comparison}
 	\begin{ruledtabular}
-		\begin{tabular}{lll}
-			Target $f(y)$ & QSVT~\cite{McArdleGilyenBerta2025}
-			& This work\\
+		\begin{tabular}{lllll}
+			& \multicolumn{2}{c}{Uniform grid}
+			& \multicolumn{2}{c}{Cotangent grid}\\
+			Target $f(y)$ & $d$ & $1/\mathcal{F}$
+			& $d$ & $1/\mathcal{F}$\\
 			\hline
 			$(1+y^2)^{-1/2}$
-			& $\mathcal{O}(n\,\varepsilon^{-3}\log\tfrac1\varepsilon)$
-			& $n$\\[2pt]
+			& $\varepsilon^{-2}\log\tfrac1\varepsilon$
+			& $\varepsilon^{-1}$ & $0$ & $1$\\[2pt]
 			$1/((y-a)^2+b^2)$
-			& $\mathcal{O}(n\,\varepsilon^{-1}\log\tfrac1\varepsilon)$
-			& $\mathcal{O}(n)$\\[2pt]
+			& $\varepsilon^{-2/3}\log\tfrac1\varepsilon$
+			& $\varepsilon^{-1/3}$ & $1$ & $\sqrt2$\\[2pt]
 			$\mathrm{sech}(y)$
-			& $\mathcal{O}(n\log^{5/2}\tfrac1\varepsilon)$
-			& $\mathcal{O}(n\log^{2}\tfrac1\varepsilon)$\\[2pt]
+			& $\log^{2}\tfrac1\varepsilon$
+			& $\log^{1/2}\tfrac1\varepsilon$
+			& $\log^{2}\tfrac1\varepsilon$
+			\ ($\log^{3/2}\tfrac1\varepsilon$)
+			& $1$\ ($\log^{1/4}\tfrac1\varepsilon$)\\[2pt]
 			$e^{-\beta y^2/2}$
-			& $\mathcal{O}(n\log^{5/4}\tfrac1\varepsilon)$
-			& $\mathcal{O}(n\log^{3/2}\tfrac1\varepsilon)$\\[2pt]
+			& $\log\tfrac1\varepsilon$
+			& $\log^{1/4}\tfrac1\varepsilon$
+			& $\log^{3/2}\tfrac1\varepsilon$
+			\ ($\log\tfrac1\varepsilon$)
+			& $1$\ ($\log^{1/4}\tfrac1\varepsilon$)\\[2pt]
 			$\sum_{\pm}1/((y\mp a)^2+b^2)$
-			& $\mathcal{O}(n\,\varepsilon^{-1}\log\tfrac1\varepsilon)$
-			& $\mathcal{O}(n(\tfrac{|a|}{b})^{3/2}\log\tfrac1\varepsilon)$\\
-			\hline
-			Ancilla qubits
-			& $4$ ($3$ under parity) & $2$
+			& $\varepsilon^{-2/3}\log\tfrac1\varepsilon$
+			& $\varepsilon^{-1/3}$
+			& $\tfrac{|a|}{b}\log\tfrac1\varepsilon$
+			& $(\tfrac{|a|}{b})^{1/2}$
 		\end{tabular}
 	\end{ruledtabular}
-\end{table}
+\end{table*}
 
-For amplitudes with algebraic tails the cotangent grid is exact at
-$\mathcal{O}(n)$ gates, while the QSVT pipeline pays a power of
-$1/\varepsilon$, because it must truncate the tail.  The gap widens
-as the tail becomes heavier: for $(1+y^2)^{-m/2}$ our estimate of
-the QSVT cost is
-$\mathcal{O}(n\,\varepsilon^{-3/(2m-1)}\log(1/\varepsilon))$.  For
-the hyperbolic secant the cost on the cotangent grid is lower than
-our estimate for the QSVT pipeline by
-$\log^{1/2}(1/\varepsilon)$ at fixed $L$ and by
-$\log^{3/4}(1/\varepsilon)$ with $L\propto d^{1/3}$.  For the Gaussian it is higher, by
-$\log^{1/4}(1/\varepsilon)$ at fixed $L$.  For the pair of Lorentzians the cost
-grows with the separation as $(|a|/b)^{3/2}$, because the grid is
-dense at one point only; it stays below our QSVT estimate as long
-as $(|a|/b)^{3/2}\lesssim\varepsilon^{-1}$.  The two-ancilla budget
-(last row of Table~\ref{tab:comparison}) is one to two qubits below
-the QSVT pipeline, which uses four in the general case and three
-under parity, because the diagonal signal $e^{iA}$ needs no
-separate block-encoding ancilla.
+For the amplitudes $(1+y^2)^{-m/2}$ the cotangent grid is exact at
+the degree $m-1$, which does not depend on $\varepsilon$.  On the
+uniform grid the tail must be truncated, and our estimate of the
+degree is
+$\mathcal{O}(\varepsilon^{-2/(2m-1)}\log(1/\varepsilon))$.  With
+amplitude amplification the gate counts are $\mathcal{O}(n)$
+against
+$\mathcal{O}(n\,\varepsilon^{-3/(2m-1)}\log(1/\varepsilon))$, and
+Fourier loading on the uniform grid costs
+$\mathcal{O}(\varepsilon^{-2/(2m-1)}\log(1/\varepsilon)+n^2)$.  The
+gap widens as the tail becomes heavier.  Other amplitudes with
+algebraic tails are not exact.  Those that are analytic at
+infinity, such as rational functions of $y$, belong to the
+geometric class of Sec.~\ref{subsec:boyd} and have
+$d=\mathcal{O}(\log(1/\varepsilon))$, while the truncation radius
+on the uniform grid still grows as a power of $1/\varepsilon$.
+For the hyperbolic secant the degree on the cotangent grid equals
+our estimate for the uniform grid at fixed $L$ and is lower by
+$\log^{1/2}(1/\varepsilon)$ with $L\propto d^{1/3}$; with
+amplitude amplification the gate count is lower by
+$\log^{1/2}(1/\varepsilon)$ and $\log^{3/4}(1/\varepsilon)$,
+respectively.  For the Gaussian the degree is higher by
+$\log^{1/2}(1/\varepsilon)$ at fixed $L$ and has the same scaling
+with $L\propto d^{1/2}$, where the gate counts with amplitude
+amplification also scale alike.  For the pair of Lorentzians the
+degree grows with the separation as $|a|/b$, because the grid is
+dense at one point only; it stays below our estimate for the
+uniform grid as long as $|a|/b\lesssim\varepsilon^{-2/3}$.  The QSP
+circuit of Theorem~\ref{thm:stateprep} uses two ancilla qubits,
+against four in general and three under parity for the QSVT
+pipeline~\cite{McArdleGilyenBerta2025}, because the diagonal signal
+$e^{iA}$ needs no separate block-encoding ancilla.  Fourier loading
+uses none on either grid.
 
 The scalings of the hyperbolic secant and the Gaussian are close,
 so we also compared constant factors.  For
 $\varepsilon$ between $10^{-2}$ and $10^{-6}$ we minimized the
-product $d/\mathcal{F}$, which multiplies $n$ in both gate counts,
-over the free parameter of each method: $L$ on the cotangent grid
+product $d/\mathcal{F}$, which multiplies $n$ in the gate counts
+with amplitude amplification, over the free parameter of each method: $L$ on the cotangent grid
 and $L_{\mathrm{trunc}}$ for the QSVT pipeline
 (Appendix~\ref{app:table}).  For the hyperbolic secant the product
 on the cotangent grid is $5$ to $8$ times smaller than for the QSVT
@@ -447,6 +592,15 @@ the QSVT value.  For the Lorentzian it is $\sqrt2$ against about
 $400$ at $\varepsilon=10^{-2}$ and about $6\times10^{3}$ at
 $\varepsilon=10^{-3}$.  Figure~\ref{fig:like-for-like} shows the
 error against this product for the three families.
+
+Table~\ref{tab:comparison} covers constructions without coherent
+arithmetic.  Methods that evaluate the target with coherent
+arithmetic~\cite{GroverRudolph2002}, or by coherent comparison
+with a prepared reference state~\cite{LemieuxEtAl2024}, are not
+bound by these estimates; their cost is dominated by the
+arithmetic.  A nonuniform grid was suggested as a way to raise the
+filling fraction in Ref.~\cite{RattewKoczor2022}, without a
+construction.
 
 Two linear-depth constructions also prepare such profiles on a
 uniform grid over a finite window: the matrix-product-state
@@ -459,54 +613,6 @@ and is demonstrated numerically at fixed bond dimension on a
 window chosen by the user.  Neither work states how the cost grows
 with $1/\varepsilon$ or with the window, so they are absent from
 Table~\ref{tab:comparison}.
-Convergence data for the targets appear in
-Fig.~\ref{fig:convergence}.
-
-\begin{figure*}[t]
-	\centering
-	\includegraphics[width=\textwidth]{figures/convergence_comparison.pdf}
-	\caption{$L^\infty$ approximation error versus degree $d$ for the
-		four targets.  \emph{Blue (this work):} expansion of $f$ in
-		the rational Chebyshev basis $\{\TB_k,\SB_k\}$ of
-		Boyd~\cite{Boyd1990} on $\R$, with map parameter $L=1$ for
-		panels (a)--(c) and $L=2$ for panel (d).  The coefficients are
-		computed from the pullback $g(\theta)=f(L\cot\theta)$ on the
-		midpoint grid of Eq.~\eqref{eq:cot-grid}: an orthogonal cosine
-		projection for the even targets (a)--(c), and a least-squares
-		fit in the even harmonics $\{1,\cos 2k\theta,\sin 2k\theta\}$,
-		$2k\le d$, for the shifted Lorentzian (d).  These are the only
-		harmonics the $\pi$-periodic pullback contains
-		(Sec.~\ref{subsec:boyd}).  The reported error is
-		$\sup_{\theta\in(0,\pi)}|g-\tilde g|$, which equals
-		$\sup_{y\in\R}|f-\tilde f|$ exactly, since $y=L\cot\theta$ is a
-		bijection.  \emph{Dashed:} Chebyshev projections of $f$ on the
-		truncated intervals $[-L_{\mathrm{tr}},L_{\mathrm{tr}}]$ for
-		$L_{\mathrm{tr}}\in\{10,50,200\}$, with error measured as
-		$\sup_{|y|\le L_{\mathrm{tr}}}|f-\tilde f|$ on that interval.
-		Their near-flat behavior is not a truncation tail but the slow
-		Chebyshev rate: the nearest singularity of $f$ lies at distance
-		$\mathcal{O}(1/L_{\mathrm{tr}})$ from the rescaled interval,
-		giving a Bernstein rate $\rho=1+\mathcal{O}(1/L_{\mathrm{tr}})$,
-		so the degree needed to resolve a fixed-width feature grows in
-		proportion to $L_{\mathrm{tr}}$.  All suprema are estimated on
-		the $4096$-point evaluation grids.  In panel~(a) the pullback
-		is the exact degree-two polynomial $\sin^2\theta$, so the error
-		falls to machine precision at $d=2$; that floor is double
-		precision, not a convergence rate.  In panels (b) and (c) the
-		downward curvature is the subgeometric rate
-		$\exp(-c\,d^{\,\sigma})$ of Sec.~\ref{subsec:boyd}, with
-		$\sigma=1/2$ for the hyperbolic secant and $\sigma=2/3$ for
-		the Gaussian.  Panel (d) uses $a=2$, $b=1$, for which the
-		geometric rate of Eq.~\eqref{eq:shifted-rate} predicts the
-		observed straight line.
-		The figure shows the unweighted pullback $g$ with $y_0=0$;
-		the weighted function $G=g/\sin\theta$ of
-		Eq.~\eqref{eq:weighted} converges at the same rates, and in
-		panel~(a) it is the degree-one polynomial $\sin\theta$.
-		The figure is reproduced by the reference
-		implementation (see Data availability).}
-	\label{fig:convergence}
-\end{figure*}
 
 \begin{figure*}[t]
 	\centering
@@ -515,7 +621,8 @@ Fig.~\ref{fig:convergence}.
 		of Ref.~\cite{McArdleGilyenBerta2025} at equal $L^2(\R)$
 		error $\varepsilon$.  The cost is the product
 		$d/\mathcal{F}$ of degree and inverse filling fraction,
-		which multiplies $n$ in both gate counts.  (a),~(b) Error
+		which multiplies $n$ in the gate counts with amplitude
+		amplification.  (a),~(b) Error
 		against cost for the hyperbolic secant and the Gaussian.
 		\emph{Blue:} truncated Fourier series of the weighted
 		function $G$ at $L=1$ (dashed) and at the $L$ of least cost

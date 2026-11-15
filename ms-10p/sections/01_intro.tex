@@ -37,13 +37,13 @@ rotations in place of the phase rotations, and produces Laurent
 polynomials; this form was identified with the $\SU(2)$ nonlinear
 Fourier transform by Alexis, Mnatsakanyan, and
 Thiele~\cite{AlexisMnatsakanyanThiele2024,AlexisBeckerEtAl2026} and
-by Laneve~\cite{Laneve2025}, and its phases are computed by the
+by Laneve~\cite{Laneve2025b}, and its phases are computed by the
 layer-stripping algorithm of Ni, Sarkar, Ying, and
 Lin~\cite{NiSarkarYingLin2025}.  None of these coordinates covers
 the real line.  The coordinate that does is $x=\cot\theta$, which
 maps the circle onto $\R\cup\{\infty\}$ and in which the natural
 basis is Boyd's family of rational Chebyshev
-functions~\cite{Boyd1987,Boyd1990}.  We call it the stereographic
+functions~\cite{Boyd1987b,Boyd1990}.  We call it the stereographic
 coordinate, because $x$ is the stereographic projection of the
 point $e^{2i\theta}$ of the unit circle onto the real line.
 Figure~\ref{fig:charts} collects the four coordinates and the
@@ -70,19 +70,30 @@ To load a function $f$ on $\R$ into the amplitudes of an $n$-qubit
 register we sample it on the grid $y_j=L\cot\theta_j$, with
 $\theta_j$ uniformly spaced, and weight each sample by the square
 root of the local grid spacing.  The amplitudes are then uniform
-samples of the function $G(\theta)=f(L\cot\theta)/\sin\theta$,
-which a standard Fourier-type QSP circuit loads with a diagonal
-phase operator costing $\mathcal{O}(n)$ gates per call.  Its cost
-is set by the smoothness of $G$, which Boyd's theory of rational
-Chebyshev expansions classifies.  The weight makes the map from
-$f$ to $G$ unitary, and the grid sums that define norms and
-overlaps are exact, so the state represents $f$ in the norm of
-$L^2(\R)$ with no discretization error and no truncation radius.
-For the Lorentzian the weighted function is $\sin\theta$, and the
-state is exact at $\mathcal{O}(n)$ gates.  Existing methods sample
-$f$ on a uniform grid over a finite window and represent the same
-function up to the discarded tail; Sec.~\ref{subsec:comparison}
-compares the costs at equal $L^2$ error.
+samples of the function $G(\theta)=f(L\cot\theta)/\sin\theta$.
+They are loaded either by a quantum Fourier transform of the
+Fourier coefficients of $G$, or by a Fourier-type QSP circuit whose
+signal is a diagonal phase operator costing $\mathcal{O}(n)$ gates
+per call.  This operator is the Cayley transform of the position
+operator of the grid, so the second circuit is QSP of an unbounded
+operator.  In both circuits the cost is set by the smoothness of
+$G$, which Boyd's theory of rational Chebyshev expansions
+classifies.  The weight makes the map from $f$ to $G$ unitary, and
+the grid sums that define norms and overlaps are exact, so the
+state represents $f$ in the norm of $L^2(\R)$ with no
+discretization error and no truncation radius.  The representation
+is by interpolation in rational Chebyshev functions: the state
+gives overlaps and a class of expectation values as exact
+integrals over $\R$, but it is not a set of samples of $f$ on a
+uniform grid.  For the Lorentzian the weighted function is
+$\sin\theta$, and the state is exact at $\mathcal{O}(n)$ gates.
+The success amplitude of the QSP circuit equals $M^{-1/2}$, where
+$M$ is the constant of classical rejection sampling of $|f|^2$ from
+a Cauchy proposal; it is of order one for a single peak with a
+tail no heavier than $1/|y|$.  Constructions on a uniform grid
+sample $f$ over a finite window and represent the same function up
+to the discarded tail; Sec.~\ref{subsec:comparison} compares the
+costs at equal $L^2$ error.
 
 Section~\ref{sec:projective} reviews standard QSP, introduces the
 stereographic coordinate, and derives its completeness theorem and

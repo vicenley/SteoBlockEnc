@@ -18,29 +18,41 @@ preparation.  On the cotangent grid a function on $\R$, weighted
 by the square root of the grid spacing, becomes a function on a
 uniform angular grid, which a standard Fourier-type QSP circuit
 loads.  The state represents the function in the norm of
-$L^2(\R)$, and its error is the approximation error alone.  The
-cost is $\mathcal{O}(n)$ gates, with no error, for Lorentzians and
-other amplitudes with algebraic tails, for which a uniform grid
-pays a power of $1/\varepsilon$; it is
-$\mathcal{O}(n\log^2(1/\varepsilon))$ for the hyperbolic secant and
-$\mathcal{O}(n\log^{3/2}(1/\varepsilon))$ for the Gaussian.  The
-circuit uses two ancilla qubits.
+$L^2(\R)$, and its error is the approximation error alone.  It is the quantum Fourier transform of $d+1$ coefficients, prepared
+with $\mathcal{O}(d+n^2)$ gates and no ancilla, or by a QSP circuit
+with $\mathcal{O}(nd/\mathcal{F})$ gates and two ancillas.  The
+signal of that circuit is the Cayley transform of the position
+operator of the grid, and its success amplitude is the inverse
+square root of the rejection-sampling constant of the target
+against a Cauchy proposal, so a heavy tail costs nothing.  The
+degree $d$ is independent of $\varepsilon$ for Lorentzians and the
+amplitudes $(1+y^2)^{-m/2}$, for which a uniform grid needs a
+degree that grows as a power of $1/\varepsilon$.  It is
+$\mathcal{O}(\log^2(1/\varepsilon))$ for the hyperbolic secant at
+fixed $L$ and $\mathcal{O}(\log(1/\varepsilon))$ for the Gaussian
+at $L\propto d^{1/2}$.
 
-These results have three limitations.  First, the comparison
-identifies a state on the cotangent grid with the function that
-interpolates its amplitudes in the rational Chebyshev basis.  A
-task that needs the amplitudes on a uniform grid must pay for
-regridding, which we have not analyzed.  Second, the grid is dense
-at one point only: two Lorentzians of width $b$ separated by
-$2|a|\gg b$ cost a factor $(|a|/b)^{3/2}$ more than a single one,
-and for the Gaussian the cotangent grid has no advantage: its
-scaling is worse than that of the QSVT pipeline by
-$\log^{1/4}(1/\varepsilon)$, and its measured cost is within a
-factor $1.3$ of it.  Third, the
+These results have three limitations.  First, the state represents
+$f$ by interpolation in the rational Chebyshev basis.  Its error
+does not depend on the number of qubits, and a single qubit already
+represents the Lorentzian exactly.  A task that needs the
+amplitudes on a uniform grid must pay for regridding, which we have
+not analyzed.  Second, the grid is dense at one point only: two
+Lorentzians of width $b$ separated by $2|a|\gg b$ need a degree
+$\mathcal{O}((|a|/b)\log(1/\varepsilon))$ against $d=1$ for a
+single one.  For the Gaussian the cotangent grid has no advantage:
+its degree and gate count scale as those of the uniform grid, and
+its measured cost with amplitude amplification is between $0.9$
+and $1.3$ times that of the QSVT pipeline.  Third, the
 construction requires a signal operator whose eigenphases we
-choose; it does not extend to a block-encoded Hamiltonian with
-given eigenvalues, for which Sec.~\ref{sec:limits} shows that no
-change of variable helps.  A natural next step is to identify
-downstream tasks that consume the state through the overlaps of
-Sec.~\ref{subsec:quadrature}, which are exact integrals over the
-real line.
+choose, the Cayley transform of a diagonal position operator.  For
+a block-encoded Hamiltonian with given eigenvalues the Cayley
+transform costs a linear solve~\cite{DelCorso2026}, and
+Sec.~\ref{sec:limits} shows that no change of variable helps.  A natural next step is to identify
+tasks that consume the state through the overlaps and expectation
+values of Sec.~\ref{subsec:quadrature}, which are exact integrals
+over the real line.  One candidate is amplitude estimation of
+expectation values under Cauchy and Student $t$ distributions,
+whose square roots are the states prepared exactly in
+Sec.~\ref{subsec:examples} and for which a uniform grid requires
+truncation.

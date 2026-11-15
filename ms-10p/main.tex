@@ -92,13 +92,19 @@
 	chosen.  We show that a function sampled on a cotangent grid,
 	with each sample weighted by the square root of the local
 	spacing, is represented on the whole real line without
-	truncation.  Lorentzian profiles and other amplitudes with
-	algebraic tails are prepared exactly with a gate count linear in
-	the number of qubits, whereas uniform-grid methods pay a power of
-	the inverse error.  For the hyperbolic secant the gate count is
-	polylogarithmic in the inverse error and lower than that of
-	existing methods, and for the Gaussian the cotangent grid has no
-	advantage.
+	truncation, by interpolation in rational Chebyshev functions.
+	Overlaps and a class of expectation values of such states are
+	exact integrals over the real line, but the states are not
+	samples on a uniform grid.  The state is the quantum Fourier
+	transform of a short coefficient vector, whose length is set by
+	the smoothness of the weighted function.  Lorentzian profiles
+	and related amplitudes with algebraic tails are prepared
+	exactly, with a gate count linear in the number of qubits,
+	whereas on a uniform grid the required Fourier length or
+	polynomial degree grows as a power of the inverse error.  For
+	the hyperbolic secant the length is polylogarithmic in the
+	inverse error and lower than our estimate for the uniform grid,
+	and for the Gaussian the two grids scale alike.
 \end{abstract}
 
 \maketitle
@@ -119,8 +125,7 @@
 \section*{Data availability}
 The reference implementation and data supporting the numerical
 results, including the coefficient-decay study of
-Appendix~\ref{app:sech}, the convergence comparison of
-Fig.~\ref{fig:convergence}, and the cost comparison of
+Appendix~\ref{app:sech} and the cost comparison of
 Sec.~\ref{subsec:comparison}, will be deposited in a public repository
 upon publication.
 

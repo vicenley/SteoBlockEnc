@@ -68,3 +68,14 @@ in `REFEREE_CHECK_2026-11-12.md`, Part D.
 - [ ] The "Phase 0" notes above predate this round: the Gaussian exponent is σ = 2/3, and
   Table 1 no longer has a QET column or a shifted-Lorentzian row.
 
+
+## PRA pre-submission pass (2026-11-14)
+
+- [x] **Rejection identity** F_G^2 = 1/sup(tau/rho_Cauchy): Lorentzian, sech, Gaussian, m=3, to 1e-15.
+- [x] **Exact expectation values** for h = cos/sin(2k theta), k <= N-d-1: exact to 1e-16, fails at k = N-d.
+- [x] **Pauli read-out variance** (5r^4 - 2r^2 + 1)/(4 N_s) (sympy, delta method).
+- [x] **Fourier loading identity**, Cayley identity e^{2i theta_j} = (y_j+iL)/(y_j-iL), Christov functions: to 1e-14.
+- [x] **Gaussian at L = lambda sqrt(d)**: `scripts/like_for_like/gauss_sqrt_d.py` (mpmath, 260 digits).
+  -log(err)/d = 0.478, 0.457, 0.454, 0.446 at d = 41, 81, 161, 321 for lambda = 0.86; F*sqrt(L) = 0.751 constant.
+- Table I now lists d and 1/F for the uniform and cotangent grids; Fig. 2 (convergence) and the
+  backward direction of the generalized theorem (App. B) were removed.

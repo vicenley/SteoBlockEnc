@@ -38,13 +38,14 @@ coordinate.
 
 \begin{corollary}[Same coefficients in every coordinate]
 	\label{cor:basis-indep}
-	Let $\alpha=a/\sqrt{1-a^2}$ be the stereographic coordinate of
-	Eq.~\eqref{eq:stereo-coord} and $z=e^{i\arccos a}$.  For every
-	polynomial $P$ of degree at most $d$,
+	Let $\theta=\arccos a$ and let $\alpha=\cot\theta=a/\sqrt{1-a^2}$
+	be the stereographic coordinate of
+	Eq.~\eqref{eq:stereo-coord}.  For every polynomial $P$ of
+	degree at most $d$,
 	\begin{equation}
 		P(a)=\sum_{k=0}^d c_k T_k(a)
 		=\sum_{k=0}^d c_k\,\TB_k(\alpha)
-		=\sum_{k=0}^d c_k\,\tfrac{z^k+z^{-k}}{2},
+		=\sum_{k=0}^d c_k\cos k\theta,
 	\end{equation}
 	with the \emph{same} coefficients $c_k$, because
 	$T_k(a)=\TB_k(\alpha)=\cos k\theta$.  Hence the best
