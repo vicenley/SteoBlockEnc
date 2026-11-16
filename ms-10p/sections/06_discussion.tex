@@ -6,59 +6,52 @@ To conclude, we have formulated QSP in the stereographic
 coordinate $x=\cot\theta$, which covers the whole real line, and
 have used it to prepare functions on the real line as quantum
 states without truncation.  In this coordinate a QSP sequence is
-the standard sequence conjugated by a fixed gate.  Its achievable
-polynomials and its phases therefore follow from the standard
-theory, and its unbounded output is the ratio of two bounded
-amplitudes, whose estimation requires a number of shots that grows
-as the fourth power of its value.  For functions of a
-block-encoded matrix the change of variable is only a relabeling:
-the expansion coefficients, the approximation error at every
-degree, and its rate of decay coincide in every coordinate.
+the standard sequence conjugated by a fixed gate, so that its
+phases follow from the standard theory.  Its unbounded output is
+the ratio of two bounded amplitudes, and the number of shots
+needed to estimate this ratio grows as the fourth power of its
+value.  For functions of a block-encoded matrix the change of
+variable is a relabeling, since the expansion coefficients and the
+approximation error at every degree coincide in every coordinate.
 
-What the coordinate does provide is a choice of sample points for state
-preparation.  On the cotangent grid a function on $\R$, weighted
-by the square root of the grid spacing, becomes a function on a
-uniform angular grid, which a standard Fourier-type QSP circuit
-loads.  The state represents the function in the norm of
-$L^2(\R)$, and its error is the approximation error alone.  It is the quantum Fourier transform of $d+1$ coefficients, prepared
-with $\mathcal{O}(d+n^2)$ gates and no ancilla, or by a QSP circuit
-with $\mathcal{O}(nd/\mathcal{F})$ gates and two ancillas.  The
-signal of that circuit is the Cayley transform of the position
-operator of the grid, and its success amplitude is the inverse
-square root of the rejection-sampling constant of the target
-against a Cauchy proposal, which is of order one for a single peak
-with a tail no heavier than $1/|y|$.
+The benefit of the coordinate lies in the choice of sample points
+for state preparation.  On the cotangent grid, a function weighted
+by the square root of the grid spacing becomes a function on a
+uniform grid of angles, and the prepared state represents the
+original function in the norm of $L^2(\R)$ with the approximation
+error as its only error.  The state is the quantum Fourier
+transform of a short coefficient vector and needs no ancilla.
+Alternatively, it is prepared by a QSP circuit whose signal is the
+Cayley transform of the position operator of the grid.  The length
+of the coefficient vector does not depend on the error for the
+Lorentzian and the related amplitudes with algebraic tails, for
+which a uniform grid needs a degree that grows as a power of the
+inverse error.  For the hyperbolic secant and the Gaussian, in
+turn, the length grows polylogarithmically with the inverse error,
+and the cotangent grid is cheaper for the former and
+equivalent for the latter.
 
-The degree $d$ is independent of $\varepsilon$ for Lorentzians and the
-amplitudes $(1+y^2)^{-m/2}$, for which a uniform grid needs a
-degree that grows as a power of $1/\varepsilon$.  It is
-$\mathcal{O}(\log^2(1/\varepsilon))$ for the hyperbolic secant at
-fixed $L$ and $\mathcal{O}(\log(1/\varepsilon))$ for the Gaussian
-at $L\propto d^{1/2}$.
+These results come with three limitations.  First, the state
+represents the function by interpolation in the rational Chebyshev
+basis, so that a single qubit already represents the Lorentzian
+exactly.  Hence, a task which needs the amplitudes on a uniform
+grid has to pay for regridding, which we have not analyzed.
+Second, the grid is dense at one point only.  Two Lorentzians of
+width $b$ separated by $2|a|\gg b$ therefore need a degree which
+grows as $|a|/b$, against $d=1$ for a single one.  For the Gaussian
+the cotangent grid offers no advantage, and its measured cost with
+amplitude amplification lies between $0.9$ and $1.3$ times that of
+the QSVT pipeline.  Third, the construction requires a signal
+operator whose eigenphases we choose.  For a block-encoded
+Hamiltonian with given eigenvalues the Cayley transform costs a
+linear solve~\cite{DelCorso2026}, and Sec.~\ref{sec:limits} shows
+that no change of variable helps there.
 
-These results have three limitations.  First, the state represents
-$f$ by interpolation in the rational Chebyshev basis.  Its error
-does not depend on the number of qubits, and a single qubit already
-represents the Lorentzian exactly.  A task that needs the
-amplitudes on a uniform grid must pay for regridding, which we have
-not analyzed.  Second, the grid is dense at one point only: two
-Lorentzians of width $b$ separated by $2|a|\gg b$ need a degree
-$\mathcal{O}((|a|/b)\log(1/\varepsilon))$ against $d=1$ for a
-single one.  For the Gaussian the cotangent grid has no advantage:
-its degree and gate count scale as those of the uniform grid, and
-its measured cost with amplitude amplification is between $0.9$
-and $1.3$ times that of the QSVT pipeline.  Third, the
-construction requires a signal operator whose eigenphases we
-choose, the Cayley transform of a diagonal position operator.  For
-a block-encoded Hamiltonian with given eigenvalues the Cayley
-transform costs a linear solve~\cite{DelCorso2026}, and
-Sec.~\ref{sec:limits} shows that no change of variable helps.
-
-A natural next step is to identify
-tasks that consume the state through the overlaps and expectation
-values of Sec.~\ref{subsec:quadrature}, which are exact integrals
-over the real line.  One candidate is amplitude estimation of
-expectation values under Cauchy and Student $t$ distributions,
-whose square roots are the states prepared exactly in
+A natural next step is to identify tasks which consume the state
+through the overlaps and expectation values of
+Sec.~\ref{subsec:quadrature}, which are exact integrals over the
+real line.  One candidate is amplitude estimation of expectation
+values under Cauchy and Student $t$ distributions, whose square
+roots are the states prepared exactly in
 Sec.~\ref{subsec:examples} and for which a uniform grid requires
 truncation.
