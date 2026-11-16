@@ -129,7 +129,9 @@ analytically to a neighborhood of the real $\theta$-axis, which
 requires $f$ analytic near the real $y$-axis \emph{and} analytic at
 infinity, i.e., possessing a convergent expansion in $1/y$.  The
 degree for $L^\infty$-error $\delta$ is then
-$d_\delta=\mathcal{O}(\log(1/\delta))$.  When $f$ has an essential
+$d_\delta=\mathcal{O}(\log(1/\delta))$.
+
+When $f$ has an essential
 singularity at infinity the pullback has an essential singularity
 at the endpoint $\theta=0$, the analyticity strip collapses, and
 the rate is \emph{subgeometric}, $\sigma<1$, with
@@ -146,7 +148,9 @@ secant pulls back to $\approx 2e^{-L/\theta}$, so $\nu=1$ and
 $\sigma=1/2$.  Letting $L$ grow with the degree raises the
 effective exponent~\cite[Sec.~17.9]{Boyd2001}; we first quote the
 rates at fixed $L$ and return to this choice in
-Sec.~\ref{subsec:examples}.  For $\mathrm{sech}(L\cot\theta)$ the poles of $\mathrm{sech}$
+Sec.~\ref{subsec:examples}.
+
+For $\mathrm{sech}(L\cot\theta)$ the poles of $\mathrm{sech}$
 pull back to points $\theta_m$ with $|\im\theta_m|\to 0$ as
 $m\to\infty$, accumulating on the real axis, so no strip exists and
 the coefficients decay as $\exp(-c\sqrt{k})$
@@ -208,6 +212,7 @@ $|q|\le1$ on the unit circle.  The phases that realize $q$ follow
 from a standard
 solver~\cite{MotlaghWiebe2023,DongMengWhaleyEtAl2021,BerntsonSunderhauf2024,NiSarkarYingLin2025}
 at cost negligible against the circuit for the targets here.
+
 \emph{The QSP circuit} follows the template of
 Ref.~\cite{McArdleGilyenBerta2025}: a polynomial of a diagonal
 operator on the register is applied to $\ket{+}^{\otimes n}$ and the
@@ -224,7 +229,9 @@ whose phase $\theta_j=\pi/(2N)+\sum_{k}j_k\pi 2^k/N$ decomposes over
 the bits of $j$.  The operator $e^{2iA}$, controlled on the signal
 ancilla, therefore costs $\mathcal{O}(n)$ elementary gates: $n$
 controlled phase rotations, one on each qubit $k$, and one phase on
-the ancilla.  In terms of the position operator
+the ancilla.
+
+In terms of the position operator
 $Y=\sum_j y_j\ket{j}\!\bra{j}$ of the grid,
 \begin{equation}
 	e^{2iA}=(Y-y_0+iL)(Y-y_0-iL)^{-1}
@@ -239,7 +246,9 @@ transform~\cite{DelCorso2026}.  For a block-encoded matrix the
 Cayley transform requires a shifted linear solve, whose cost
 offsets the gain in the number of
 queries~\cite{DelCorso2026}; here it costs $n$ controlled phases, because $Y$ is
-diagonal on a grid of our choice.  Generalized QSP~\cite{MotlaghWiebe2023} with $d$
+diagonal on a grid of our choice.
+
+Generalized QSP~\cite{MotlaghWiebe2023} with $d$
 applications of the controlled $e^{2iA}$ and $d+1$ rotations of the
 ancilla block-encodes $q(e^{2iA})$, and one layer $e^{-idA}$ of $n$
 single-qubit rotations supplies the prefactor of
@@ -545,39 +554,43 @@ grid.
 	\end{ruledtabular}
 \end{table*}
 
-For the amplitudes $(1+y^2)^{-m/2}$ the cotangent grid is exact at
-the degree $m-1$, which does not depend on $\varepsilon$.  On the
-uniform grid the tail must be truncated, and our estimate of the
-degree is
-$\mathcal{O}(\varepsilon^{-2/(2m-1)}\log(1/\varepsilon))$.  With
-amplitude amplification the gate counts are $\mathcal{O}(n)$
-against
-$\mathcal{O}(n\,\varepsilon^{-3/(2m-1)}\log(1/\varepsilon))$, and
-Fourier loading on the uniform grid costs
-$\mathcal{O}(\varepsilon^{-2/(2m-1)}\log(1/\varepsilon)+n^2)$.  The
-gap widens as the tail becomes heavier.  Other amplitudes with
-algebraic tails are not exact.  Those that are analytic at
-infinity, such as rational functions of $y$, belong to the
-geometric class of Sec.~\ref{subsec:boyd} and have
+The largest difference is for algebraic tails.  For the amplitudes
+$(1+y^2)^{-m/2}$ the cotangent grid is exact at the degree $m-1$,
+which does not depend on $\varepsilon$.  On the uniform grid the
+tail must be truncated, and both the degree and the inverse
+filling fraction grow as a power of $1/\varepsilon$
+(Appendix~\ref{app:table} gives the exponents for general $m$).
+For the Lorentzian the gate count with amplitude amplification is
+$\mathcal{O}(n)$ on the cotangent grid, against
+$\mathcal{O}(n\,\varepsilon^{-1}\log(1/\varepsilon))$ on the
+uniform grid.  The gap widens as the tail becomes heavier.
+
+Other amplitudes with algebraic tails are not exact.  Those that
+are analytic at infinity, such as rational functions of $y$,
+belong to the geometric class of Sec.~\ref{subsec:boyd} and have
 $d=\mathcal{O}(\log(1/\varepsilon))$, while the truncation radius
 on the uniform grid still grows as a power of $1/\varepsilon$.
-For the hyperbolic secant the degree on the cotangent grid equals
-our estimate for the uniform grid at fixed $L$ and is lower by
-$\log^{1/2}(1/\varepsilon)$ with $L\propto d^{1/3}$; with
-amplitude amplification the gate count is lower by
+For the pair of Lorentzians the degree grows with the separation
+as $|a|/b$, because the grid is dense at one point only; it stays
+below our estimate for the uniform grid as long as
+$|a|/b\lesssim\varepsilon^{-2/3}$.
+
+For exponential tails the two grids are close.  For the hyperbolic
+secant the degree on the cotangent grid equals our estimate for
+the uniform grid at fixed $L$ and is lower by
+$\log^{1/2}(1/\varepsilon)$ with $L\propto d^{1/3}$.  With
+amplitude amplification its gate count is lower by
 $\log^{1/2}(1/\varepsilon)$ and $\log^{3/4}(1/\varepsilon)$,
 respectively.  For the Gaussian the degree is higher by
 $\log^{1/2}(1/\varepsilon)$ at fixed $L$ and has the same scaling
 with $L\propto d^{1/2}$, where the gate counts with amplitude
-amplification also scale alike.  For the pair of Lorentzians the
-degree grows with the separation as $|a|/b$, because the grid is
-dense at one point only; it stays below our estimate for the
-uniform grid as long as $|a|/b\lesssim\varepsilon^{-2/3}$.  The QSP
-circuit of Theorem~\ref{thm:stateprep} uses two ancilla qubits,
-against four in general and three under parity for the QSVT
-pipeline~\cite{McArdleGilyenBerta2025}, because the diagonal signal
-$e^{iA}$ needs no separate block-encoding ancilla.  Fourier loading
-uses none on either grid.
+amplification also scale alike.
+
+The QSP circuit of Theorem~\ref{thm:stateprep} uses two ancilla
+qubits, against four in general and three under parity for the
+QSVT pipeline~\cite{McArdleGilyenBerta2025}, because the diagonal
+signal $e^{iA}$ needs no separate block-encoding ancilla.  Fourier
+loading uses none on either grid.
 
 The scalings of the hyperbolic secant and the Gaussian are close,
 so we also compared constant factors.  For
@@ -598,9 +611,9 @@ arithmetic.  Methods that evaluate the target with coherent
 arithmetic~\cite{GroverRudolph2002}, or by coherent comparison
 with a prepared reference state~\cite{LemieuxEtAl2024}, are not
 bound by these estimates; their cost is dominated by the
-arithmetic.  A nonuniform grid was suggested as a way to raise the
-filling fraction in Ref.~\cite{RattewKoczor2022}, without a
-construction.
+arithmetic.  Reference~\cite{RattewKoczor2022} suggested a
+nonuniform grid as a way to raise the filling fraction; the
+cotangent grid is one such construction.
 
 Two linear-depth constructions also prepare such profiles on a
 uniform grid over a finite window: the matrix-product-state

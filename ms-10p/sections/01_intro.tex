@@ -74,29 +74,27 @@ In this paper, we formulate QSP in the stereographic coordinate
 and use it to prepare states on the cotangent grid.  We first show
 that the resulting circuit is the standard QSP circuit conjugated
 by one fixed gate, so that its phases and its completeness theorem
-follow directly from the standard theory.  The circuit itself
-remains bounded, and the unbounded quantity is the ratio of the
-two amplitudes of the output qubit, which is formed after
-measurement at a sampling cost that grows as the fourth power of
-the value read out.  We then turn to functions of a block-encoded
-matrix and find that the change of variable gives no advantage
-there, since the achievable functions and the approximation error
-at every degree are the same in all coordinates.  The advantage
-arises in state preparation, where the sample points can be chosen
-freely.  We show that a function sampled on the cotangent grid,
-with each sample weighted by the square root of the local grid
-spacing, is loaded either by a quantum Fourier transform of a
-short coefficient vector or by a QSP circuit, and that in both
-cases the cost is set by the smoothness of the function in the
-angle.  In particular, the Lorentzian and related amplitudes with
-algebraic tails are prepared exactly, with a gate count which is
-linear in the number of qubits.  For the hyperbolic secant the
-cost is lower than our estimate for the uniform grid, whereas for
-the Gaussian the two grids scale alike.  We emphasize that the
-prepared state represents the function by interpolation and
-differs from a set of samples on a uniform grid.  Nevertheless,
-its overlaps and a class of its expectation values are exact
-integrals over the real line.
+follow directly from the standard theory.  Its unbounded output is
+the ratio of the two amplitudes of the output qubit, which is
+estimated at a sampling cost that grows as the fourth power of its
+value.  We then turn to functions of a block-encoded matrix and
+find that the change of variable gives no advantage there, since
+the approximation error at every degree is the same in all
+coordinates.
+
+The advantage arises in state preparation, where the sample points
+can be chosen freely.  We show that a function sampled on the
+cotangent grid is loaded by a quantum Fourier transform of a short
+coefficient vector or, alternatively, by a QSP circuit, at a cost
+which is set by the smoothness of the function in the angle.  In
+particular, the Lorentzian and related amplitudes with algebraic
+tails are prepared exactly, with a gate count which is linear in
+the number of qubits.  For the hyperbolic secant the cost is lower
+than our estimate for the uniform grid, whereas for the Gaussian
+the two grids scale alike.  We emphasize that the prepared state
+represents the function by interpolation and differs from a set of
+samples on a uniform grid.  Nevertheless, its overlaps and a class
+of its expectation values are exact integrals over the real line.
 
 The paper is organized as follows.  In Sec.~\ref{sec:projective},
 we review standard QSP, introduce the stereographic coordinate,
