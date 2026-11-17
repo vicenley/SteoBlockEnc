@@ -59,61 +59,17 @@ rotations in place of the phase rotations, and produces Laurent
 polynomials; this form is equivalent to the $\SU(2)$ nonlinear
 Fourier
 transform~\cite{AlexisMnatsakanyanThiele2024,AlexisBeckerEtAl2026,Laneve2025b}.  None of these coordinates covers
-the real line.  Figure~\ref{fig:charts} collects them, together
+the real line.
+
+Figure~\ref{fig:charts} collects them, together
 with the coordinate introduced here and the changes of variable
-that relate the four.
+that relate the four.  In the figure the unit circle is
+parametrized by $w=e^{2i\theta}$, the square of the variable of
+generalized QSP, so that the bottom edge is the Cayley transform.
 
 \begin{figure*}[t]
 	\centering
-	\begin{tikzpicture}[
-		>=Stealth,
-		every node/.style={font=\small},
-		picnode/.style={
-			rectangle, rounded corners=2pt, draw=black!60,
-			thick, align=center, inner sep=5pt, minimum width=3.1cm
-		},
-		fourier/.style    ={picnode, fill=violet!10},
-		chebyshev/.style  ={picnode, fill=blue!10},
-		gqsp/.style       ={picnode, fill=orange!10},
-		ratcheb/.style    ={picnode, fill=teal!10},
-		edgelab/.style    ={font=\footnotesize, midway, sloped},
-	]
-	\node[fourier]   (F)  at (-4.0,  1.8) {%
-		\textbf{Fourier} \\[1pt]
-		$\theta \in (0,\pi)$ \\
-		$\cos k\theta,\ \sin k\theta$};
-	\node[chebyshev] (C)  at ( 4.0,  1.8) {%
-		\textbf{Chebyshev} \\[1pt]
-		$\tilde x \in (-1,1)$ \\
-		$T_k(\tilde x),\ U_{k-1}(\tilde x)\sqrt{1-\tilde x^2}$};
-	\node[gqsp]      (G)  at (-4.0, -1.8) {%
-		\textbf{Unit circle} \\[1pt]
-		$w \in \T$ \\
-		$w^k+w^{-k},\ w^k-w^{-k}$};
-	\node[ratcheb]   (R)  at ( 4.0, -1.8) {%
-		\textbf{Stereographic} \\[1pt]
-		$x \in \R$ \\
-		$\TB_k(x),\ \SB_k(x)$};
-
-	\draw[<->, thick] (F) -- (C)
-	node[edgelab, above] {$\tilde x = \cos\theta$}
-	node[edgelab, below] {$\theta = \arccos \tilde x$};
-
-	\draw[<->, thick] (F) -- (G)
-	node[edgelab, above] {$w = e^{2i\theta}$}
-	node[edgelab, below] {$\theta = \tfrac12\arg w$};
-
-	\draw[<->, thick] (C) -- (R)
-	node[edgelab, above] {$x = \tilde x/\sqrt{1-\tilde x^2}$}
-	node[edgelab, below] {$\tilde x = x/\sqrt{1+x^2}$};
-
-	\draw[<->, thick] (G) -- (R)
-	node[edgelab, above] {$x = i(w+1)/(w-1)$}
-	node[edgelab, below] {$w = (x+i)/(x-i)$};
-
-	\draw[<->, dashed, thick, gray] (F) -- (R)
-	node[edgelab, above, gray] {$x = \cot\theta$};
-	\end{tikzpicture}
+	\includegraphics{figures/qsp_charts.pdf}
 	\caption{Four coordinates for the signal of one QSP circuit,
 		with the changes of variable on the edges and the natural
 		basis of each.  The rotation angle $\theta$ (Fourier) gives
@@ -129,9 +85,7 @@ that relate the four.
 		basis function is the image of $\cos k\theta$ or
 		$\sin k\theta$, so the same circuit is described in every
 		box; only the stereographic coordinate covers the whole
-		real line.  We use $w=e^{2i\theta}$ so that the bottom
-		edge is the Cayley transform; generalized QSP uses
-		$e^{i\theta}$, whose square is $w$.}
+		real line.}
 	\label{fig:charts}
 \end{figure*}
 
