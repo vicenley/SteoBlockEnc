@@ -56,12 +56,9 @@ works with $\tilde x=\cos\theta$ and produces ordinary
 polynomials.  Generalized QSP~\cite{MotlaghWiebe2023} works with
 $e^{i\theta}$ on the unit circle, allows arbitrary $\SU(2)$
 rotations in place of the phase rotations, and produces Laurent
-polynomials; this form was identified with the $\SU(2)$ nonlinear
-Fourier transform by Alexis, Mnatsakanyan, and
-Thiele~\cite{AlexisMnatsakanyanThiele2024,AlexisBeckerEtAl2026} and
-by Laneve~\cite{Laneve2025b}, and its phases are computed by the
-layer-stripping algorithm of Ni, Sarkar, Ying, and
-Lin~\cite{NiSarkarYingLin2025}.  None of these coordinates covers
+polynomials; this form is equivalent to the $\SU(2)$ nonlinear
+Fourier
+transform~\cite{AlexisMnatsakanyanThiele2024,AlexisBeckerEtAl2026,Laneve2025b}.  None of these coordinates covers
 the real line.  Figure~\ref{fig:charts} collects them, together
 with the coordinate introduced here and the changes of variable
 that relate the four.
@@ -243,15 +240,16 @@ records that $O_x$ is unnormalized.
 The theorem adds no new circuits to standard QSP.  Its content is
 the list of polynomials in $x$ that a QSP sequence reaches, stated
 in a coordinate that covers the real line, and its phases are
-computed by any standard algorithm.  Appendix~\ref{app:thm-real}
-gives an independent proof by induction on $d$ directly in the
-variable $x$.  Allowing a complex signal $z\in\C$ and arbitrary
-$\SU(2)$ rotations in place of the phase rotations gives the
-stereographic form of generalized QSP~\cite{MotlaghWiebe2023},
-whose entries are polynomials in $z$ and $\bar z$ of total degree
-at most $d$ (Appendix~\ref{app:thm-gen}, where we also relate the
-construction to the nonlinear Fourier transform).  The generalized
-form is not used below.
+computed by any standard algorithm.  The Supplemental
+Material~\cite{supp} gives an independent proof by induction on $d$ directly in the
+variable $x$.\footnote{Allowing a complex signal $z\in\C$ and
+	arbitrary $\SU(2)$ rotations in place of the phase rotations
+	gives the stereographic form of generalized
+	QSP~\cite{MotlaghWiebe2023}, whose entries are polynomials in
+	$z$ and $\bar z$ of total degree at most $d$.  The
+	Supplemental Material~\cite{supp} gives the proof and relates
+	the construction to the nonlinear Fourier transform.  The
+	generalized form is not used here.}
 
 \subsection{Reading out an unbounded ratio}
 \label{subsec:encoding}
