@@ -31,7 +31,9 @@ which a uniform grid needs a degree that grows as a power of the
 inverse error.  For the hyperbolic secant and the Gaussian, in
 turn, the length grows polylogarithmically with the inverse error,
 and the cotangent grid is cheaper for the former and
-equivalent for the latter.
+equivalent for the latter, where its measured cost with amplitude
+amplification lies between $0.9$ and $1.3$ times that of the QSVT
+pipeline.
 
 These results come with three limitations.  First, the state
 represents the function by interpolation in the rational Chebyshev
@@ -40,10 +42,7 @@ exactly.  Hence, a task which needs the amplitudes on a uniform
 grid has to pay for regridding, which we have not analyzed.
 Second, the grid is dense at one point only.  Two Lorentzians of
 width $b$ separated by $2|a|\gg b$ therefore need a degree which
-grows as $|a|/b$, against $d=1$ for a single one.  For the Gaussian
-the cotangent grid offers no advantage, and its measured cost with
-amplitude amplification lies between $0.9$ and $1.3$ times that of
-the QSVT pipeline.  Third, the construction requires a signal
+grows as $|a|/b$, against $d=1$ for a single one.  Third, the construction requires a signal
 operator whose eigenphases we choose.  For a block-encoded
 Hamiltonian with given eigenvalues the Cayley transform costs a
 linear solve~\cite{DelCorso2026}, and Sec.~\ref{sec:limits} shows

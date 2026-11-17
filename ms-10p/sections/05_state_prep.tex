@@ -149,15 +149,11 @@ effective exponent~\cite[Sec.~17.9]{Boyd2001}; we first quote the
 rates at fixed $L$ and return to this choice in
 Sec.~\ref{subsec:examples}.
 
-For $\mathrm{sech}(L\cot\theta)$ the poles of $\mathrm{sech}$
-pull back to points $\theta_m$ with $|\im\theta_m|\to 0$ as
-$m\to\infty$, accumulating on the real axis, so no strip exists and
-the coefficients decay as $\exp(-c\sqrt{k})$
-(Appendix~\ref{app:sech}).  The hyperbolic secant is therefore
-\emph{not} in the geometric class, contrary to a natural reading of
-its exponential decay; exponential decay on $\R$ is necessary but
-not sufficient for geometric convergence, which needs analyticity
-at infinity.
+The hyperbolic secant shows that exponential decay on $\R$ does
+not suffice for geometric convergence.  Its poles pull back to
+points $\theta_m$ which accumulate on the real axis at $\theta=0$,
+so that no strip of analyticity exists
+(Appendix~\ref{app:sech}).
 
 The weighted function of Eq.~\eqref{eq:weighted} is
 $G=g/\sin\theta$.  Because $\sin\theta$ changes sign under
@@ -334,7 +330,7 @@ $n=\lceil\log_2(d+1)\rceil$ qubits suffice, and further qubits
 change neither $\varepsilon$ nor $\mathcal{F}_p$.  For the
 Lorentzian $d=1$, and a single qubit already represents the target
 with $\varepsilon=0$.  The state is thus a representation of $f$ by
-interpolation, as a band-limited state is on a uniform grid; it is
+the interpolation of Eq.~\eqref{eq:represented}; it is
 \emph{not} a set of samples of $f$ on a uniform grid.  Additional
 qubits extend the grid, whose extent is $2LN/\pi$, and enlarge the
 class of observables whose expectation values are exact integrals
@@ -419,10 +415,9 @@ the slowest decay in the family.  Its weighted function is the
 constant $G=1$, and the state is the uniform superposition
 $\ket{+}^{\otimes n}$, prepared by $n$ Hadamard gates without a
 QSP step.  In this case the function is carried entirely by the
-grid.  The cotangent grid is the quantile grid of the Cauchy
-distribution (Sec.~\ref{subsec:algorithm}), so that every basis
-state stands for an interval of equal Cauchy probability, and the
-uniform superposition assigns the same probability to each.
+grid, whose cells have equal Cauchy probability
+(Sec.~\ref{subsec:algorithm}), and the uniform superposition
+assigns the same probability to each.
 
 The hyperbolic secant and the Gaussian $e^{-\beta y^2/2}$ are not
 exact.  At fixed $L$ their weighted functions converge
@@ -489,9 +484,7 @@ through the interpolant of its own grid.
 
 Table~\ref{tab:comparison} lists the degree $d$ and the inverse
 filling fraction at equal $L^2$ error $\varepsilon$.  The gate
-counts follow from these two numbers: $\mathcal{O}(nd/\mathcal{F})$
-for the circuits with amplitude amplification and
-$\mathcal{O}(d+n^2)$ for Fourier loading, on either grid.
+counts follow from these two numbers on either grid.
 Appendix~\ref{app:table} derives each entry.  For the uniform grid
 we neglect the discretization error, the degree needed to keep the
 QSVT polynomial bounded outside the window, and the wrap-around
@@ -649,11 +642,6 @@ Table~\ref{tab:comparison}.
 		$1$ and $\sqrt2$ at every $\varepsilon$.}
 	\label{fig:like-for-like}
 \end{figure*}
-
-These costs are consistent with Sec.~\ref{sec:limits}.
-Proposition~\ref{prop:nogo} constrains polynomials evaluated at
-given eigenvalues.  Here the evaluation points $\theta_j$ are
-chosen, and the low costs come from that choice.
 
 \subsection{Overlaps and expectation values}
 \label{subsec:quadrature}
