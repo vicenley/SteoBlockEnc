@@ -1,49 +1,119 @@
 \appendix
 
-\section{Subgeometric pullbacks: hyperbolic secant and Gaussian}
+\section{Direct proof of Theorem~\ref{thm:real-qsp}}
+\label{app:thm-real}
+
+The proof in Sec.~\ref{subsec:signal} reduces the theorem to the
+standard one.  Here we prove it directly in the variable $x$, by
+induction on $d$.
+
+\emph{Forward direction.}  For $d=0$,
+$e^{i\phi_0\PauliZ}=\mathrm{diag}(e^{i\phi_0},e^{-i\phi_0})$ has
+$P=e^{i\phi_0}$, $Q\equiv 0$, and $|P|^2+|Q|^2=1=(1+x^2)^0$, with
+$\deg P=0$ and $\deg Q=-1$.  Assume the form~\eqref{eq:real-qsp-form}
+at degree $d-1$.  Multiplying by $e^{i\phi_d\PauliZ}O_x$ gives
+\begin{equation}
+	\begin{pmatrix}\widetilde P\\ \widetilde Q\end{pmatrix}
+	=\begin{pmatrix} e^{i\phi_d}(xP-Q)\\ e^{-i\phi_d}(xQ+P)\end{pmatrix},
+\end{equation}
+so that $e^{i\phi_d\PauliZ}O_x U_{\bm\phi}=
+\bigl(\begin{smallmatrix}\widetilde P&-\widetilde Q^*\\
+\widetilde Q&\widetilde P^*\end{smallmatrix}\bigr)$.  Direct expansion
+gives
+$|\widetilde P|^2+|\widetilde Q|^2=|xP-Q|^2+|xQ+P|^2
+=(1+x^2)(|P|^2+|Q|^2)=(1+x^2)^d$, the cross terms cancelling.  Since
+$x$ multiplies $P$ on the diagonal and $Q$ on the off-diagonal,
+$\deg\widetilde P\le d$ and $\deg\widetilde Q\le d-1$, and the
+parities shift by one as required.
+
+\emph{Backward direction.}  Let $P,Q$ satisfy (i)--(iii).  For
+real $x$, $|P(x)|^2=P(x)P^*(x)$ with $P^*(x)=\overline{P(\bar x)}$,
+so (i) states that the polynomial $PP^*+QQ^*-(1+x^2)^d$ vanishes on
+$\R$.  A polynomial that vanishes on $\R$ is identically zero, so
+$P(x)P^*(x)+Q(x)Q^*(x)=(1+x^2)^d$ holds for all complex $x$, and in
+particular at $x=i$, where the right side vanishes.  There
+$P^*(i)=\overline{P(-i)}=(-1)^d\overline{P(i)}$ and
+$Q^*(i)=(-1)^{d-1}\overline{Q(i)}$ by the parities (ii), so the
+identity at $x=i$ reads $(-1)^d\bigl(|P(i)|^2-|Q(i)|^2\bigr)=0$,
+that is, $|P(i)|^2=|Q(i)|^2$.  The outermost factor
+$e^{i\phi\PauliZ}O_x$ is removed by applying
+$(1+x^2)\,O_x^{-1}e^{-i\phi\PauliZ}$, with
+$(1+x^2)\,O_x^{-1}=\bigl(\begin{smallmatrix}x&1\\-1&x
+\end{smallmatrix}\bigr)$, which gives
+\begin{equation}
+	\begin{pmatrix}\widetilde P\\ \widetilde Q\end{pmatrix}
+	=\begin{pmatrix} x\,e^{-i\phi}P+e^{i\phi}Q\\
+		-e^{-i\phi}P+x\,e^{i\phi}Q\end{pmatrix}.
+\end{equation}
+If $Q(i)\neq 0$, choose $\phi$ with $e^{2i\phi}=-iP(i)/Q(i)$, which
+has unit modulus by $|P(i)|=|Q(i)|$.  Then
+$\widetilde P(i)=e^{-i\phi}\bigl(iP(i)+e^{2i\phi}Q(i)\bigr)=0$, and
+$\widetilde Q(i)=i\,\widetilde P(i)=0$.  By the parities (ii),
+$\widetilde P(-i)=(-1)^{d+1}\widetilde P(i)$ and
+$\widetilde Q(-i)=(-1)^{d}\widetilde Q(i)$, so both vanish also at
+$x=-i$ and $1+x^2$ divides $\widetilde P$ and $\widetilde Q$.  Since
+$|\widetilde P|^2+|\widetilde Q|^2=(1+x^2)^{d+1}$, the
+quotients $\widehat
+P=\widetilde P/(1+x^2)$, $\widehat Q=\widetilde Q/(1+x^2)$ satisfy
+$|\widehat P|^2+|\widehat Q|^2=(1+x^2)^{d-1}$ with degrees $d-1$ and
+$d-2$.  If instead $Q(i)=0$, then $P(i)=0$ as well, $1+x^2$
+already divides both, and any $\phi$ works.  Recursing to $d=0$
+yields the phases $\bm\phi$.\qed
+
+\section{Subgeometric pullbacks of the hyperbolic secant and the Gaussian}
 \label{app:sech}
 
 The pullback $g(\theta)=\mathrm{sech}(L\cot\theta)$ inherits the
 singularities of $\mathrm{sech}$, whose poles sit at
-$y=i\pi(2m+1)/2$.  Solving $L\cot\theta=i\pi(2m+1)/2$ with
+$y=i\pi(2\ell+1)/2$.  Solving $L\cot\theta=i\pi(2\ell+1)/2$ with
 $w=e^{2i\theta}$ gives $\cot\theta=i(w+1)/(w-1)$, so
-$w=(C+1)/(C-1)$ with $C=\pi(2m+1)/(2L)$, which exceeds one for
-$\pi(2m+1)>2L$; then $\theta_m=-\tfrac{i}{2}\log w$ is purely imaginary with
+$w=(C+1)/(C-1)$ with $C=\pi(2\ell+1)/(2L)$, which exceeds one for
+$\pi(2\ell+1)>2L$; then $\theta_\ell=-\tfrac{i}{2}\log w$ is purely
+imaginary with
 \begin{equation}
 	\begin{split}
-		|\im\theta_m| &=\tfrac12\log\frac{C+1}{C-1}
+		|\im\theta_\ell| &=\tfrac12\log\frac{C+1}{C-1}
 		=\frac{1}{C}+\mathcal{O}(C^{-3})\\
-		&=\frac{2L}{\pi(2m+1)}+\mathcal{O}(m^{-3})
-		\ \xrightarrow{m\to\infty}\ 0.
+		&=\frac{2L}{\pi(2\ell+1)}+\mathcal{O}(\ell^{-3})
+		\ \xrightarrow{\ell\to\infty}\ 0.
 	\end{split}
 \end{equation}
 The singularities accumulate on the real $\theta$-axis at
-$\theta=0$, so $g$ admits no analyticity strip and its Fourier
+$\theta=0$.  Hence, $g$ admits no analyticity strip and its Fourier
 coefficients cannot decay geometrically.  Steepest descent on
-$\int e^{-L/\theta}\cos(k\theta)\,d\theta$, the endpoint form of $g$
+$\int e^{-L/\theta}\cos(2m\theta)\,d\theta$, the endpoint form of $g$
 near $\theta=0$ where $g\sim 2e^{-L/\theta}$, gives
-$|a_k|\sim\exp(-c\sqrt{k})$, i.e.\ $\sigma=1/2$.
+$|a_m|\sim\exp(-c\sqrt{m})$ for the coefficients of
+Eq.~\eqref{eq:boyd-bound}, that is, $\sigma=1/2$.
 
 The Gaussian has the same mechanism with a stronger singularity.
 Its pullback behaves as $\exp(-L^2/2\theta^2)$ near $\theta=0$.
-For $\int e^{-\kappa/\theta^2+ik\theta}d\theta$ the saddle point
-is at $\theta_\star^3=2i\kappa/k$, where the exponent equals
+For $\int e^{-\kappa/\theta^2+2im\theta}d\theta$ the saddle point
+is at $\theta_\star^3=i\kappa/m$, where the exponent equals
 $-3\kappa/\theta_\star^2$, whose real part is
-$-\tfrac32\kappa^{1/3}(k/2)^{2/3}$.  The coefficients therefore decay
-as $\exp(-c\,k^{2/3})$, i.e.\ $\sigma=2/3$.  For $\kappa=1$ and $k=2m$
+$-\tfrac32\kappa^{1/3}m^{2/3}$.  The coefficients $a_m$ therefore
+decay as $\exp(-c\,m^{2/3})$, that is, $\sigma=2/3$.  For $\kappa=1$
 this reproduces Boyd's result $\exp(-1.5\,m^{2/3})
 \cos(2.60\,m^{2/3}+\pi/4)$ for $\exp(-\cot^2\theta)$, including the
 oscillation frequency $1.5\sqrt3\approx 2.60$~\cite[Eq.~(2.11)]{Boyd2001}.
-With $L=\lambda\sqrt{d}$ the two rates above become equal in
-order.  The coefficient of $e^{id\theta}$ in $G$ is then
+
+Next, we let the map parameter grow with the degree.  At fixed
+$L$ the rate derived above holds for the harmonics $k\gg\beta L^2$
+of $G$.  The lower harmonics are governed by the peak of $G$ at
+$\theta=\pi/2$, where
+$G\approx\exp[-\beta L^2(\theta-\pi/2)^2/2]$, and they decay as
+$\exp(-k^2/2\beta L^2)$.  A larger $L$ thus raises the first rate,
+whose exponent grows as $L^{2/3}$, and lowers the second.  With
+$L=\lambda\sqrt{d}$ both exponents are of order $d$ at the
+truncation degree.  The coefficient of $e^{id\theta}$ in $G$ is then
 $\pi^{-1}\int_0^\pi\exp\{d[-\beta\lambda^2\cot^2\theta/2
 -i\theta]\}\,d\theta/\sin\theta$, whose exponent is $d$ times a
 function independent of $d$, and the same holds for the harmonics
 $k>d$ at fixed $k/d$.  Steepest descent therefore gives an error
 $\exp(-\varphi(\lambda)\,d)$ up to a factor polynomial in $d$.
-For $\beta=1$ and $\lambda=0.86$, an evaluation of the $L^2$ error
-of the truncated series in extended-precision arithmetic gives
-$-\log\varepsilon/d=0.457$, $0.454$, and $0.446$ at $d=81$, $161$,
+For $\beta=1$ and $\lambda=0.86$, we evaluated the $L^2$ error
+of the truncated series in extended-precision arithmetic and
+obtained $-\log\varepsilon/d=0.457$, $0.454$, and $0.446$ at $d=81$, $161$,
 and $321$; the values $\lambda=0.7$, $0.8$, and $0.95$ give smaller
 rates at $d=161$ and $321$.
 The numerical coefficient decay for both targets is generated by
@@ -53,35 +123,44 @@ the reference implementation (see Data availability).
 \label{app:filling}
 \label{app:stateprep}
 
-\emph{Circuit.}  Write $p=\sum_k c_k e^{ik\theta}$, the sum running
+We prove the statements of the theorem in turn, starting with the
+two circuits.  Write $p=\sum_k c_k e^{ik\theta}$, the sum running
 over $|k|\le d$ with $k$ of the parity of $d$.  Then
 $p(\theta)=e^{-id\theta}q(e^{2i\theta})$ with
 $q(w)=\sum_{m=0}^{d}c_{2m-d}\,w^m$, which is
 Eq.~\eqref{eq:factorization}, and
-$|q(e^{2i\theta})|=|p(\theta)|\le1$ on the unit circle.  By the
-completeness theorem of generalized
-QSP~\cite[Cor.~5]{MotlaghWiebe2023}, there are $d+1$ rotations of the
-signal ancilla which, interleaved with $d$ applications of the
-controlled $e^{2iA}$, place $q(e^{2iA})$ in the flagged block.
-Since $A=\sum_j\theta_j\ket{j}\!\bra{j}$ is diagonal, this block is
-$\sum_j q(e^{2i\theta_j})\ket{j}\!\bra{j}$, and multiplication by
-$e^{-idA}$ gives
-$D_p=\sum_j p(\theta_j)\ket{j}\!\bra{j}$.
+$|q(e^{2i\theta})|=|p(\theta)|\le1$ on the unit circle.
 
 \emph{Fourier loading.}  With
-$e^{2im\theta_j}=e^{i\pi m/N}e^{2\pi imj/N}$, the same
+$e^{2im\theta_j}=e^{i\pi m/N}e^{2\pi imj/N}$, the
 factorization gives Eq.~\eqref{eq:fourier-loading}.  The quantum
 Fourier transform maps $\ket{m}$ to
 $N^{-1/2}\sum_je^{2\pi imj/N}\ket{j}$, so it maps the normalized
 state with amplitudes proportional to $c_{2m-d}\,e^{i\pi m/N}$,
 $m=0,\dots,d$, to the state with amplitudes proportional to
-$q(e^{2i\theta_j})$, and the layer $e^{-idA}$ completes
+$q(e^{2i\theta_j})$.  The layer $e^{-idA}$ of $n$ single-qubit
+phase rotations, with $A=\sum_j\theta_j\ket{j}\!\bra{j}$, completes
 $p(\theta_j)$.  A state on $\lceil\log_2(d+1)\rceil$ qubits is
-prepared with $\mathcal{O}(d)$ gates, the transform on $n$ qubits
-costs $\mathcal{O}(n^2)$, and the layer costs $n$, which is count
-(a).
+prepared with $\mathcal{O}(d)$ gates.  In the transform, each of
+the $n$ output qubits receives one Hadamard gate and one
+controlled rotation from every less significant input qubit.  The
+input qubits beyond the first $\lceil\log_2(d+1)\rceil$ are in
+the state $\ket{0}$, so that their rotations act trivially and
+are omitted.  The transform therefore costs
+$\mathcal{O}(n\log d)$ gates, and $\mathcal{O}(n)$ for $d\le1$.
+The layer costs $n$, which is count (a).
 
-\emph{Amplitude.}  Applied to $\ket{+}^{\otimes n}$, the circuit
+\emph{QSP circuit.}  By the
+completeness theorem of generalized
+QSP~\cite[Cor.~5]{MotlaghWiebe2023}, there are $d+1$ rotations of the
+signal ancilla which, interleaved with $d$ applications of the
+controlled $e^{2iA}$, place $q(e^{2iA})$ in the flagged block.
+Since $A$ is diagonal, this block is
+$\sum_j q(e^{2i\theta_j})\ket{j}\!\bra{j}$, and multiplication by
+$e^{-idA}$ gives
+$D_p=\sum_j p(\theta_j)\ket{j}\!\bra{j}$.
+
+\emph{Amplitude.}  Applied to $\ket{+}^{\otimes n}$, the QSP circuit
 flags the vector $N^{-1/2}\sum_j p(\theta_j)\ket{j}$, whose norm is
 $(N^{-1}\sum_j|p(\theta_j)|^2)^{1/2}$.  By
 Lemma~\ref{lem:quadrature} with $r=p$, which applies because
@@ -93,20 +172,21 @@ amplification~\cite{BrassardHoyerMoscaTapp2002,McArdleGilyenBerta2025}
 with $\mathcal{O}(1/\mathcal{F}_p)$ rounds and one further ancilla
 then prepares the normalized state with certainty.
 
+\emph{Gate count of the QSP circuit.}  Each controlled $e^{2iA}$ costs
+$\mathcal{O}(n)$ gates, the block-encoding uses $d$ of them and
+the layer $e^{-idA}$ of $n$ rotations, and amplitude amplification
+calls the block-encoding and its inverse
+$\mathcal{O}(1/\mathcal{F}_p)$ times.  The product is
+Eq.~\eqref{eq:stateprep-cost}, which is count (b).
+
 \emph{Error.}  The prepared amplitudes are
-$p(\theta_j)/(\sqrt{N/\pi}\,\|p\|)$, and the state represents the
+$p(\theta_j)/(\sqrt{N/\pi}\,\|p\|)$ for either circuit, and the
+state represents the
 function $f_p$ of Eq.~\eqref{eq:represented}.  The unitary map of
 Eq.~\eqref{eq:weighted} sends $f/\|f\|$ to $G/\|G\|$ and $f_p$ to
 $p/\|p\|$, so the $L^2(\R)$ distance of the first pair equals the
 $L^2(0,\pi)$ distance of the second, which is
 Eq.~\eqref{eq:error-identity}.
-
-\emph{Gate count.}  Each controlled $e^{2iA}$ costs
-$\mathcal{O}(n)$ gates, the block-encoding uses $d$ of them and
-the layer $e^{-idA}$ of $n$ rotations, and amplitude amplification
-calls the block-encoding and its inverse
-$\mathcal{O}(1/\mathcal{F}_p)$ times.  The product is
-Eq.~\eqref{eq:stateprep-cost}.
 
 \emph{Boyd class.}  Let $g=\sum_m a_m w^m$ with $w=e^{2i\theta}$
 and $|a_m|\le C\exp(-\mu|m|^\sigma)$.  If $f$ vanishes at infinity,
@@ -129,7 +209,7 @@ Setting it to $\varepsilon$ gives
 $d=\mathcal{O}((\log(1/\varepsilon))^{1/\sigma})$.  The uniform
 error obeys $\sup|G-p_d|\le\sum_{|k|>d}|c_k|\to0$, so
 $|p_d|_{\max}\to\sup|G|$ and, for $p=p_d/|p_d|_{\max}$,
-$\mathcal{F}_p\to\mathcal{F}_G$.\hfill$\square$
+$\mathcal{F}_p\to\mathcal{F}_G$.\qed
 
 \section{Derivation of Table~\ref{tab:comparison}}
 \label{app:table}
@@ -137,7 +217,8 @@ $\mathcal{F}_p\to\mathcal{F}_G$.\hfill$\square$
 The table lists the degree $d$ and the inverse filling fraction
 $1/\mathcal{F}$ at $L^2(\R)$ error $\varepsilon$.  Gate counts are
 $n\times d\times(1/\mathcal{F})$ with amplitude amplification and
-$d+n^2$ with Fourier loading.
+$d+n\log d$ with Fourier loading.  We derive the entries row by
+row.
 
 \emph{Fourier loading on a uniform grid.}  The Fourier series of
 $f$ on the window, of period $2L_{\mathrm{trunc}}$, has
@@ -173,7 +254,7 @@ Lorentzian, $m=2$.  A Lorentzian of width $b$ centered at $a$
 reduces to this case after shifting the window and rescaling $y$
 by $b$, and the cost is independent of $a$ and $b$.
 
-\emph{Algebraic tails, this work.}  With $L=1$ and $y_0=0$,
+\emph{Algebraic tails, cotangent grid.}  With $L=1$ and $y_0=0$,
 $G=(1+\cot^2\theta)^{-m/2}/\sin\theta=\sin^{m-1}\theta$ on
 $(0,\pi)$, of degree $m-1$, with
 $\mathcal{F}_p=(\pi^{-1}\int_0^\pi\sin^{2m-2}\theta\,d\theta)^{1/2}
@@ -183,8 +264,8 @@ the Lorentzian.
 
 \emph{Hyperbolic secant.}  Exponential decay gives
 $L_{\mathrm{trunc}}=\mathcal{O}(\log(1/\varepsilon))$; the poles of
-$\mathrm{sech}$ at $y=i\pi/2$ put the composite's singularities at
-distance $\mathcal{O}(1/L_{\mathrm{trunc}})$, so
+$\mathrm{sech}$ at $y=i\pi/2$ put the singularities of the
+composite function at distance $\mathcal{O}(1/L_{\mathrm{trunc}})$, so
 $d=\mathcal{O}(L_{\mathrm{trunc}}\log(1/\varepsilon))=
 \mathcal{O}(\log^2(1/\varepsilon))$, and
 $\mathcal{F}=\mathcal{O}(L_{\mathrm{trunc}}^{-1/2})$, giving QSVT cost
@@ -192,7 +273,12 @@ $\mathcal{O}(n\log^{5/2}(1/\varepsilon))$.  On the cotangent grid
 $\sigma=1/2$ (Appendix~\ref{app:sech}) gives
 $d=\mathcal{O}(\log^2(1/\varepsilon))$ and, with
 $\mathcal{F}_p=\mathcal{O}(1)$, cost
-$\mathcal{O}(n\log^2(1/\varepsilon))$.
+$\mathcal{O}(n\log^2(1/\varepsilon))$.  With $L\propto d^{1/3}$
+the degree is
+$\mathcal{O}(\log^{3/2}(1/\varepsilon))$~\cite[Sec.~17.9]{Boyd2001}
+and $1/\mathcal{F}_p\propto L^{1/2}=
+\mathcal{O}(\log^{1/4}(1/\varepsilon))$, which is the indented row
+of the table.
 
 \emph{Gaussian.}  The QSVT entry
 $\mathcal{O}(n\log^{5/4}(1/\varepsilon))$ is the result of
@@ -235,12 +321,14 @@ $|a|\gg b$ this gives $d\simeq 2(|a|/b)\log(1/\varepsilon)$.  Each
 peak of $G$ sits at $\cot\theta=\pm a/L$ with width
 $\Delta\theta\simeq bL/(L^2+a^2)\simeq b/2|a|$ and a Lorentzian
 profile, so $\mathcal{F}_p\simeq(\Delta\theta)^{1/2}=
-(b/2|a|)^{1/2}$; numerically, $\mathcal{F}_p=0.357$, $0.251$,
-$0.177$ at $|a|/b=4$, $8$, $16$, and $d$ agrees with
+(b/2|a|)^{1/2}$.  Numerically, we find $\mathcal{F}_p=0.357$,
+$0.251$, and $0.177$ at $|a|/b=4$, $8$, and $16$, and $d$ agrees with
 $2(|a|/b)\log(1/\varepsilon)$ to within one percent at
 $\varepsilon=10^{-3}$ and $10^{-6}$.  The cost is
-$\mathcal{O}(n(|a|/b)^{3/2}\log(1/\varepsilon))$.  The QSVT
-estimate follows from the algebraic-tail derivation with $m=2$
+$\mathcal{O}(n(|a|/b)^{3/2}\log(1/\varepsilon))$.
+
+The QSVT
+estimate for the pair follows from the algebraic-tail derivation with $m=2$
 after rescaling $y$ by $b$: the window is
 $L_{\mathrm{trunc}}=b\,\varepsilon^{-2/3}$, the degree is
 $\mathcal{O}((L_{\mathrm{trunc}}/b)\log(1/\varepsilon))$, and
@@ -260,7 +348,9 @@ product from below.  The Chebyshev series of
 $f(L_{\mathrm{trunc}}\arcsin s)$ on the full interval, which is
 bounded there by $\max|f|$, bounds it from above.  The two differ
 by at most $30\%$ for the targets and errors of
-Sec.~\ref{subsec:comparison}.  For the cotangent grid we used the
+Sec.~\ref{subsec:comparison}.
+
+For the cotangent grid we used the
 truncated Fourier series of $G$ at the best $L$.  At
 $\varepsilon=10^{-2}$, $10^{-4}$, and $10^{-6}$ the products are
 $5.5$, $34$, and $68$ for the hyperbolic secant, against QSVT
@@ -273,8 +363,9 @@ $[5.5,6.6]\times10^{3}$ at $\varepsilon=10^{-3}$.
 \section{Read-out cost}
 \label{app:readout}
 
-The stereographic decoding of Eq.~\eqref{eq:decode} recovers $z$
-from Pauli expectation values.  For a real signal,
+Here, we derive the number of shots quoted in
+Sec.~\ref{subsec:encoding}.  The stereographic decoding of
+Eq.~\eqref{eq:decode} recovers $z$ from Pauli expectation values.  For a real signal,
 $\langle\PauliX\rangle=2r/(1+r^2)$ and
 $\langle\PauliZ\rangle=(r^2-1)/(1+r^2)$, so with
 $z=\langle\PauliX\rangle/(1-\langle\PauliZ\rangle)$ the partial
@@ -286,8 +377,8 @@ $(1-\langle\PauliZ\rangle^2)/N_s$, and the delta method gives
 	\mathrm{Var}(\hat z)=\frac{5r^4-2r^2+1}{4N_s}.
 \end{equation}
 The estimator $\hat r=\sqrt{\hat p_0/(1-\hat p_0)}$ of
-Remark~\ref{rem:measurement} uses computational-basis counts alone
-and has variance $(1+r^2)^2/(4N_s)$.  Both routes therefore need
+Eq.~\eqref{eq:r-estimator} uses computational-basis counts alone
+and has variance $(1+r^2)^2/(4N_s)$.  Hence, both routes need
 $N_s=\mathcal{O}(r^4/\varepsilon^2)$ shots for absolute precision
 $\varepsilon$ and
 $\mathcal{O}(r^2/\varepsilon_{\mathrm{rel}}^2)$ for relative

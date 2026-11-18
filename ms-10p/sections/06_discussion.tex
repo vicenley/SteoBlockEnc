@@ -7,15 +7,14 @@ coordinate $x=\cot\theta$, which covers the whole real line, and
 have used it to prepare functions on the real line as quantum
 states without truncation.  In this coordinate a QSP sequence is
 the standard sequence conjugated by a fixed gate, so that its
-phases follow from the standard theory.  Its unbounded output is
-the ratio of two bounded amplitudes, and the number of shots
-needed to estimate this ratio grows as the fourth power of its
-value.  For functions of a block-encoded matrix the change of
-variable is a relabeling, since the expansion coefficients and the
-approximation error at every degree coincide in every coordinate.
+phases follow from the standard theory.  An unbounded value is
+read out as the ratio of two bounded amplitudes, with a number of
+shots which grows as the fourth power of that value.  For functions of a block-encoded matrix, the expansion
+coefficients and the approximation error at every degree coincide
+in every coordinate, so that the known bounds apply unchanged.
 
-The benefit of the coordinate lies in the choice of sample points
-for state preparation.  On the cotangent grid, a function weighted
+We have found that the benefit of the coordinate lies in the
+choice of sample points for state preparation.  On the cotangent grid, a function weighted
 by the square root of the grid spacing becomes a function on a
 uniform grid of angles, and the prepared state represents the
 original function in the norm of $L^2(\R)$ with the approximation
@@ -24,33 +23,34 @@ transform of a short coefficient vector and needs no ancilla.
 Alternatively, it is prepared by a QSP circuit whose signal is the
 Cayley transform of the position operator of the grid.
 
-The length
-of the coefficient vector does not depend on the error for the
-Lorentzian and the related amplitudes with algebraic tails, for
+We have shown that the length of the coefficient vector does not
+depend on the error for the Lorentzian and the related amplitudes with algebraic tails, for
 which a uniform grid needs a degree that grows as a power of the
 inverse error.  For the hyperbolic secant and the Gaussian, in
 turn, the length grows polylogarithmically with the inverse error,
-and the cotangent grid is cheaper for the former and
-equivalent for the latter, where its measured cost with amplitude
+and the cotangent grid is more economical for the former and
+equivalent for the latter, where its cost with amplitude
 amplification lies between $0.9$ and $1.3$ times that of the QSVT
 pipeline.
 
-These results come with three limitations.  First, the state
+Three properties of the construction set the scope of these
+results.  First, the state
 represents the function by interpolation in the rational Chebyshev
-basis, so that a single qubit already represents the Lorentzian
-exactly.  Hence, a task which needs the amplitudes on a uniform
-grid has to pay for regridding, which we have not analyzed.
+basis and not by samples on a uniform grid.  A single qubit, for
+instance, already represents the Lorentzian exactly.  Hence, a
+task which needs the amplitudes on a uniform grid requires a
+regridding step, which we leave for future work.
 Second, the grid is dense at one point only.  Two Lorentzians of
 width $b$ separated by $2|a|\gg b$ therefore need a degree which
 grows as $|a|/b$, against $d=1$ for a single one.  Third, the construction requires a signal
 operator whose eigenphases we choose.  For a block-encoded
 Hamiltonian with given eigenvalues the Cayley transform costs a
-linear solve~\cite{DelCorso2026}, and Sec.~\ref{sec:limits} shows
-that no change of variable helps there.
+linear solve~\cite{DelCorso2026}, and the approximation error
+is then the same in every coordinate (Sec.~\ref{sec:limits}).
 
 A natural next step is to identify tasks which consume the state
 through the overlaps and expectation values of
-Sec.~\ref{subsec:quadrature}, which are exact integrals over the
+Eqs.~\eqref{eq:quadrature} and~\eqref{eq:expectation}, which are exact integrals over the
 real line.  One candidate is amplitude estimation of expectation
 values under Cauchy and Student $t$ distributions, whose square
 roots are the states prepared exactly in

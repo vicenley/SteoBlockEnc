@@ -2,10 +2,16 @@
 \section{Quantum signal processing in the stereographic coordinate}
 \label{sec:projective}
 
+In this section, we rewrite the QSP circuit in the stereographic
+coordinate.  We first recall the standard formulation, then
+introduce the coordinate and derive the corresponding completeness
+theorem, and finally discuss how an unbounded value is read out
+from the bounded amplitudes of the output qubit.
+
 \subsection{Standard QSP}
 \label{subsec:standard}
 
-We first fix the standard setting~\cite{GSLW2019}.  The
+We start from the standard setting~\cite{GSLW2019}.  The
 \emph{signal} is a number $\tilde x\in[-1,1]$; in applications it
 is an eigenvalue or singular value of a block-encoded matrix.  The
 \emph{signal operator} is the single-qubit rotation
@@ -39,9 +45,9 @@ $d\bmod 2$ and $Q$ has parity $(d-1)\bmod 2$; and (c)
 $|P|^2+(1-\tilde x^2)|Q|^2=1$ on
 $[-1,1]$~\cite[Thm.~3]{GSLW2019}.  Here and below $P^*$ denotes the
 polynomial with complex-conjugated coefficients, which equals
-$\overline{P}$ for real arguments.  Condition (c) bounds
-$|P|\le 1$: the transformation a QSP sequence applies to its
-signal is a bounded polynomial on a bounded interval.  The phases
+$\overline{P}$ for real arguments.  Condition (c) implies
+$|P|\le 1$.  Hence, the transformation which a QSP sequence applies
+to its signal is a bounded polynomial on a bounded interval.  The phases
 for a given $P$ are computed classically by standard
 algorithms~\cite{DongMengWhaleyEtAl2021,BerntsonSunderhauf2024,NiSarkarYingLin2025}.
 
@@ -58,7 +64,8 @@ $e^{i\theta}$ on the unit circle, allows arbitrary $\SU(2)$
 rotations in place of the phase rotations, and produces Laurent
 polynomials; this form is equivalent to the $\SU(2)$ nonlinear
 Fourier
-transform~\cite{AlexisMnatsakanyanThiele2024,AlexisBeckerEtAl2026,Laneve2025b}.  None of these coordinates covers
+transform~\cite{AlexisMnatsakanyanThiele2024,AlexisBeckerEtAl2026,Laneve2025b}
+(Sec.~\ref{subsec:complex}).  None of these coordinates covers
 the real line.
 
 Figure~\ref{fig:charts} collects them, together
@@ -107,8 +114,8 @@ convenient to use the unnormalized signal operator
 	\end{split}
 	\label{eq:Ox}
 \end{equation}
-which is $\sqrt{1+x^2}$ times a rotation by $\theta$ about the $y$
-axis.  Its entries are polynomials in $x$, whereas those of
+which is $\sqrt{1+x^2}$ times a rotation by $2\theta$ about the
+$y$ axis of the Bloch sphere.  Its entries are polynomials in $x$, whereas those of
 $W(\tilde x)$ written in $x$ involve $\sqrt{1+x^2}$.  The powers of
 $O_x$ are
 \begin{equation}
@@ -188,21 +195,14 @@ records that $O_x$ is unnormalized.
 	theorem follows from the standard one with the same phases.
 \end{proof}
 
-The theorem adds no new circuits to standard QSP.  Its content is
+We emphasize that the theorem adds no new circuits to standard
+QSP.  Its content is
 the list of polynomials in $x$ that a QSP sequence reaches, stated
 in a coordinate that covers the real line, and its phases are
-computed by any standard algorithm.  The Supplemental
-Material~\cite{supp} gives an independent proof by induction on $d$ directly in the
-variable $x$.\footnote{Allowing a complex signal $z\in\C$ and
-	arbitrary $\SU(2)$ rotations in place of the phase rotations
-	gives the stereographic form of generalized
-	QSP~\cite{MotlaghWiebe2023}, whose entries are polynomials in
-	$z$ and $\bar z$ of total degree at most $d$.  The
-	Supplemental Material~\cite{supp} gives the proof and relates
-	the construction to the nonlinear Fourier transform.  The
-	generalized form is not used here.}
+computed by any standard algorithm.  Appendix~\ref{app:thm-real} gives an independent proof by
+induction on $d$ directly in the variable $x$.
 
-\subsection{Reading out an unbounded ratio}
+\subsection{Read-out of an unbounded ratio}
 \label{subsec:encoding}
 
 Applied to $\ket{0}$, the physical circuit outputs the state
@@ -229,21 +229,67 @@ Thus a QSP sequence computes the bounded pair $(P,Q)$, and the
 classical division of measured quantities in Eq.~\eqref{eq:decode}
 turns it into the unbounded value $P/Q$.
 
-\begin{remark}[Read-out cost]
-	\label{rem:measurement}
-	Let $r=|P(x)/Q(x)|$ be the magnitude of the value to be read
-	out.  It follows from computational-basis counts alone, since
-	the probability of the outcome $0$ is $p_0=r^2/(1+r^2)$ and
-	hence $r=\sqrt{p_0/(1-p_0)}$; the phase of $P/Q$ requires in
-	addition the $\PauliX$ and $\PauliY$ expectation values of
-	Eq.~\eqref{eq:decode}.  Estimating $r$ to absolute precision
-	$\varepsilon$ costs $\mathcal{O}(r^4/\varepsilon^2)$ shots for
-	$r\gtrsim 1$, because the division amplifies sampling error
-	by $(1+r^2)/2$ (Appendix~\ref{app:readout}).
-	The alternative is to rescale an unbounded target by its
-	maximum on a truncated window and implement it as a bounded
-	polynomial, at a degree that grows with the window.  The ratio
-	read-out keeps the degree low and pays in shots.  It is
-	practical for order-one values and gives no asymptotic
-	speedup.
-\end{remark}
+Next, we estimate the cost of this read-out.  Let $r=|P(x)/Q(x)|$ be
+the magnitude of the value to be read out.  It follows from
+computational-basis counts alone, since the probability of the
+outcome $0$ is $p_0=r^2/(1+r^2)$, and hence
+\begin{equation}
+	r=\sqrt{\frac{p_0}{1-p_0}}.
+	\label{eq:r-estimator}
+\end{equation}
+The phase of $P/Q$ requires in addition the $\PauliX$ and
+$\PauliY$ expectation values of Eq.~\eqref{eq:decode}.  We find
+that estimating $r$ to absolute precision $\varepsilon$ requires
+$\mathcal{O}(r^4/\varepsilon^2)$ shots for $r\gtrsim 1$, because
+the division amplifies the sampling error by $(1+r^2)/2$
+(Appendix~\ref{app:readout}).
+
+The alternative is to rescale an unbounded target by its maximum
+on a truncated window and to implement it as a bounded polynomial,
+at a degree that grows with the window.  The ratio read-out, in
+turn, keeps the degree low and requires a number of shots which
+grows with $r$.  Hence, it is suited to values of order one, for
+which this number is moderate.
+
+\subsection{Complex signals}
+\label{subsec:complex}
+
+The label $z$ of Eq.~\eqref{eq:decode} is complex in general, and
+the signal can be taken complex as well.  For $z\in\C$ we define
+the signal operator
+\begin{equation}
+	O_z=\begin{pmatrix} z & -1 \\ 1 & \bar z\end{pmatrix},
+	\qquad \det O_z=1+|z|^2,
+	\label{eq:Oz}
+\end{equation}
+which reduces to $O_x$ of Eq.~\eqref{eq:Ox} for real $z$ and maps
+$\ket{0}$ to $\sqrt{1+|z|^2}\,\ket{z}$.  Interleaving $d$ such
+operators with arbitrary rotations $G_0,\dots,G_d\in\SU(2)$ in
+place of the phase rotations gives the stereographic form of
+generalized QSP~\cite{MotlaghWiebe2023},
+\begin{equation}
+	G_d\,O_z\,G_{d-1}\,O_z\cdots O_z\,G_0
+	=\begin{pmatrix} P & -Q^*\\ Q & P^*\end{pmatrix}.
+	\label{eq:gen-qsp-form}
+\end{equation}
+Here $P$ and $Q$ are polynomials in $z$ and $\bar z$ of total
+degree at most $d$ which obey $|P|^2+|Q|^2=(1+|z|^2)^d$ for all
+$z\in\C$, and $P^*(z,\bar z)=\overline{P(\bar z,z)}$.  Both
+properties follow by induction on $d$.  The operators $O_z$ and
+$G_j$ have the form
+$\bigl(\begin{smallmatrix}\alpha&-\bar\beta\\
+\beta&\bar\alpha\end{smallmatrix}\bigr)$, which is closed under
+multiplication, each factor $O_z$ raises the degree by at most
+one, and the determinant is multiplicative.  We do not
+characterize which pairs $(P,Q)$ arise in this way, so that this
+statement is weaker than Theorem~\ref{thm:real-qsp}.
+
+The same normalization appears in the $\SU(2)$ nonlinear Fourier
+transform~\cite{AlexisMnatsakanyanThiele2024,AlexisBeckerEtAl2026,Laneve2025b}.
+Its factor for a coefficient $\gamma$ is
+$(1+|\gamma|^2)^{-1/2}\bigl(\begin{smallmatrix}1&\gamma w^k\\
+-\bar\gamma w^{-k}&1\end{smallmatrix}\bigr)$ with $|w|=1$, and at
+$w=1$ the matrix equals $O_\gamma\,(i\PauliY)$.  We note that
+$\gamma$ is a coefficient in the nonlinear Fourier transform,
+whereas it is the signal in $O_\gamma$.  The complex form is not
+used in the following.

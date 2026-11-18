@@ -24,7 +24,7 @@ Rudolph~\cite{GroverRudolph2002} computes the amplitudes with
 coherent arithmetic, the cost of which dominates the circuit.
 More recent schemes avoid the arithmetic.  In the scheme of
 McArdle, Gily\'en, and Berta~\cite{McArdleGilyenBerta2025}, the
-quantum singular value transformation applies a polynomial
+quantum singular value transformation (QSVT) applies a polynomial
 approximation of the function to a simple diagonal operator, and
 amplitude amplification then raises the success probability.
 Alternatively, the leading Fourier coefficients of the function
@@ -56,10 +56,10 @@ grid was suggested in Ref.~\cite{RattewKoczor2022}, without a
 construction.
 
 The same coordinate arises in quantum signal processing (QSP), the
-framework behind the quantum singular value transformation.  QSP
+framework behind the QSVT.  QSP
 applies a polynomial to a signal which is encoded in the angle
 $\theta$ of a single-qubit rotation~\cite{LowChuang2017,GSLW2019},
-and the quantum singular value transformation extends it to the
+and the QSVT extends it to the
 singular values of a block-encoded
 matrix~\cite{GSLW2019,MartynRossiTanChuang2021}.  The existing
 formulations describe the signal by the rotation
@@ -78,9 +78,8 @@ follow directly from the standard theory.  Its unbounded output is
 the ratio of the two amplitudes of the output qubit, which is
 estimated at a sampling cost that grows as the fourth power of its
 value.  We then turn to functions of a block-encoded matrix and
-find that the change of variable gives no advantage there, since
-the approximation error at every degree is the same in all
-coordinates.
+show that the approximation error at every degree is the same in
+all coordinates, so that the known bounds apply unchanged.
 
 The advantage arises in state preparation, where the sample points
 can be chosen freely.  We show that a function sampled on the
@@ -88,22 +87,22 @@ cotangent grid is loaded by a quantum Fourier transform of a short
 coefficient vector or, alternatively, by a QSP circuit, at a cost
 which is set by the smoothness of the function in the angle.  In
 particular, the Lorentzian and related amplitudes with algebraic
-tails are prepared exactly, and the QSP circuit then has a gate
-count which is linear in the number of qubits.  For the hyperbolic secant the cost is lower
-than our estimate for the uniform grid, whereas for the Gaussian
-the two grids scale alike.  We emphasize that the prepared state
+tails are prepared exactly, with a gate count which is linear in
+the number of qubits.  For the hyperbolic
+secant the cost is lower than our estimate for the uniform grid,
+whereas for the Gaussian the two grids scale alike.  We emphasize that the prepared state
 represents the function by interpolation and differs from a set of
 samples on a uniform grid.  Nevertheless, its overlaps and a class
 of its expectation values are exact integrals over the real line.
 
 The paper is organized as follows.  In Sec.~\ref{sec:projective},
 we review standard QSP, introduce the stereographic coordinate,
-and derive its completeness theorem and the read-out.  In
-Sec.~\ref{sec:limits}, we show that a change of variable cannot
-accelerate a block-encoded matrix function.
+derive its completeness theorem and the read-out, and comment
+on complex signals.  In
+Sec.~\ref{sec:limits}, we show that the degree required for a
+function of a block-encoded matrix does not depend on the
+coordinate.
 Section~\ref{sec:stateprep} develops the state-preparation
 algorithm and compares it with existing methods.  Finally, we
 summarize the results and their limitations in
-Sec.~\ref{sec:discussion}.  The extension to complex signals and
-its relation to the nonlinear Fourier transform are given in the
-Supplemental Material~\cite{supp}.
+Sec.~\ref{sec:discussion}.

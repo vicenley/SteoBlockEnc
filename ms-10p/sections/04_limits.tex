@@ -4,54 +4,45 @@
 
 The stereographic coordinate maps $[-1,1]$ onto the whole real line
 and replaces the Chebyshev basis by the rational Chebyshev basis.
-One may hope that this makes some targets cheaper: that a function
-which needs a high polynomial degree in $\tilde x$ needs a low
-degree in $x$.  This section shows that, for functions of a
-block-encoded matrix, it does not.
+It is tempting to expect that a function which needs a high
+polynomial degree in $\tilde x$ needs a low degree in $x$.  In
+this section, we show that for functions of a block-encoded matrix
+the degree is the same in both coordinates, and we identify the
+setting in which the coordinate is of use.
 
-\subsection{The achievable set is fixed by the number of queries}
-\label{subsec:achievable}
+We consider a block encoding $U$ of a Hermitian matrix $A/\lambda$
+with eigenvalues $a_j\in[-1,1]$.  The QSVT circuit alternates $d$
+applications of $U$ and $U^\dagger$ with phase rotations controlled
+on the block-encoding ancillas, and it applies to the eigenvector
+with eigenvalue $a_j$ a polynomial $P(a_j)$ of degree at most
+$d$~\cite{GSLW2019,MartynRossiTanChuang2021}.  We recall the
+argument in order to make one consequence explicit.  The
+eigenvalue $a_j$ enters the circuit only through the rotation
+angle $\theta_j=\arccos a_j$, and each query contributes one power
+of $e^{\pm i\theta_j}$.  After $d$ queries every matrix element of
+the circuit on the two-dimensional invariant subspace of $a_j$ is
+therefore a trigonometric polynomial of degree at most $d$ in
+$\theta_j$.  The block that the circuit encodes is a polynomial of
+degree at most $d$ in $a_j=\cos\theta_j$, and the off-diagonal
+elements are $\sin\theta_j=\sqrt{1-a_j^2}$ times a polynomial of
+degree at most $d-1$.  Hence, the set of reachable transformations
+is fixed by $d$ and is the same in every coordinate.
 
-\begin{proposition}[QSVT, restated]
-	\label{prop:nogo}
-	Let $U$ be a block encoding of a Hermitian matrix $A/\lambda$
-	with eigenvalues $a_j\in[-1,1]$.  The QSVT circuit, which
-	alternates $d$ applications of $U$ and $U^\dagger$ with phase
-	rotations controlled on the block-encoding ancillas, applies to
-	the eigenvector with eigenvalue $a_j$ a polynomial $P(a_j)$ of
-	degree at most $d$.
-\end{proposition}
-
-This is the QSVT theorem~\cite{GSLW2019,MartynRossiTanChuang2021};
-we restate it to make one consequence explicit.  The eigenvalue
-$a_j$ enters the circuit only through the rotation angle
-$\theta_j=\arccos a_j$, and each query contributes one power of
-$e^{\pm i\theta_j}$.  After $d$ queries every matrix element of
-the circuit on the two-dimensional invariant subspace of $a_j$ is a
-trigonometric polynomial of degree at most $d$ in $\theta_j$.  The
-block that the circuit encodes is a polynomial of degree at most
-$d$ in $a_j=\cos\theta_j$, and the off-diagonal elements are
-$\sin\theta_j=\sqrt{1-a_j^2}$ times a polynomial of degree at most
-$d-1$.  The set of reachable
-transformations is therefore fixed by $d$ and is the same in every
-coordinate.
-
-\begin{corollary}[Same coefficients in every coordinate]
-	\label{cor:basis-indep}
-	Let $\theta=\arccos a$ and let $\alpha=\cot\theta=a/\sqrt{1-a^2}$
-	be the stereographic coordinate of
-	Eq.~\eqref{eq:stereo-coord}.  For every polynomial $P$ of
-	degree at most $d$,
-	\begin{equation}
-		P(a)=\sum_{k=0}^d c_k T_k(a)
-		=\sum_{k=0}^d c_k\,\TB_k(\alpha)
-		=\sum_{k=0}^d c_k\cos k\theta,
-	\end{equation}
-	with the \emph{same} coefficients $c_k$, because
-	$T_k(a)=\TB_k(\alpha)=\cos k\theta$.  Hence the best
-	approximation error of a target $f$ at degree $d$ is the same
-	in the Chebyshev, rational Chebyshev, and Fourier bases.
-\end{corollary}
+In particular, the expansion coefficients do not depend on the
+coordinate.  Let $\theta=\arccos a$ and let
+$\alpha=\cot\theta=a/\sqrt{1-a^2}$ be the stereographic coordinate
+of Eq.~\eqref{eq:stereo-coord}.  Because
+$T_k(a)=\TB_k(\alpha)=\cos k\theta$, every polynomial $P$ of degree
+at most $d$ obeys
+\begin{equation}
+	P(a)=\sum_{k=0}^d c_k T_k(a)
+	=\sum_{k=0}^d c_k\,\TB_k(\alpha)
+	=\sum_{k=0}^d c_k\cos k\theta
+	\label{eq:basis-indep}
+\end{equation}
+with one and the same set of coefficients $c_k$.  It follows that
+the best approximation error of a target $f$ at degree $d$ is the
+same in the Chebyshev, rational Chebyshev, and Fourier bases.
 
 Since the error coincides at every degree, so does its rate of
 decay with $d$.  For a target analytic near $[-1,1]$ this rate is
@@ -59,23 +50,19 @@ set by the Bernstein ellipse through the nearest singularity of
 $f$~\cite[Ch.~8]{Trefethen2013}.  Under the stereographic map
 these ellipses become the bipolar contours with foci $\pm i$ that
 govern the convergence of rational Chebyshev
-series~\cite{Boyd1990}\cite[Sec.~17.7]{Boyd2001}, so Boyd's
-convergence rate for the rational Chebyshev series equals the
-Chebyshev rate.
-Lower bounds for specific targets, such as those of
+series~\cite{Boyd1990} (see also Sec.~17.7 of
+Ref.~\cite{Boyd2001}), so that Boyd's convergence rate for the
+rational Chebyshev series equals the Chebyshev rate.
+Consequently, lower bounds for specific targets, such as those of
 Sherstov~\cite{Sherstov2013} and the adversary bound of
-Laneve~\cite{Laneve2025}, are therefore unchanged by the change of
-variable.
+Laneve~\cite{Laneve2025}, are unchanged by the change of variable.
 
-\subsection{Choice of sample points}
-\label{subsec:exit}
-
-Proposition~\ref{prop:nogo} takes the sample points of the
-polynomial as given: they are the eigenvalues $a_j$ of the matrix
-$A$.  In state preparation there is no given matrix.  The task is
-to write prescribed numbers $f(y_j)$ into the amplitudes of a
-register, and the points $y_j$ at which $f$ is sampled are part of
-the design.  The proposition does not constrain this choice.
-Section~\ref{sec:stateprep} uses it: we choose the points so that
-$f$, written in the angle variable, is a smooth function sampled
-on a uniform grid.
+The argument above takes the sample
+points of the polynomial as given: they are the eigenvalues $a_j$
+of the matrix $A$.  In state preparation, in contrast, there is no
+given matrix.  The task is to write prescribed numbers $f(y_j)$
+into the amplitudes of a register, and the points $y_j$ at which
+$f$ is sampled are part of the design.  The argument does not
+constrain this choice.  In Sec.~\ref{sec:stateprep}, we use this
+freedom and choose the points such that $f$, written in the angle
+variable, is a smooth function sampled on a uniform grid.

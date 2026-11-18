@@ -30,12 +30,8 @@
 
 \theoremstyle{aps}
 \newtheorem{theorem}{Theorem}
-\newtheorem{lemma}[theorem]{Lemma}
-\newtheorem{proposition}[theorem]{Proposition}
-\newtheorem{corollary}[theorem]{Corollary}
-\newtheorem{definition}[theorem]{Definition}
+\newtheorem{lemma}{Lemma}
 \newtheorem{example}[theorem]{Example}
-\newtheorem{remark}[theorem]{Remark}
 
 % Custom commands
 \newcommand{\C}{\mathbb{C}}
@@ -82,18 +78,21 @@
 	which is costly when its tails decay slowly.  We formulate
 	quantum signal processing in the stereographic coordinate, the
 	cotangent of the signal angle, and use it to prepare states on a
-	cotangent grid, which covers the whole real line.  For functions
-	of a block-encoded matrix the change of variable gives no
-	advantage.  In state preparation, the state on the cotangent
-	grid is the quantum Fourier transform of a short coefficient
-	vector.  It represents the function by interpolation, and its
-	overlaps are exact integrals over the real line.  For the
-	hyperbolic secant the cost is lower than our estimate for the
-	uniform grid, and for the Gaussian the two grids scale alike.
-	Lorentzian profiles and related amplitudes with algebraic tails
-	are prepared exactly by a circuit with a gate count linear in
-	the number of qubits, whereas on a uniform grid the required
-	polynomial degree grows as a power of the inverse error.
+	cotangent grid, which covers the whole real line.  We show that
+	the state on this grid follows from a short vector of Fourier
+	coefficients, which is loaded either by a quantum Fourier
+	transform or by a quantum signal processing circuit.  Lorentzian
+	profiles and related amplitudes with algebraic tails are
+	prepared exactly by a circuit with a gate count linear in the
+	number of qubits.  On a uniform grid, in contrast, the required
+	polynomial degree grows as a power of the inverse error.  For
+	the hyperbolic secant, we find a lower gate count than our
+	estimate for a uniform grid, and for the Gaussian no difference
+	in scaling.  For functions of a block-encoded matrix, in turn,
+	we show that the approximation error is the same in every
+	coordinate.  The prepared state encodes the function through an
+	interpolation formula, and overlaps between such states are
+	exact integrals over the real line.
 \end{abstract}
 
 \maketitle
